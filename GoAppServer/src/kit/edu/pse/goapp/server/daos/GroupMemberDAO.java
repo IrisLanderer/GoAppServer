@@ -9,7 +9,7 @@ public interface GroupMemberDAO {
 	
 	public void addMember();
 	public void deleteMember();
-	public void updateMember():
+	public void updateMember();
 	public List<User> getAllMembers();
 	public void setAdmin();
 	public List<Group> getAllAdminGroups();
