@@ -16,7 +16,6 @@ public class GpsDaoImpl implements GPS_DAO {
 
 	@Override
 	public GPS userGetGPS() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

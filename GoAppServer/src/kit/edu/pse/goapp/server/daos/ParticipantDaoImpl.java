@@ -14,7 +14,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	
 	
 	public ParticipantDaoImpl(int participantId, int userId, int meetingId, MeetingConfirmation confirmation) {
-		super();
+		
 		this.participantId = participantId;
 		this.userId = userId;
 		this.meetingId = meetingId;

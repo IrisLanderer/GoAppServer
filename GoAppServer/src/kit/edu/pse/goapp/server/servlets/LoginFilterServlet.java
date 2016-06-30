@@ -34,9 +34,14 @@ public class LoginFilterServlet implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {    
-        HttpServletRequest request = (HttpServletRequest) req;
+    	
+    	HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        HttpSession session = request.getSession(false);
+    	
+    	chain.doFilter(request, response);
+    	   return;
+    	   //todo delete above 2 lines
+    /*      HttpSession session = request.getSession(false);
         String loginURI = request.getContextPath() + "/Login";
 
         boolean loggedIn = session != null && session.getAttribute("userId") != null;
@@ -46,7 +51,7 @@ public class LoginFilterServlet implements Filter {
             chain.doFilter(request, response);
         } else {        	
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-        }
+        }*/
     }
 
 	/**

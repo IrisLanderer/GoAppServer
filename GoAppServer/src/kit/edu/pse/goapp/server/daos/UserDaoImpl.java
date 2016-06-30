@@ -8,11 +8,11 @@ public class UserDaoImpl implements UserDAO {
 
 	private int userId;
 	private String name;
-	private double googleId;
+	private String googleId;
 	private boolean notificationEnabled;
 
-	public UserDaoImpl(int userId, String name, double googleId, boolean notificationEnabled) {
-		super();
+	public UserDaoImpl(int userId, String name, String googleId, boolean notificationEnabled) {
+		
 		this.userId = userId;
 		this.name = name;
 		this.googleId = googleId;
