@@ -10,13 +10,13 @@ public class EventConverter implements ObjectConverter<Event> {
 	
 
 	@Override
-	public String deserialize(Event event) {
+	public String serialize(Event event) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String deserializeList(List<Event> events) {
+	public String serializeList(List<Event> events) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -7,13 +7,13 @@ import kit.edu.pse.goapp.server.datamodels.Participant;
 public class ParticipantConverter implements ObjectConverter<Participant> {
 
 	@Override
-	public String deserialize(Participant participant) {
+	public String serialize(Participant participant) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String deserializeList(List<Participant> participants) {
+	public String serialize(List<Participant> participants) {
 		// TODO Auto-generated method stub
 		return null;
 	}

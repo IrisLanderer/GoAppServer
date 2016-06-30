@@ -9,13 +9,13 @@ import kit.edu.pse.goapp.server.datamodels.Group;
 public class GroupConverter implements ObjectConverter<Group> {
 
 	@Override
-	public String deserialize(Group group) {
+	public String serialize(Group group) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String deserializeList(List<Group> groups) {
+	public String serialize(List<Group> groups) {
 		// TODO Auto-generated method stub
 		return null;
 	}

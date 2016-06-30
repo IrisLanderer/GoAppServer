@@ -7,13 +7,13 @@ import kit.edu.pse.goapp.server.datamodels.User;
 public class UserConverter implements ObjectConverter<User> {
 
 	@Override
-	public String deserialize(User user) {
+	public String serialize(User user) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String deserializeList(List<User> users) {
+	public String serialize(List<User> users) {
 		// TODO Auto-generated method stub
 		return null;
 	}

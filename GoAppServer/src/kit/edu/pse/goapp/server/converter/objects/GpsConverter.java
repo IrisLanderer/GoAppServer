@@ -9,13 +9,13 @@ public class GpsConverter implements ObjectConverter<GPS> {
 	
 
 	@Override
-	public String deserialize(GPS gps) {
+	public String serialize(GPS gps) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public String deserializeList(List<GPS> gps) {
+	public String serialize(List<GPS> gps) {
 		// TODO Auto-generated method stub
 		return null;
 	}

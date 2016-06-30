@@ -1,6 +1,6 @@
 package kit.edu.pse.goapp.server.converter.daos;
 
-import com.google.gson.Gson;
+
 
 import kit.edu.pse.goapp.server.daos.GroupDAO;
 

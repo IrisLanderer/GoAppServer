@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ObjectConverter<T> {
 	
-	public String deserialize(T object);
-	public String deserializeList(List<T> objects);
+	public String serialize(T object);
+	public String serialize(List<T> objects);
 
 }
