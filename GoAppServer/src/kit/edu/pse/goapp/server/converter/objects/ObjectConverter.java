@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ObjectConverter<T> {
 	
-	public T deserialize(String jsonString);
-	public List<T> deserializeList(String jsonString);
+	public String deserialize(T object);
+	public String deserializeList(List<T> objects);
 
 }

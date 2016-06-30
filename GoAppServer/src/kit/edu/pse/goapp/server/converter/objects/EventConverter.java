@@ -7,14 +7,16 @@ import kit.edu.pse.goapp.server.datamodels.Meeting;
 
 public class EventConverter implements ObjectConverter<Event> {
 
+	
+
 	@Override
-	public Event deserialize(String jsonString) {
+	public String deserialize(Event event) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Event> deserializeList(String jsonString) {
+	public String deserializeList(List<Event> events) {
 		// TODO Auto-generated method stub
 		return null;
 	}

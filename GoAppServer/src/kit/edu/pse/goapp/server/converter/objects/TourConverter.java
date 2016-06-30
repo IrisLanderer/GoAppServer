@@ -7,15 +7,17 @@ import kit.edu.pse.goapp.server.datamodels.Tour;
 public class TourConverter implements ObjectConverter<Tour> {
 
 	@Override
-	public Tour deserialize(String jsonString) {
+	public String deserialize(Tour tour) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Tour> deserializeList(String jsonString) {
+	public String deserializeList(List<Tour> tours) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 }

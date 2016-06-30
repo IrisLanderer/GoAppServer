@@ -9,16 +9,18 @@ import kit.edu.pse.goapp.server.datamodels.Group;
 public class GroupConverter implements ObjectConverter<Group> {
 
 	@Override
-	public Group deserialize(String jsonString) {
+	public String deserialize(Group group) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Group> deserializeList(String jsonString) {
+	public String deserializeList(List<Group> groups) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 	
 
