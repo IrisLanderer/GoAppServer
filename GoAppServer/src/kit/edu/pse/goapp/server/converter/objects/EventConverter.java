@@ -1,24 +1,20 @@
 package kit.edu.pse.goapp.server.converter.objects;
 
-import java.util.List;
+
+import com.google.gson.Gson;
 
 import kit.edu.pse.goapp.server.datamodels.Event;
-import kit.edu.pse.goapp.server.datamodels.Meeting;
+
 
 public class EventConverter implements ObjectConverter<Event> {
 
 	
-
 	@Override
 	public String serialize(Event event) {
-		// TODO Auto-generated method stub
-		return null;
+		Gson gson = new Gson();
+		String jsonString = gson.toJson(event);
+		return jsonString;
 	}
 
-	@Override
-	public String serializeList(List<Event> events) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
