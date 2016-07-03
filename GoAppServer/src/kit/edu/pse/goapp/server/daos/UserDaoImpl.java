@@ -1,6 +1,9 @@
 package kit.edu.pse.goapp.server.daos;
 
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.List;
+
 
 import kit.edu.pse.goapp.server.datamodels.User;
 
@@ -11,31 +14,68 @@ public class UserDaoImpl implements UserDAO {
 	private String googleId;
 	private boolean notificationEnabled;
 
-	public UserDaoImpl(int userId, String name, String googleId, boolean notificationEnabled) {
+	public UserDaoImpl() {
 		
-		this.userId = userId;
-		this.name = name;
-		this.googleId = googleId;
-		this.notificationEnabled = notificationEnabled;
+		super();
+	}
+
+
+	@Override
+	public void addUser() throws IOException {
+		if (name == null) {
+			throw new IllegalArgumentException("A new user must have a name!");
+		}
+//		if (googleId == null) {
+//			throw new IllegalArgumentException("A new user must have a googleId!");
+//		}
+
+		try (DatabaseConnection conn = new DatabaseConnection()) {
+			String sqlStmt = MessageFormat.format("INSERT INTO users (name, google_id, notifications_enabled) "
+					+ "VALUES (''{0}'', ''{1}'', ''{2}'')", name, googleId, notificationEnabled == true ? 1 : 0);
+			userId = conn.insert(sqlStmt);
+		} catch (Throwable e) {
+			throw new IOException(e);
+		}
+
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	@Override
-	public void addUser() {
-		// TODO Auto-generated method stub
+	public void deleteUser() throws IOException {
+		if (userId == -1) {
+			throw new IllegalArgumentException("A user must have an ID!");
+		}
+		try (DatabaseConnection connection = new DatabaseConnection()) {
+			String query = MessageFormat.format("DELETE FROM users WHERE users_id = ''{0}''", userId);
+			connection.delete(query);
+		} catch (Throwable e) {
+			throw new IOException(e);
+		}
 
 	}
 
 	@Override
-	public void deleteUser() {
-		// TODO Auto-generated method stub
+	public void updateUser() throws IOException {
+		if (userId == -1) {
+			throw new IllegalArgumentException("A user must have an ID!");
+		}
+		try (DatabaseConnection connetion = new DatabaseConnection()) {
+			String query = MessageFormat.format("UPDATE users SET name = ''{0}'', notifications_enabled = ''{1}''"
+					+ " WHERE users_id = ''{2}''", name, notificationEnabled == true ? 1 : 0, userId);
+			connetion.update(query);
+		} catch (Throwable e) {
+			throw new IOException(e);
+		}
 
 	}
 
-	@Override
-	public void updateUser() {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public List<User> getAllUsers() {
@@ -65,6 +105,17 @@ public class UserDaoImpl implements UserDAO {
 	public User getUserByGoogleID() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	@Override
+	public void setUserId(int userId) {
+		this.userId = userId;
+		
 	}
 
 }

@@ -13,12 +13,8 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	private MeetingConfirmation confirmation;
 	
 	
-	public ParticipantDaoImpl(int participantId, int userId, int meetingId, MeetingConfirmation confirmation) {
+	public ParticipantDaoImpl() {
 		
-		this.participantId = participantId;
-		this.userId = userId;
-		this.meetingId = meetingId;
-		this.confirmation = confirmation;
 	}
 
 	@Override
@@ -50,5 +46,47 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public int getParticipantId() {
+		return participantId;
+	}
+
+	@Override
+	public void setParticipantId(int participantId) {
+		this.participantId = participantId;
+	}
+
+	@Override
+	public int getUserId() {
+		return userId;
+	}
+
+	@Override
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+	@Override
+	public int getMeetingId() {
+		return meetingId;
+	}
+
+	@Override
+	public void setMeetingId(int meetingId) {
+		this.meetingId = meetingId;
+	}
+
+	@Override
+	public MeetingConfirmation getConfirmation() {
+		return confirmation;
+	}
+
+	@Override
+	public void setConfirmation(MeetingConfirmation confirmation) {
+		this.confirmation = confirmation;
+	}
+	
+	
 
 }

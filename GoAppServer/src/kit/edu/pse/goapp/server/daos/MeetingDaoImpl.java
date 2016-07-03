@@ -16,18 +16,8 @@ public class MeetingDaoImpl implements MeetingDAO {
 	private String type;
 	private int creatorId;
 
-	public MeetingDaoImpl(int meetingId, String name, double placeX, double placeY, double placeZ, long timestamp,
-			int duration, String type, int creatorId) {
+	public MeetingDaoImpl() {
 		super();
-		this.meetingId = meetingId;
-		this.name = name;
-		this.placeX = placeX;
-		this.placeY = placeY;
-		this.placeZ = placeZ;
-		this.timestamp = timestamp;
-		this.duration = duration;
-		this.type = type;
-		this.creatorId = creatorId;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ public class User {
 	private String name;
 	
 	private GPS gps;
+	private boolean notificationEnabled;
 	
 	private List<Meeting> meetings;
 	private List<Group> groups;
@@ -53,6 +54,13 @@ public class User {
     {
     	return groups;
     }
+    public boolean isNotificationEnabled() {
+		return notificationEnabled;
+	}
+	public void setNotificationEnabled(boolean notificationEnabled) {
+		this.notificationEnabled = notificationEnabled;
+	}
+	
     
     
 }

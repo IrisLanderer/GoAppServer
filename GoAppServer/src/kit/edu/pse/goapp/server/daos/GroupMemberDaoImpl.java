@@ -10,11 +10,10 @@ public class GroupMemberDaoImpl implements GroupMemberDAO{
 	private int groupId;
 	private int userId;
 	private boolean isAdmin;
-	public GroupMemberDaoImpl(int groupId, int userId, boolean isAdmin) {
+	
+
+	public GroupMemberDaoImpl() {
 		super();
-		this.groupId = groupId;
-		this.userId = userId;
-		this.isAdmin = isAdmin;
 	}
 
 
@@ -42,16 +41,48 @@ public class GroupMemberDaoImpl implements GroupMemberDAO{
 		return null;
 	}
 
-	@Override
-	public void setAdmin() {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public List<Group> getAllAdminGroups() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public int getGroupId() {
+		return groupId;
+	}
+
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
+	}
+
+
+	public int getUserId() {
+		return userId;
+	}
+
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+
+	@Override
+	public void setAdmin() {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

@@ -6,6 +6,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.ws.http.HTTPException;
+
+import kit.edu.pse.goapp.server.converter.daos.GroupDaoConverter;
+import kit.edu.pse.goapp.server.converter.daos.UserDaoConverter;
+import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
+import kit.edu.pse.goapp.server.daos.GroupDAO;
+import kit.edu.pse.goapp.server.daos.UserDAO;
+import kit.edu.pse.goapp.server.datamodels.Group;
+import kit.edu.pse.goapp.server.datamodels.User;
 
 /**
  * Servlet implementation class User
@@ -36,8 +45,17 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		String jsonString = request.getReader().readLine();
+		UserDAO dao = new UserDaoConverter().parse(jsonString);
+		if(dao != null) {
+			dao.addUser();
+		} else {
+			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
+		}
+		
+		User user = new User(dao.getUserId(), dao.getName());
+		user.setNotificationEnabled(dao.getNotificationStatus());
+		response.getWriter().write(new ObjectConverter<User>().serialize(user));
 	}
 
 	/**
@@ -45,7 +63,16 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String jsonString = request.getReader().readLine();
+		UserDAO dao = new UserDaoConverter().parse(jsonString);
+		if (dao != null) {
+			dao.updateUser();
+		} else {
+			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
+		}
+		User user = new User(dao.getUserId(), dao.getName());
+		user.setNotificationEnabled(dao.getNotificationStatus());
+		response.getWriter().write(new ObjectConverter<User>().serialize(user));
 	}
 
 	/**
@@ -53,7 +80,14 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String jsonString = request.getReader().readLine();
+		UserDAO dao = new UserDaoConverter().parse(jsonString);
+		if (dao != null) {
+			dao.deleteUser();
+		} else {
+			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
+		}
+		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 }

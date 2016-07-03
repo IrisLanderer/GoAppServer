@@ -44,4 +44,15 @@ public class Group {
 		this.name = name;
 	}
 
+	public List<User> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<User> members) {
+		this.members = members;
+	}
+
+	public void setAdmins(List<User> admins) {
+		this.admins = admins;
+	}
 }

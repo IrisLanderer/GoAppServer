@@ -13,5 +13,23 @@ public interface GroupMemberDAO {
 	public List<User> getAllMembers();
 	public void setAdmin();
 	public List<Group> getAllAdminGroups();
+	
+	public int getGroupId();
+
+
+	public void setGroupId(int groupId);
+
+
+	public int getUserId();
+
+
+	public void setUserId(int userId);
+
+
+	public boolean isAdmin();
+
+
+	public void setAdmin(boolean isAdmin);
+
 
 }
