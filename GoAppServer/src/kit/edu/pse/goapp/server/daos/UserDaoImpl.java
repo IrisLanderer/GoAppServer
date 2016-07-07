@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.User;
@@ -14,6 +15,8 @@ public class UserDaoImpl implements UserDAO {
 	private String name;
 	private String googleId;
 	private boolean notificationEnabled;
+
+	private List<Integer> usersIds = new ArrayList<>();
 
 	public UserDaoImpl() {
 
@@ -57,7 +60,7 @@ public class UserDaoImpl implements UserDAO {
 
 	@Override
 	public void updateUser() throws IOException {
-		if (userId == -1) {
+		if (userId <= 0) {
 			throw new IllegalArgumentException("A user must have an ID!");
 		}
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
@@ -72,14 +75,26 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public List<User> getAllUsers() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> getAllUsers() throws IOException {
+		List<User> users = new ArrayList<>();
+		try (DatabaseConnection connection = new DatabaseConnection()) {
+			String query = MessageFormat.format("SELECT users.users_id FROM users", userId);
+			connection.select(query, new UsersSqlSelectionHandler());
+		} catch (Throwable e) {
+			throw new IOException();
+		}
+		for (int tmpUserId : usersIds) {
+			UserDAO dao = new UserDaoImpl();
+			dao.setUserId(tmpUserId);
+			User user = dao.getUserByID();
+			users.add(user);
+		}
+		return users;
 	}
 
 	@Override
 	public User getUserByID() throws IOException {
-		if (userId == -1) {
+		if (userId <= 0) {
 			throw new IllegalArgumentException("A user must have an ID!");
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
@@ -158,6 +173,16 @@ public class UserDaoImpl implements UserDAO {
 				}
 
 				notificationEnabled = resultSet.getBoolean(3);
+
+			}
+		}
+	}
+
+	private final class UsersSqlSelectionHandler implements SqlSelectHandler {
+		@Override
+		public void handleResultSet(ResultSet resultSet) throws SQLException {
+			while (resultSet.next()) {
+				usersIds.add(resultSet.getInt(1));
 
 			}
 		}

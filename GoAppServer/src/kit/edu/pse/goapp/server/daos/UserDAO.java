@@ -13,7 +13,7 @@ public interface UserDAO {
 
 	public void updateUser() throws IOException;
 
-	public List<User> getAllUsers();
+	public List<User> getAllUsers() throws IOException;
 
 	public User getUserByID() throws IOException;
 
