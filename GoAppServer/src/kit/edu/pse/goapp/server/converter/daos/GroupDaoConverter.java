@@ -13,7 +13,7 @@ public class GroupDaoConverter implements DaoConverter<GroupDAO> {
 		if (jsonString == null) {
 			return null;
 		}
-		
+
 		Gson gson = new Gson();
 		Group groupJsonObject = gson.fromJson(jsonString, Group.class);
 		GroupDAO dao = new GroupDaoImpl();

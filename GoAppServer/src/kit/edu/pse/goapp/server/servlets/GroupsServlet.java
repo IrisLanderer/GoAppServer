@@ -1,7 +1,6 @@
 package kit.edu.pse.goapp.server.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,16 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.http.HTTPException;
+import javax.servlet.http.HttpSession;
 
-import org.apache.http.HttpException;
-
-import kit.edu.pse.goapp.server.converter.daos.GroupDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.GroupDAO;
 import kit.edu.pse.goapp.server.daos.GroupDaoImpl;
-import kit.edu.pse.goapp.server.daos.UserDAO;
-import kit.edu.pse.goapp.server.daos.UserDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Group;
 
 /**
@@ -44,8 +38,14 @@ public class GroupsServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String userId = request.getParameter("userId");
+		HttpSession session = request.getSession(true);
+
+		int userId = 1;// (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		}
 		GroupDAO dao = new GroupDaoImpl();
+		dao.setUserId(userId);
 		if (dao != null) {
 			List<Group> groups = dao.getAllGroups();
 			response.getWriter().write(new ObjectConverter<List<Group>>().serialize(groups));

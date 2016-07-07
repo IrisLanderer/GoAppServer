@@ -13,7 +13,7 @@ public class UserDaoConverter implements DaoConverter<UserDAO> {
 		if (jsonString == null) {
 			return null;
 		}
-		
+
 		Gson gson = new Gson();
 		User userJsonObject = gson.fromJson(jsonString, User.class);
 		UserDAO dao = new UserDaoImpl();
