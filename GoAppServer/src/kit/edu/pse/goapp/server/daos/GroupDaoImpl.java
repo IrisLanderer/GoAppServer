@@ -63,7 +63,7 @@ public class GroupDaoImpl implements GroupDAO {
 
 	@Override
 	public void updateGroup() throws IOException {
-		if (groupId == -1) {
+		if (groupId <= 0) {
 			throw new IllegalArgumentException("A group must have an ID!");
 		}
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
@@ -78,7 +78,7 @@ public class GroupDaoImpl implements GroupDAO {
 
 	@Override
 	public void deleteGroup() throws IOException {
-		if (groupId == -1) {
+		if (groupId <= 0) {
 			throw new IllegalArgumentException("A group must have an ID!");
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
@@ -92,7 +92,7 @@ public class GroupDaoImpl implements GroupDAO {
 
 	@Override
 	public Group getGroupByID() throws IOException {
-		if (groupId == -1) {
+		if (groupId <= 0) {
 			throw new IllegalArgumentException("A group must have an ID!");
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {

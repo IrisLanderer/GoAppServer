@@ -92,12 +92,11 @@ public class UserServlet extends HttpServlet {
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String jsonString = request.getReader().readLine();
-		UserDAO dao = new UserDaoConverter().parse(jsonString);
+		String userId = request.getParameter("userId");
+		UserDAO dao = new UserDaoImpl();
+		dao.setUserId(Integer.parseInt(userId));
 		if (dao != null) {
 			dao.deleteUser();
-		} else {
-			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}

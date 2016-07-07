@@ -64,12 +64,11 @@ public class GroupServlet extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String jsonString = request.getReader().readLine();
-		GroupDAO dao = new GroupDaoConverter().parse(jsonString);
+		String groupId = request.getParameter("groupId");
+		GroupDAO dao = new GroupDaoImpl();
+		dao.setGroupId(Integer.parseInt(groupId));
 		if (dao != null) {
 			dao.deleteGroup();
-		} else {
-			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
