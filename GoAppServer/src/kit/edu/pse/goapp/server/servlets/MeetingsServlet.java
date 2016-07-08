@@ -1,7 +1,6 @@
 package kit.edu.pse.goapp.server.servlets;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -14,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
-import kit.edu.pse.goapp.server.daos.MeetingDAO;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
@@ -43,17 +41,16 @@ public class MeetingsServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		MeetingDAO dao = new MeetingDaoImpl();
+		MeetingDaoImpl dao = new MeetingDaoImpl();
+		dao.setUserId(1);
 		if (dao != null) {
 			List<Meeting> meetings = dao.getAllMeetings();
-    RuntimeTypeAdapterFactory<Meeting> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
-    .of(Meeting.class, "type")
-    .registerSubtype(Event.class, "event")
-    .registerSubtype(Tour.class, "tour");
-     Gson gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
-     String json = gson.toJson(meetings);
- 	response.getWriter().write(json);
-		
+			RuntimeTypeAdapterFactory<Meeting> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
+					.of(Meeting.class, "type").registerSubtype(Event.class, "event")
+					.registerSubtype(Tour.class, "tour");
+			Gson gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
+			String json = gson.toJson(meetings);
+			response.getWriter().write(json);
 
 		}
 	}

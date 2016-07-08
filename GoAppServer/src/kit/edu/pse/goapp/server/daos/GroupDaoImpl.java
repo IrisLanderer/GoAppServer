@@ -149,9 +149,7 @@ public class GroupDaoImpl implements GroupDAO {
 		@Override
 		public void handleResultSet(ResultSet resultSet) throws SQLException {
 			while (resultSet.next()) {
-				if (name == null) {
-					name = resultSet.getString(2);
-				}
+				name = resultSet.getString(2);
 				User user = new User(resultSet.getInt(3), resultSet.getString(5));
 				if (resultSet.getBoolean(4)) {
 					admins.add(user);

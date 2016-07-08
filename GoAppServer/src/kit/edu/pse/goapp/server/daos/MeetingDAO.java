@@ -1,20 +1,21 @@
 package kit.edu.pse.goapp.server.daos;
 
+import java.io.IOException;
 import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.Meeting;
 
 public interface MeetingDAO {
 
-	public void addMeeting();
+	public void addMeeting() throws IOException;
 
-	public List<Meeting> getAllMeetings();
+	public List<Meeting> getAllMeetings() throws IOException;
 
-	public void updateMeeting();
+	public void updateMeeting() throws IOException;
 
-	public void deleteMeeting();
+	public void deleteMeeting() throws IOException;
 
-	public Meeting getMeetingByID();
+	public Meeting getMeetingByID() throws IOException;
 
 	void setCreatorId(int creatorId);
 
