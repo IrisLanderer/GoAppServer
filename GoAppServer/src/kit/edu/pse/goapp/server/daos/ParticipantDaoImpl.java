@@ -142,7 +142,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 				if (meetingId <= 0) {
 					meetingId = resultSet.getInt(3);
 				}
-				confirmation = MeetingConfirmation.valueOf(resultSet.getString(4));
+				confirmation = MeetingConfirmation.valueOf(resultSet.getString(4).toUpperCase());
 			}
 		}
 	}
