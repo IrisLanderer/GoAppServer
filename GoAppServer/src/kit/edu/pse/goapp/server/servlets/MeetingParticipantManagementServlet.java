@@ -11,8 +11,11 @@ import javax.xml.ws.http.HTTPException;
 
 import kit.edu.pse.goapp.server.converter.daos.ParticipantDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
+import kit.edu.pse.goapp.server.daos.MeetingDAO;
+import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
 import kit.edu.pse.goapp.server.daos.ParticipantDAO;
 import kit.edu.pse.goapp.server.daos.ParticipantDaoImpl;
+import kit.edu.pse.goapp.server.datamodels.Meeting;
 import kit.edu.pse.goapp.server.datamodels.Participant;
 
 /**
@@ -36,8 +39,13 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		String participantId = request.getParameter("participantId");
+		ParticipantDAO dao = new ParticipantDaoImpl();
+		dao.setParticipantId(Integer.parseInt(participantId));
+		if (dao != null) {
+			Participant participant = dao.getParticipantByID();
+			response.getWriter().write(new ObjectConverter<Participant>().serialize(participant));
+		}
 	}
 
 	/**
@@ -53,9 +61,10 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 		} else {
 			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
-
-		Participant participant = dao.getParticipantByID();
-		response.getWriter().write(new ObjectConverter<Participant>().serialize(participant));
+		MeetingDAO meetingDao = new MeetingDaoImpl();
+		meetingDao.setMeetingId(dao.getMeetingId());
+		Meeting meeting = meetingDao.getMeetingByID();
+		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting));
 	}
 
 	/**
@@ -72,8 +81,10 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 		} else {
 			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
-		Participant participant = dao.getParticipantByID();
-		response.getWriter().write(new ObjectConverter<Participant>().serialize(participant));
+		MeetingDAO meetingDao = new MeetingDaoImpl();
+		meetingDao.setMeetingId(dao.getMeetingId());
+		Meeting meeting = meetingDao.getMeetingByID();
+		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting));
 	}
 
 	/**

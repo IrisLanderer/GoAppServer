@@ -102,7 +102,7 @@ public class UserDaoImpl implements UserDAO {
 					+ "WHERE u.users_id = ''{0}''", userId);
 			connection.select(query, new UserSqlSelectionHandler());
 			User user = new User(userId, name.toString());
-			// was ist mit notificationEnabled
+			user.setNotificationEnabled(notificationEnabled);
 			return user;
 		} catch (Throwable e) {
 			throw new IOException(e);

@@ -19,6 +19,7 @@ public class UserDaoConverter implements DaoConverter<UserDAO> {
 		UserDAO dao = new UserDaoImpl();
 		dao.setName(userJsonObject.getName());
 		dao.setUserId(userJsonObject.getId());
+		dao.setNotificationEnabled(userJsonObject.isNotificationEnabled());
 		return dao;
 	}
 

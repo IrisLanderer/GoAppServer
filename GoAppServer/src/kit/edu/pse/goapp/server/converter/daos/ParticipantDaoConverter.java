@@ -18,7 +18,7 @@ public class ParticipantDaoConverter implements DaoConverter<ParticipantDAO> {
 		ParticipantDAO dao = new ParticipantDaoImpl();
 		dao.setParticipantId(participantJsonObject.getParticipantId());
 		dao.setUserId(participantJsonObject.getUser().getId());
-		// dao.setMeetingId(participantJsonObject.g);
+		dao.setMeetingId(participantJsonObject.getMeetingId());
 		dao.setConfirmation(participantJsonObject.getConfirmation());
 		return dao;
 	}
