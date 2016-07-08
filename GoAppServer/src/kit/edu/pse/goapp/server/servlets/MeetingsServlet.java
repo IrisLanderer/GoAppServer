@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+
 import kit.edu.pse.goapp.server.daos.MeetingDAO;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Event;
@@ -43,16 +46,14 @@ public class MeetingsServlet extends HttpServlet {
 		MeetingDAO dao = new MeetingDaoImpl();
 		if (dao != null) {
 			List<Meeting> meetings = dao.getAllMeetings();
-			List<Event> events = new ArrayList<>();
-			List<Tour> tours = new ArrayList<>();
-			for (Meeting meeting : meetings) {
-				if (meeting instanceof Event) {
-					events.add((Event) meeting);
-				} else {
-					tours.add((Tour) meeting);
-				}
-			}
-			response.getWriter().write(new ObjectConverter<List<Meeting>>().serialize(meetings));
+    RuntimeTypeAdapterFactory<Meeting> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
+    .of(Meeting.class, "type")
+    .registerSubtype(Event.class, "event")
+    .registerSubtype(Tour.class, "tour");
+     Gson gson = new GsonBuilder().registerTypeAdapterFactory(runtimeTypeAdapterFactory).create();
+     String json = gson.toJson(meetings);
+ 	response.getWriter().write(json);
+		
 
 		}
 	}
