@@ -11,9 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
-
 import kit.edu.pse.goapp.server.daos.NotificationDaoImpl;
-
 import kit.edu.pse.goapp.server.datamodels.Notification;
 
 /**
@@ -22,20 +20,24 @@ import kit.edu.pse.goapp.server.datamodels.Notification;
 @WebServlet("/Notification")
 public class NotificationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public NotificationServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public NotificationServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * GetNotification
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@SuppressWarnings("unchecked")
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
 
 		int userId = (int) session.getAttribute("userId");
@@ -46,10 +48,8 @@ public class NotificationServlet extends HttpServlet {
 		dao.setUserId(userId);
 
 		List<Notification> notifications = dao.getNotifications();
-		response.getWriter().write(new ObjectConverter<List<Notification>>().serialize(notifications));
+		response.getWriter().write(new ObjectConverter<List<Notification>>().serialize(notifications,
+				(Class<List<Notification>>) notifications.getClass()));
 	}
 
-
-
 }
-

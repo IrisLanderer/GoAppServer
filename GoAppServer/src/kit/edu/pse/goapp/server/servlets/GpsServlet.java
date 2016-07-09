@@ -51,7 +51,7 @@ public class GpsServlet extends HttpServlet {
 			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		GPS gps = dao.userGetGPS();
-		response.getWriter().write(new ObjectConverter<GPS>().serialize(gps));
+		response.getWriter().write(new ObjectConverter<GPS>().serialize(gps, GPS.class));
 	}
 
 }

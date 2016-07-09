@@ -38,6 +38,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String groupId = request.getParameter("groupId");
@@ -45,7 +46,8 @@ public class GroupUserManagementServlet extends HttpServlet {
 		dao.setGroupId(Integer.parseInt(groupId));
 		if (dao != null) {
 			List<User> groupMembers = dao.getAllMembers();
-			response.getWriter().write(new ObjectConverter<List<User>>().serialize(groupMembers));
+			response.getWriter().write(new ObjectConverter<List<User>>().serialize(groupMembers,
+					(Class<List<User>>) groupMembers.getClass()));
 		}
 	}
 
@@ -54,7 +56,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
-	 */  
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String jsonString = request.getReader().readLine();
@@ -67,7 +69,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 		GroupDAO groupDao = new GroupDaoImpl();
 		groupDao.setGroupId(groupMemberDao.getGroupId());
 		Group group = groupDao.getGroupByID();
-		response.getWriter().write(new ObjectConverter<Group>().serialize(group));
+		response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 	}
 
 	/**
@@ -87,7 +89,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 		GroupDAO groupDao = new GroupDaoImpl();
 		groupDao.setGroupId(groupMemberdao.getGroupId());
 		Group group = groupDao.getGroupByID();
-		response.getWriter().write(new ObjectConverter<Group>().serialize(group));
+		response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 	}
 
 	/**

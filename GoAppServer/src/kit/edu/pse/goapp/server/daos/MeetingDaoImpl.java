@@ -10,6 +10,7 @@ import java.util.List;
 import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.GPS;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
+import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
 import kit.edu.pse.goapp.server.datamodels.Participant;
 import kit.edu.pse.goapp.server.datamodels.Tour;
 
@@ -62,14 +63,19 @@ public class MeetingDaoImpl implements MeetingDAO {
 		try (DatabaseConnection conn = new DatabaseConnection()) {
 			String query = MessageFormat.format(
 					"INSERT INTO meetings "
-							+ "(name, place_x, place_y, place_z, timestamp, duration, type. creator_id) "
+							+ "(name, place_x, place_y, place_z, timestamp, duration, type, creator_id) "
 							+ "VALUES (''{0}'', ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'')",
 					name, placeX, placeY, placeZ, timestamp, duration, type, creatorId);
 			meetingId = conn.insert(query);
-			// todo participant fpr userID und meeting erstellen, gibt creatoId
-			// urück
-			// meeting updaten creator id setzten
-
+			ParticipantDAO dao = new ParticipantDaoImpl();
+			dao.setUserId(userId);
+			dao.setMeetingId(meetingId);
+			dao.setConfirmation(MeetingConfirmation.REJECTED);
+			dao.addParticipant();
+			creatorId = dao.getParticipantId();
+			String updateQuery = MessageFormat.format(
+					"UPDATE meetings SET creator_id = ''{0}''  WHERE meetings_id = ''{1}''", creatorId, meetingId);
+			conn.update(updateQuery);
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -105,7 +111,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
 			String query = MessageFormat.format(
 					"UPDATE meetings " + "SET name = ''{0}'', place_x = ''{1}'', place_y = ''{2}'', place_z = ''{3}'',"
-							+ " timestamp = ''{4}'', duration = ''{5}'', type = ''{6}''. creator_id = ''{7}''"
+							+ " timestamp = ''{4}'', duration = ''{5}'', type = ''{6}'', creator_id = ''{7}''"
 							+ " WHERE meetings_id = ''{8}''",
 					name, placeX, placeY, placeZ, timestamp, duration, type, creatorId, meetingId);
 			connetion.update(query);
@@ -121,7 +127,9 @@ public class MeetingDaoImpl implements MeetingDAO {
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format("DELETE FROM meetings WHERE meetings_id = ''{0}''", meetingId);
+			String query2 = MessageFormat.format("DELETE FROM participants WHERE meetings_id = ''{0}''", meetingId);
 			connection.delete(query);
+			connection.delete(query2);
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}

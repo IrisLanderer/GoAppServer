@@ -43,7 +43,7 @@ public class UserServlet extends HttpServlet {
 		dao.setUserId(Integer.parseInt(userId));
 		if (dao != null) {
 			User user = dao.getUserByID();
-			response.getWriter().write(new ObjectConverter<User>().serialize(user));
+			response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 		}
 	}
 
@@ -64,7 +64,7 @@ public class UserServlet extends HttpServlet {
 			dao.addUser();
 		}
 		User user = dao.getUserByID();
-		response.getWriter().write(new ObjectConverter<User>().serialize(user));
+		response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class UserServlet extends HttpServlet {
 			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		User user = dao.getUserByID();
-		response.getWriter().write(new ObjectConverter<User>().serialize(user));
+		response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 	}
 
 	/**

@@ -36,6 +36,7 @@ public class GroupsServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
@@ -48,7 +49,9 @@ public class GroupsServlet extends HttpServlet {
 		dao.setUserId(userId);
 		if (dao != null) {
 			List<Group> groups = dao.getAllGroups();
-			response.getWriter().write(new ObjectConverter<List<Group>>().serialize(groups));
+
+			response.getWriter().write(
+					new ObjectConverter<List<Group>>().serialize(groups, (Class<List<Group>>) groups.getClass()));
 		}
 	}
 

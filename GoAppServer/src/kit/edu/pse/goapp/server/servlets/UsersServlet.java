@@ -33,12 +33,14 @@ public class UsersServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		UserDAO dao = new UserDaoImpl();
 		if (dao != null) {
 			List<User> users = dao.getAllUsers();
-			response.getWriter().write(new ObjectConverter<List<User>>().serialize(users));
+			response.getWriter()
+					.write(new ObjectConverter<List<User>>().serialize(users, (Class<List<User>>) users.getClass()));
 		}
 	}
 

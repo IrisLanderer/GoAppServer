@@ -3,7 +3,7 @@ package kit.edu.pse.goapp.server.datamodels;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Meeting {
+public class Meeting {
 
 	public static double RADIUS = 200.00;
 

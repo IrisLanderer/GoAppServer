@@ -44,7 +44,7 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 		dao.setParticipantId(Integer.parseInt(participantId));
 		if (dao != null) {
 			Participant participant = dao.getParticipantByID();
-			response.getWriter().write(new ObjectConverter<Participant>().serialize(participant));
+			response.getWriter().write(new ObjectConverter<Participant>().serialize(participant, Participant.class));
 		}
 	}
 
@@ -64,7 +64,7 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 		MeetingDAO meetingDao = new MeetingDaoImpl();
 		meetingDao.setMeetingId(dao.getMeetingId());
 		Meeting meeting = meetingDao.getMeetingByID();
-		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting));
+		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 		MeetingDAO meetingDao = new MeetingDaoImpl();
 		meetingDao.setMeetingId(dao.getMeetingId());
 		Meeting meeting = meetingDao.getMeetingByID();
-		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting));
+		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
 	}
 
 	/**

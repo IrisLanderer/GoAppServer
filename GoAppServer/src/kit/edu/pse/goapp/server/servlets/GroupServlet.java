@@ -40,7 +40,7 @@ public class GroupServlet extends HttpServlet {
 		dao.setGroupId(Integer.parseInt(groupId));
 		if (dao != null) {
 			Group group = dao.getGroupByID();
-			response.getWriter().write(new ObjectConverter<Group>().serialize(group));
+			response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 		}
 	}
 
@@ -59,7 +59,7 @@ public class GroupServlet extends HttpServlet {
 		}
 
 		Group group = dao.getGroupByID();
-		response.getWriter().write(new ObjectConverter<Group>().serialize(group));
+		response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
@@ -83,6 +83,6 @@ public class GroupServlet extends HttpServlet {
 			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		Group group = dao.getGroupByID();
-		response.getWriter().write(new ObjectConverter<Group>().serialize(group));
+		response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 	}
 }
