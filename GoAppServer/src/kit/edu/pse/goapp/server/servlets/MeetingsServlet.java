@@ -9,9 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kit.edu.pse.goapp.server.algorithm.MeetingGpsAlgorithm;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
+import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
+import kit.edu.pse.goapp.server.datamodels.Tour;
 
 /**
  * Servlet implementation class Meetings
@@ -41,6 +44,17 @@ public class MeetingsServlet extends HttpServlet {
 		dao.setUserId(1);
 		if (dao != null) {
 			List<Meeting> meetings = dao.getAllMeetings();
+			for(Meeting m : meetings)
+			{
+				if(m instanceof Tour)
+				{
+					MeetingGpsAlgorithm.setGpsTour((Tour)m);
+				}
+				else
+				{
+					MeetingGpsAlgorithm.setGpsEvent((Event)m);
+				}
+			}
 			response.getWriter().write(new ObjectConverter<List<Meeting>>().serialize(meetings,
 					(Class<List<Meeting>>) meetings.getClass()));
 

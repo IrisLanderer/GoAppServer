@@ -9,11 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.http.HTTPException;
 
+import kit.edu.pse.goapp.server.algorithm.MeetingGpsAlgorithm;
 import kit.edu.pse.goapp.server.converter.daos.MeetingDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.MeetingDAO;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
+import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
+import kit.edu.pse.goapp.server.datamodels.Tour;
 
 /**
  * Servlet implementation class Meeting
@@ -43,6 +46,15 @@ public class MeetingServlet extends HttpServlet {
 		dao.setMeetingId(Integer.parseInt(meetingId));
 		if (dao != null) {
 			Meeting meeting = dao.getMeetingByID();
+			if(meeting instanceof Tour)
+			{
+				MeetingGpsAlgorithm.setGpsTour((Tour)meeting);
+			}
+			else
+			{
+				MeetingGpsAlgorithm.setGpsEvent((Event)meeting);
+			}
+			
 			String json = new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
 
 			response.getWriter().write(json);
@@ -66,6 +78,15 @@ public class MeetingServlet extends HttpServlet {
 		}
 		Meeting meeting = dao.getMeetingByID();
 
+		if(meeting instanceof Tour)
+		{
+			MeetingGpsAlgorithm.setGpsTour((Tour)meeting);
+		}
+		else
+		{
+			MeetingGpsAlgorithm.setGpsEvent((Event)meeting);
+		}
+		
 		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
 
 	}
@@ -85,6 +106,15 @@ public class MeetingServlet extends HttpServlet {
 			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		Meeting meeting = dao.getMeetingByID();
+		if(meeting instanceof Tour)
+		{
+			MeetingGpsAlgorithm.setGpsTour((Tour)meeting);
+		}
+		else
+		{
+			MeetingGpsAlgorithm.setGpsEvent((Event)meeting);
+		}
+		
 		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
 
 	}
