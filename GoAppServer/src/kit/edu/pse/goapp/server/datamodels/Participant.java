@@ -33,4 +33,21 @@ public class Participant {
 		return confirmation;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (this.getClass() != obj.getClass())
+			return false;
+		// Class name is Employ & have lastname
+		Participant p = (Participant) obj;
+		if ((p.getMeetingId() == meetingId) && (p.getParticipantId() == participantId) && (p.getUser().equals(user))
+				&& (p.getConfirmation() == confirmation)) {
+			return true;
+		}
+
+		return false;
+	}
 }

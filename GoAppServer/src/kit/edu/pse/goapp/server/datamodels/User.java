@@ -56,5 +56,22 @@ public class User {
 	public void setNotificationEnabled(boolean notificationEnabled) {
 		this.notificationEnabled = notificationEnabled;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (this.getClass() != obj.getClass())
+			return false;
+		// Class name is Employ & have lastname
+		User u = (User) obj;
+		 if((u.getId() == userId)  &&( u.getName() == name)) {
+			return true;
+		}
+
+		return false;
+	}
 
 }
