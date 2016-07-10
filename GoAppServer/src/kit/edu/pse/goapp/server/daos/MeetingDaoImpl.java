@@ -151,11 +151,18 @@ public class MeetingDaoImpl implements MeetingDAO {
 		ParticipantDAO dao = new ParticipantDaoImpl();
 		dao.setParticipantId(creatorId);
 		Participant creator = dao.getParticipantByID();
+
+		ParticipantDAO pdao = new ParticipantDaoImpl();
+		pdao.setMeetingId(meetingId);
+		List<Participant> participants = pdao.getAllParticipants();
+
 		if (type == "Event") {
 			Event event = new Event(meetingId, name, gps, timestamp, duration, creator);
+			event.setParticipants(participants);
 			return event;
 		} else {
 			Tour tour = new Tour(meetingId, name, gps, timestamp, duration, creator);
+			tour.setParticipants(participants);
 			return tour;
 		}
 

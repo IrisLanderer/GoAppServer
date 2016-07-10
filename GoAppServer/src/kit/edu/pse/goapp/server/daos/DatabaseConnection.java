@@ -5,11 +5,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import kit.edu.pse.goapp.server.datamodels.Group;
-import kit.edu.pse.goapp.server.datamodels.User;
 
 public class DatabaseConnection implements AutoCloseable {
 
@@ -52,11 +47,11 @@ public class DatabaseConnection implements AutoCloseable {
 		Statement statement = null;
 		try {
 			statement = connection.createStatement();
-			ResultSet resultset = statement.executeQuery(sqlStatement);
-			if(handler != null) {
-				handler.handleResultSet(resultset);
+			ResultSet resultSet = statement.executeQuery(sqlStatement);
+			if (handler != null) {
+				handler.handleResultSet(resultSet);
 			}
-			resultset.close();
+			resultSet.close();
 		} catch (Exception e) {
 			throw new Exception(e);
 		} finally {
@@ -69,14 +64,17 @@ public class DatabaseConnection implements AutoCloseable {
 			}
 		}
 	}
-	
+
 	public void delete(String sqlStatement) throws Exception {
 		Statement statement = null;
 		try {
 			statement = connection.createStatement();
-			statement.executeUpdate(sqlStatement);
+			int affectedRows = statement.executeUpdate(sqlStatement);
+			if (affectedRows == 0) {
+				throw new IllegalArgumentException("This entry doesn't exist!");
+			}
 		} catch (Exception e) {
-			throw new Exception(e);		
+			throw new Exception(e);
 		} finally {
 			if (statement != null) {
 				try {
@@ -87,12 +85,15 @@ public class DatabaseConnection implements AutoCloseable {
 			}
 		}
 	}
-	
+
 	public void update(String sqlStatement) throws Exception {
 		Statement statement = null;
 		try {
 			statement = connection.createStatement();
-			statement.executeUpdate(sqlStatement);
+			int affectedRows = statement.executeUpdate(sqlStatement);
+			if (affectedRows == 0) {
+				throw new IllegalArgumentException("This entry doesn't exist!");
+			}
 		} catch (Exception e) {
 			throw new Exception(e);
 		}

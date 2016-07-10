@@ -36,7 +36,7 @@ public class UserDaoImpl implements UserDAO {
 			String sqlStmt = MessageFormat.format(
 					"INSERT INTO users (name, google_id, notifications_enabled) "
 							+ "VALUES (''{0}'', ''{1}'', ''{2}'')",
-					name, googleId, notificationEnabled == true ? 1 : 0);
+					name, googleId, notificationEnabled == true ? 1 : 1);
 			userId = conn.insert(sqlStmt);
 		} catch (Throwable e) {
 			throw new IOException(e);

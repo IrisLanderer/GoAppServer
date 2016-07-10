@@ -18,6 +18,7 @@ import kit.edu.pse.goapp.server.daos.GroupMemberDAO;
 import kit.edu.pse.goapp.server.daos.GroupMemberDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Group;
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class GroupUserManagement
@@ -59,17 +60,22 @@ public class GroupUserManagementServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String jsonString = request.getReader().readLine();
-		GroupMemberDAO groupMemberDao = new GroupMemberDaoConverter().parse(jsonString);
-		if (groupMemberDao != null) {
-			groupMemberDao.addMember();
-		} else {
-			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
+		try {
+			String jsonString = request.getReader().readLine();
+			GroupMemberDAO groupMemberDao = new GroupMemberDaoConverter().parse(jsonString);
+			if (groupMemberDao != null) {
+				groupMemberDao.addMember();
+			} else {
+				throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
+			}
+			GroupDAO groupDao = new GroupDaoImpl();
+			groupDao.setGroupId(groupMemberDao.getGroupId());
+			Group group = groupDao.getGroupByID();
+			response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.getMessage());
 		}
-		GroupDAO groupDao = new GroupDaoImpl();
-		groupDao.setGroupId(groupMemberDao.getGroupId());
-		Group group = groupDao.getGroupByID();
-		response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 	}
 
 	/**
@@ -79,17 +85,22 @@ public class GroupUserManagementServlet extends HttpServlet {
 	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String jsonString = request.getReader().readLine();
-		GroupMemberDAO groupMemberdao = new GroupMemberDaoConverter().parse(jsonString);
-		if (groupMemberdao != null) {
-			groupMemberdao.updateMember();
-		} else {
-			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
+		try {
+			String jsonString = request.getReader().readLine();
+			GroupMemberDAO groupMemberdao = new GroupMemberDaoConverter().parse(jsonString);
+			if (groupMemberdao != null) {
+				groupMemberdao.updateMember();
+			} else {
+				throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
+			}
+			GroupDAO groupDao = new GroupDaoImpl();
+			groupDao.setGroupId(groupMemberdao.getGroupId());
+			Group group = groupDao.getGroupByID();
+			response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.getMessage());
 		}
-		GroupDAO groupDao = new GroupDaoImpl();
-		groupDao.setGroupId(groupMemberdao.getGroupId());
-		Group group = groupDao.getGroupByID();
-		response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 	}
 
 	/**

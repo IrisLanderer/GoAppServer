@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
@@ -16,6 +17,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	private int userId;
 	private int meetingId;
 	private MeetingConfirmation confirmation;
+	private List<Integer> participantIds = new ArrayList<>();
 
 	public ParticipantDaoImpl() {
 
@@ -52,9 +54,22 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public List<Participant> getAllParticipants() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Participant> getAllParticipants() throws IOException {
+		List<Participant> participants = new ArrayList<>();
+		try (DatabaseConnection connection = new DatabaseConnection()) {
+			String query = MessageFormat.format("SELECT participants.participants_id FROM participants  "
+					+ " WHERE participants.meetings_id = ''{0}''", meetingId);
+			connection.select(query, new ParticipantsSqlSelectionHandler());
+		} catch (Throwable e) {
+			throw new IOException();
+		}
+		for (int tmpParticipantId : participantIds) {
+			ParticipantDAO dao = new ParticipantDaoImpl();
+			dao.setParticipantId(tmpParticipantId);
+			Participant participant = dao.getParticipantByID();
+			participants.add(participant);
+		}
+		return participants;
 	}
 
 	@Override
@@ -145,6 +160,18 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 				confirmation = MeetingConfirmation.valueOf(resultSet.getString(4).toUpperCase());
 			}
 		}
+	}
+
+	private final class ParticipantsSqlSelectionHandler implements SqlSelectHandler {
+		@Override
+		public void handleResultSet(ResultSet resultSet) throws SQLException {
+
+			while (resultSet.next()) {
+				participantIds.add(resultSet.getInt(1));
+
+			}
+		}
+
 	}
 
 }

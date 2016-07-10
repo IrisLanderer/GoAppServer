@@ -58,4 +58,8 @@ public class Meeting {
 		return creator;
 	}
 
+	public void setParticipants(List<Participant> participants) {
+		this.participants = participants;
+	}
+
 }

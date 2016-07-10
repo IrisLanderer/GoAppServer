@@ -12,7 +12,7 @@ public interface ParticipantDAO {
 
 	public void deleteParticipant() throws IOException;
 
-	public List<Participant> getAllParticipants();
+	public List<Participant> getAllParticipants() throws IOException;
 
 	public Participant getParticipantByID() throws IOException;
 

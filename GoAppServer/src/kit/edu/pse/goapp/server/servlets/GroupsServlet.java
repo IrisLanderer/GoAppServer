@@ -14,6 +14,7 @@ import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.GroupDAO;
 import kit.edu.pse.goapp.server.daos.GroupDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Group;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class Groups
@@ -39,19 +40,23 @@ public class GroupsServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		HttpSession session = request.getSession(true);
+		try {
+			HttpSession session = request.getSession(true);
 
-		int userId = 1;// (int) session.getAttribute("userId");
-		if (userId <= 0) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-		}
-		GroupDAO dao = new GroupDaoImpl();
-		dao.setUserId(userId);
-		if (dao != null) {
-			List<Group> groups = dao.getAllGroups();
-
-			response.getWriter().write(
-					new ObjectConverter<List<Group>>().serialize(groups, (Class<List<Group>>) groups.getClass()));
+			int userId = 1;// (int) session.getAttribute("userId");
+			if (userId <= 0) {
+				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			}
+			GroupDAO dao = new GroupDaoImpl();
+			dao.setUserId(userId);
+			if (dao != null) {
+				List<Group> groups = dao.getAllGroups();
+				response.getWriter().write(
+						new ObjectConverter<List<Group>>().serialize(groups, (Class<List<Group>>) groups.getClass()));
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.getMessage());
 		}
 	}
 

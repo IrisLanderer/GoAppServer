@@ -7,8 +7,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import kit.edu.pse.goapp.server.datamodels.Group;
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public class GroupDaoImpl implements GroupDAO {
 
@@ -36,13 +39,16 @@ public class GroupDaoImpl implements GroupDAO {
 		try (DatabaseConnection conn = new DatabaseConnection()) {
 			String sqlStmt = MessageFormat.format("INSERT INTO groups (name) VALUES (''{0}'')", name);
 			groupId = conn.insert(sqlStmt);
+			if (groupId <= 0) {
+				throw new IllegalArgumentException("The GroupID wasn't assigned to a value!");
+			}
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
 	}
 
 	@Override
-	public List<Group> getAllGroups() throws IOException {
+	public List<Group> getAllGroups() throws IOException, CustomServerException {
 		List<Group> groups = new ArrayList<>();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format(
@@ -64,7 +70,11 @@ public class GroupDaoImpl implements GroupDAO {
 	@Override
 	public void updateGroup() throws IOException {
 		if (groupId <= 0) {
-			throw new IllegalArgumentException("A group must have an ID!");
+			throw new IllegalArgumentException("A group must have an GroupID!");
+		}
+		if (name == null) {
+			throw new IllegalArgumentException(
+					"You cannot change the name of a group to null, because a group must have a name!");
 		}
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
 			String query = MessageFormat.format("UPDATE groups SET name = ''{0}'' WHERE group_id = ''{1}''", name,
@@ -79,30 +89,34 @@ public class GroupDaoImpl implements GroupDAO {
 	@Override
 	public void deleteGroup() throws IOException {
 		if (groupId <= 0) {
-			throw new IllegalArgumentException("A group must have an ID!");
+			throw new IllegalArgumentException("A group must have an GroupID!");
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format("DELETE FROM groups WHERE group_id = ''{0}''", groupId);
 			connection.delete(query);
 		} catch (Throwable e) {
+
 			throw new IOException(e);
 		}
 
 	}
 
 	@Override
-	public Group getGroupByID() throws IOException {
+	public Group getGroupByID() throws IOException, CustomServerException {
 		if (groupId <= 0) {
-			throw new IllegalArgumentException("A group must have an ID!");
+			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
-			String query = MessageFormat.format(
-					"SELECT g.group_id, g.name, m.users_id, m.is_admin, u.name " + "FROM groups g left outer join "
+			String query = MessageFormat
+					.format("SELECT g.group_id, g.name, m.users_id, m.is_admin, u.name FROM groups g left outer join "
 							+ "(group_members m left outer join users u on m.users_id = u.users_id)"
-							+ " on g.group_id = m.groups_id " + "WHERE g.group_id = ''{0}''",
-					groupId);
+							+ " on g.group_id = m.groups_id WHERE g.group_id = ''{0}''", groupId);
 			connection.select(query, new GroupSqlSelectionHandler());
 		} catch (Throwable e) {
+			if (e.getCause().getClass() == CustomServerException.class) {
+				throw new CustomServerException("The selected resultset from the database is empty",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
 			throw new IOException(e);
 		}
 		Group group = new Group(groupId, name.toString());
@@ -147,8 +161,12 @@ public class GroupDaoImpl implements GroupDAO {
 
 	private final class GroupSqlSelectionHandler implements SqlSelectHandler {
 		@Override
-		public void handleResultSet(ResultSet resultSet) throws SQLException {
+		public void handleResultSet(ResultSet resultSet) throws SQLException, CustomServerException {
+
+			boolean resultEmpty = true;
 			while (resultSet.next()) {
+				resultEmpty = false;
+				groupId = resultSet.getInt(1);
 				name = resultSet.getString(2);
 				User user = new User(resultSet.getInt(3), resultSet.getString(5));
 				if (resultSet.getBoolean(4)) {
@@ -158,16 +176,28 @@ public class GroupDaoImpl implements GroupDAO {
 					members.add(user);
 				}
 			}
+			if (resultEmpty) {
+				throw new CustomServerException("The selected resultset from the database is empty",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+
 		}
 	}
 
 	private final class GroupsSqlSelectionHandler implements SqlSelectHandler {
 		@Override
-		public void handleResultSet(ResultSet resultSet) throws SQLException {
+		public void handleResultSet(ResultSet resultSet) throws SQLException, CustomServerException {
+
+			boolean resultEmpty = true;
 
 			while (resultSet.next()) {
 				groupIds.add(resultSet.getInt(1));
 
+			}
+
+			if (resultEmpty) {
+				throw new CustomServerException("The selected resultset from the database is empty",
+						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
 
