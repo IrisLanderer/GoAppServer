@@ -119,7 +119,6 @@ public class GroupDaoImpl implements GroupDAO {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		checkAuthorization();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat
 					.format("SELECT g.group_id, g.name, m.users_id, m.is_admin, u.name FROM groups g left outer join "

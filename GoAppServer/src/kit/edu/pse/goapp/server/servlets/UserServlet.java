@@ -19,6 +19,7 @@ import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.UserDAO;
 import kit.edu.pse.goapp.server.daos.UserDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class User
@@ -32,7 +33,6 @@ public class UserServlet extends HttpServlet {
 	 */
 	public UserServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -44,12 +44,22 @@ public class UserServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String userId = request.getParameter("userId");
-		UserDAO dao = new UserDaoImpl();
-		dao.setUserId(Integer.parseInt(userId));
-		if (dao != null) {
-			User user = dao.getUserByID();
-			response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
+		try {
+			String userId = request.getParameter("userId");
+			UserDAO dao = new UserDaoImpl();
+			try {
+				dao.setUserId(Integer.parseInt(userId));
+			} catch (Exception e) {
+				throw new CustomServerException("The UserID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			if (dao != null) {
+				User user = dao.getUserByID();
+				response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
 	}
 
@@ -62,6 +72,7 @@ public class UserServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		String googleId = request.getParameter("googleId");
 		String jsonString = request.getReader().readLine();
 		UserDAO dao = new UserDaoConverter().parse(jsonString);
@@ -73,6 +84,7 @@ public class UserServlet extends HttpServlet {
 		}
 		User user = dao.getUserByID();
 		response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
+
 	}
 
 	/**

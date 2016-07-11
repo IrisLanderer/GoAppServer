@@ -22,6 +22,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 import kit.edu.pse.goapp.server.daos.UserDAO;
 import kit.edu.pse.goapp.server.daos.UserDaoImpl;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class Login
@@ -45,27 +46,34 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		try {
+			if (request.getParameter("token") != null) {
+				String requestToken = request.getParameter("token").toString();
+				System.out.println("token:" + requestToken);
 
-		if (request.getParameter("token") != null) {
-			String requestToken = request.getParameter("token").toString();
-			System.out.println("token:" + requestToken);
-
-			GoogleIdToken googleToken = validateToken(requestToken);
-			String googleId = getGoogleId(googleToken);
-			if (googleId.length() > 0) {
-				HttpSession session = request.getSession(true);
-				UserDAO userDao = new UserDaoImpl();
-				userDao.setGoogleId(googleId);
-				String userId = Integer.toString(userDao.getUserByGoogleID().getId());
-				session.setAttribute("userId", userId);
-				response.setStatus(HttpServletResponse.SC_OK);
+				GoogleIdToken googleToken = validateToken(requestToken);
+				String googleId = getGoogleId(googleToken);
+				if (googleId.length() > 0) {
+					HttpSession session = request.getSession(true);
+					UserDAO userDao = new UserDaoImpl();
+					userDao.setGoogleId(googleId);
+					String userId = Integer.toString(userDao.getUserByGoogleID().getId());
+					session.setAttribute("userId", userId);
+					response.setStatus(HttpServletResponse.SC_OK);
+				} else {
+					throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+							HttpServletResponse.SC_BAD_REQUEST);
+				}
 			} else {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
 			}
-		} else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
 		// doGet(request, response);
 	}
@@ -74,6 +82,7 @@ public class LoginServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

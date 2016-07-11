@@ -13,7 +13,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.http.HTTPException;
 
 import kit.edu.pse.goapp.server.converter.daos.GroupMemberDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
@@ -37,7 +36,6 @@ public class GroupUserManagementServlet extends HttpServlet {
 	 */
 	public GroupUserManagementServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -48,18 +46,28 @@ public class GroupUserManagementServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String groupId = request.getParameter("groupId");
-		GroupMemberDAO dao = new GroupMemberDaoImpl();
-		dao.setGroupId(Integer.parseInt(groupId));
-		if (dao != null) {
-			List<User> groupMembers = dao.getAllMembers();
-			response.getWriter().write(new ObjectConverter<List<User>>().serialize(groupMembers,
-					(Class<List<User>>) groupMembers.getClass()));
+		try {
+			String groupId = request.getParameter("groupId");
+			GroupMemberDAO dao = new GroupMemberDaoImpl();
+			try {
+				dao.setGroupId(Integer.parseInt(groupId));
+			} catch (Exception e) {
+				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			if (dao != null) {
+				List<User> groupMembers = dao.getAllMembers();
+				response.getWriter().write(new ObjectConverter<List<User>>().serialize(groupMembers,
+						(Class<List<User>>) groupMembers.getClass()));
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.getMessage());
 		}
 	}
 
 	/**
-	 * Add ADmin?
+	 * Add user as member
 	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
@@ -76,6 +84,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 			if (groupMemberDao != null) {
 				groupMemberDao.addMember();
 			}
+
 			GroupDAO groupDao = new GroupDaoImpl();
 			groupDao.setGroupId(groupMemberDao.getGroupId());
 			Group group = groupDao.getGroupByID();
@@ -87,7 +96,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 	}
 
 	/**
-	 * AddUser
+	 * add member as admin
 	 * 
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
@@ -99,8 +108,6 @@ public class GroupUserManagementServlet extends HttpServlet {
 			GroupMemberDAO groupMemberdao = new GroupMemberDaoConverter().parse(jsonString);
 			if (groupMemberdao != null) {
 				groupMemberdao.updateMember();
-			} else {
-				throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 			}
 			GroupDAO groupDao = new GroupDaoImpl();
 			groupDao.setGroupId(groupMemberdao.getGroupId());
@@ -120,15 +127,30 @@ public class GroupUserManagementServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String groupId = request.getParameter("groupId");
-		String userId = request.getParameter("userId");
-		GroupMemberDAO dao = new GroupMemberDaoImpl();
-		dao.setGroupId(Integer.parseInt(groupId));
-		dao.setUserId(Integer.parseInt(userId));
-		if (dao != null) {
-			dao.deleteMember();
+		try {
+			String groupId = request.getParameter("groupId");
+			String userId = request.getParameter("userId");
+			GroupMemberDAO dao = new GroupMemberDaoImpl();
+			try {
+				dao.setGroupId(Integer.parseInt(groupId));
+			} catch (Exception e) {
+				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			try {
+				dao.setUserId(Integer.parseInt(userId));
+			} catch (Exception e) {
+				throw new CustomServerException("The UserID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			if (dao != null) {
+				dao.deleteMember();
+			}
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.getMessage());
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
-	}
 
+	}
 }

@@ -12,13 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.xml.ws.http.HTTPException;
 
 import kit.edu.pse.goapp.server.converter.daos.GpsDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
-import kit.edu.pse.goapp.server.daos.GPS_DAO;
 import kit.edu.pse.goapp.server.daos.GpsDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.GPS;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class GpsServlet
@@ -32,30 +31,34 @@ public class GpsServlet extends HttpServlet {
 	 */
 	public GpsServlet() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 
 	/**
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
+	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		HttpSession session = request.getSession(true);
-
-		int userId = 1;// (int) session.getAttribute("userId");
-		if (userId <= 0) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+		try {
+			HttpSession session = request.getSession(true);
+			int userId = 1;// (int) session.getAttribute("userId");
+			if (userId <= 0) {
+				throw new CustomServerException("This user is unauthorized", HttpServletResponse.SC_UNAUTHORIZED);
+			}
+			String jsonString = request.getReader().readLine();
+			GpsDaoImpl dao = (GpsDaoImpl) new GpsDaoConverter().parse(jsonString);
+			dao.setUserId(userId);
+			if (dao != null) {
+				dao.setUserId(userId);
+				dao.userSetGPS();
+			}
+			GPS gps = dao.userGetGPS();
+			response.getWriter().write(new ObjectConverter<GPS>().serialize(gps, GPS.class));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
-		String jsonString = request.getReader().readLine();
-		GPS_DAO dao = new GpsDaoConverter().parse(jsonString);
-		if (dao != null) {
-			((GpsDaoImpl) dao).setUserId(userId);
-			dao.userSetGPS();
-		} else {
-			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
-		}
-		GPS gps = dao.userGetGPS();
-		response.getWriter().write(new ObjectConverter<GPS>().serialize(gps, GPS.class));
 	}
 
 }

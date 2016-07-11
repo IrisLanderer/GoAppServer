@@ -74,8 +74,7 @@ public class GroupServlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			String jsonString = request.getReader().readLine();
 			GroupDAO dao = new GroupDaoConverter().parse(jsonString);

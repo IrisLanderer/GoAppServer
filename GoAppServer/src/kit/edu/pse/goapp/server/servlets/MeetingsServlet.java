@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import kit.edu.pse.goapp.server.algorithm.MeetingGpsAlgorithm;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
@@ -20,6 +21,7 @@ import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
 import kit.edu.pse.goapp.server.datamodels.Tour;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class Meetings
@@ -46,20 +48,30 @@ public class MeetingsServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		MeetingDaoImpl dao = new MeetingDaoImpl();
-		dao.setUserId(1);
-		if (dao != null) {
-			List<Meeting> meetings = dao.getAllMeetings();
-			for (Meeting m : meetings) {
-				if (m instanceof Tour) {
-					MeetingGpsAlgorithm.setGpsTour((Tour) m);
-				} else {
-					MeetingGpsAlgorithm.setGpsEvent((Event) m);
-				}
+		try {
+			HttpSession session = request.getSession(true);
+			int userId = 1;// (int) session.getAttribute("userId");
+			if (userId <= 0) {
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 			}
-			response.getWriter().write(new ObjectConverter<List<Meeting>>().serialize(meetings,
-					(Class<List<Meeting>>) meetings.getClass()));
+			MeetingDaoImpl dao = new MeetingDaoImpl();
+			dao.setUserId(1);
+			if (dao != null) {
+				List<Meeting> meetings = dao.getAllMeetings();
+				for (Meeting m : meetings) {
+					if (m instanceof Tour) {
+						MeetingGpsAlgorithm.setGpsTour((Tour) m);
+					} else {
+						MeetingGpsAlgorithm.setGpsEvent((Event) m);
+					}
+				}
+				response.getWriter().write(new ObjectConverter<List<Meeting>>().serialize(meetings,
+						(Class<List<Meeting>>) meetings.getClass()));
 
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.getMessage());
 		}
 	}
 

@@ -46,20 +46,12 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.6.2</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client -->
+		</dependency>	
 		<dependency>
 			<groupId>com.google.oauth-client</groupId>
 			<artifactId>google-oauth-client</artifactId>
 			<version>1.22.0</version>
-		</dependency>
-		 <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-		<!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
+		</dependency>	
 		<dependency>
 			<groupId>com.google.api-client</groupId>
 			<artifactId>google-api-client</artifactId>
@@ -71,9 +63,26 @@
 			<version>5.1.39</version>
 		</dependency>
 		<dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-     </dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+		</dependency>	
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.10.19</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-mock -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-mock</artifactId>
+    <version>2.0.8</version>
+</dependency>
+		
 	</dependencies>
 </project>

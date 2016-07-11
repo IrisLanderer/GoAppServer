@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.NotificationDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Notification;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class Notification
@@ -39,21 +40,27 @@ public class NotificationServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		HttpSession session = request.getSession(true);
+		try {
+			HttpSession session = request.getSession(true);
 
-		int userId = (int) session.getAttribute("userId");
-		if (userId <= 0) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			int userId = (int) session.getAttribute("userId");
+			if (userId <= 0) {
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+			}
+			NotificationDaoImpl dao = new NotificationDaoImpl();
+			dao.setUserId(userId);
+
+			List<Notification> notifications = dao.getNotifications();
+			response.getWriter().write(new ObjectConverter<List<Notification>>().serialize(notifications,
+					(Class<List<Notification>>) notifications.getClass()));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
-		NotificationDaoImpl dao = new NotificationDaoImpl();
-		dao.setUserId(userId);
-
-		List<Notification> notifications = dao.getNotifications();
-		response.getWriter().write(new ObjectConverter<List<Notification>>().serialize(notifications,
-				(Class<List<Notification>>) notifications.getClass()));
 	}
 
 }

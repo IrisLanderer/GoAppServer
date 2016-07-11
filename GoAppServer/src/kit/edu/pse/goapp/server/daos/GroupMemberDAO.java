@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public interface GroupMemberDAO {
 
@@ -18,7 +19,7 @@ public interface GroupMemberDAO {
 
 	public void updateMember() throws IOException;
 
-	public List<User> getAllMembers() throws IOException;
+	public List<User> getAllMembers() throws IOException, CustomServerException;
 
 	public void setAdmin();
 

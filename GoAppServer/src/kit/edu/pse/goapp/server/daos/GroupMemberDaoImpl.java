@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public class GroupMemberDaoImpl implements GroupMemberDAO {
 
@@ -84,7 +85,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public List<User> getAllMembers() throws IOException {
+	public List<User> getAllMembers() throws IOException, CustomServerException {
 		List<User> members = new ArrayList<>();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format(

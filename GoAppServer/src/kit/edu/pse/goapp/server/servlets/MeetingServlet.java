@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.http.HTTPException;
+import javax.servlet.http.HttpSession;
 
 import kit.edu.pse.goapp.server.algorithm.MeetingGpsAlgorithm;
 import kit.edu.pse.goapp.server.converter.daos.MeetingDaoConverter;
@@ -22,6 +22,7 @@ import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
 import kit.edu.pse.goapp.server.datamodels.Tour;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class Meeting
@@ -47,20 +48,35 @@ public class MeetingServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String meetingId = request.getParameter("meetingId");
-		MeetingDAO dao = new MeetingDaoImpl();
-		dao.setMeetingId(Integer.parseInt(meetingId));
-		if (dao != null) {
-			Meeting meeting = dao.getMeetingByID();
-			if (meeting instanceof Tour) {
-				MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
-			} else {
-				MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
+		try {
+			HttpSession session = request.getSession(true);
+
+			int userId = 1;// (int) session.getAttribute("userId");
+			if (userId <= 0) {
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 			}
+			String meetingId = request.getParameter("meetingId");
+			MeetingDAO dao = new MeetingDaoImpl();
+			try {
+				dao.setMeetingId(Integer.parseInt(meetingId));
+			} catch (Exception e) {
+				throw new CustomServerException("The MeetingID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			if (dao != null) {
+				Meeting meeting = dao.getMeetingByID();
+				if (meeting instanceof Tour) {
+					MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+				} else {
+					MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
+				}
 
-			String json = new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
-
-			response.getWriter().write(json);
+				String json = new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
+				response.getWriter().write(json);
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
 	}
 
@@ -73,22 +89,27 @@ public class MeetingServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String jsonString = request.getReader().readLine();
-		MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
-		if (dao != null) {
-			dao.addMeeting();
-		} else {
-			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
-		}
-		Meeting meeting = dao.getMeetingByID();
+		try {
+			String jsonString = request.getReader().readLine();
+			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
+			if (dao != null) {
+				dao.addMeeting();
+			} else {
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+			}
+			Meeting meeting = dao.getMeetingByID();
 
-		if (meeting instanceof Tour) {
-			MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
-		} else {
-			MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
-		}
+			if (meeting instanceof Tour) {
+				MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+			} else {
+				MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
+			}
 
-		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
+			response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
+		}
 
 	}
 
@@ -100,21 +121,34 @@ public class MeetingServlet extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String jsonString = request.getReader().readLine();
-		MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
-		if (dao != null) {
-			dao.updateMeeting();
-		} else {
-			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
-		}
-		Meeting meeting = dao.getMeetingByID();
-		if (meeting instanceof Tour) {
-			MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
-		} else {
-			MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
-		}
 
-		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
+		try {
+			HttpSession session = request.getSession(true);
+
+			int userId = 1;// (int) session.getAttribute("userId");
+			if (userId <= 0) {
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+			}
+
+			String jsonString = request.getReader().readLine();
+			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
+			if (dao != null) {
+				dao.updateMeeting();
+			} else {
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+			}
+			Meeting meeting = dao.getMeetingByID();
+			if (meeting instanceof Tour) {
+				MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+			} else {
+				MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
+			}
+
+			response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
+		}
 
 	}
 
@@ -126,13 +160,30 @@ public class MeetingServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String meetingId = request.getParameter("meetingId");
-		MeetingDAO dao = new MeetingDaoImpl();
-		dao.setMeetingId(Integer.parseInt(meetingId));
-		if (dao != null) {
-			dao.deleteMeeting();
+		try {
+			HttpSession session = request.getSession(true);
+
+			int userId = 1;// (int) session.getAttribute("userId");
+			if (userId <= 0) {
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+			}
+			String meetingId = request.getParameter("meetingId");
+			MeetingDAO dao = new MeetingDaoImpl();
+
+			try {
+				dao.setMeetingId(Integer.parseInt(meetingId));
+			} catch (Exception e) {
+				throw new CustomServerException("The MeetingID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			if (dao != null) {
+				dao.deleteMeeting();
+			}
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 }

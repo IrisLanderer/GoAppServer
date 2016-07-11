@@ -26,7 +26,7 @@ public class LoginFilterServlet implements Filter {
 	 * Default constructor.
 	 */
 	public LoginFilterServlet() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class LoginFilterServlet implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws ServletException, IOException {
-
+		// try{
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
 
@@ -56,8 +56,14 @@ public class LoginFilterServlet implements Filter {
 		 * request.getRequestURI().equals(loginURI);
 		 * 
 		 * if (loggedIn || loginRequest) { chain.doFilter(request, response); }
-		 * else { response.sendError(HttpServletResponse.SC_UNAUTHORIZED); }
+		 * else { throw new
+		 * CustomServerException("The GroupID from the JSON string isn't correct!"
+		 * , HttpServletResponse.SC_BAD_REQUEST); }
 		 */
+		// } catch (CustomServerException e) {
+		// ((HttpServletResponse) res).setStatus(e.getStatusCode());
+		// res.getWriter().write(e.toString());
+		// }
 	}
 
 	/**

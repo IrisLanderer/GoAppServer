@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.ws.http.HTTPException;
 
 import kit.edu.pse.goapp.server.converter.daos.ParticipantDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
@@ -47,12 +46,24 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String participantId = request.getParameter("participantId");
-		ParticipantDAO dao = new ParticipantDaoImpl();
-		dao.setParticipantId(Integer.parseInt(participantId));
-		if (dao != null) {
-			Participant participant = dao.getParticipantByID();
-			response.getWriter().write(new ObjectConverter<Participant>().serialize(participant, Participant.class));
+		try {
+			String participantId = request.getParameter("participantId");
+			ParticipantDAO dao = new ParticipantDaoImpl();
+			try {
+				dao.setParticipantId(Integer.parseInt(participantId));
+			} catch (Exception e) {
+				throw new CustomServerException("The ParticipantID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+
+			}
+			if (dao != null) {
+				Participant participant = dao.getParticipantByID();
+				response.getWriter()
+						.write(new ObjectConverter<Participant>().serialize(participant, Participant.class));
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
 	}
 
@@ -94,7 +105,7 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			if (dao != null) {
 				dao.updateParticipant();
 			} else {
-				throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 			}
 			MeetingDAO meetingDao = new MeetingDaoImpl();
 			meetingDao.setMeetingId(dao.getMeetingId());
@@ -112,13 +123,23 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String participantId = request.getParameter("participantId");
-		ParticipantDAO dao = new ParticipantDaoImpl();
-		dao.setParticipantId(Integer.parseInt(participantId));
-		if (dao != null) {
-			dao.deleteParticipant();
+		try {
+			String participantId = request.getParameter("participantId");
+			ParticipantDAO dao = new ParticipantDaoImpl();
+			try {
+				dao.setParticipantId(Integer.parseInt(participantId));
+			} catch (Exception e) {
+				throw new CustomServerException("The ParticipantID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			if (dao != null) {
+				dao.deleteParticipant();
+			}
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
-		response.setStatus(HttpServletResponse.SC_OK);
 	}
 
 }

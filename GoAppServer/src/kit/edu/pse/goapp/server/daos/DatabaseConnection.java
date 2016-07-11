@@ -32,7 +32,6 @@ public class DatabaseConnection implements AutoCloseable {
 	 * @return the ID which is automatically created in the database
 	 * @throws Exception
 	 *             if sqlStatement isn't correct
-	 * @author Iris
 	 * @version 1.0
 	 */
 	public int insert(String sqlStatement) throws Exception {
