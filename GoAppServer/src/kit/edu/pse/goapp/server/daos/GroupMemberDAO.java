@@ -3,7 +3,6 @@ package kit.edu.pse.goapp.server.daos;
 import java.io.IOException;
 import java.util.List;
 
-import kit.edu.pse.goapp.server.datamodels.Group;
 import kit.edu.pse.goapp.server.datamodels.User;
 
 public interface GroupMemberDAO {
@@ -18,7 +17,7 @@ public interface GroupMemberDAO {
 
 	public void setAdmin();
 
-	public List<Group> getAllAdminGroups();
+	public List<User> getAllAdmins() throws IOException;
 
 	public int getGroupId();
 

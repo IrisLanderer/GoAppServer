@@ -70,7 +70,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 			ParticipantDAO dao = new ParticipantDaoImpl();
 			dao.setUserId(userId);
 			dao.setMeetingId(meetingId);
-			dao.setConfirmation(MeetingConfirmation.REJECTED);
+			dao.setConfirmation(MeetingConfirmation.PENDING);
 			dao.addParticipant();
 			creatorId = dao.getParticipantId();
 			String updateQuery = MessageFormat.format(
@@ -126,10 +126,11 @@ public class MeetingDaoImpl implements MeetingDAO {
 			throw new IllegalArgumentException("A meeting must have an ID!");
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
-			String query = MessageFormat.format("DELETE FROM meetings WHERE meetings_id = ''{0}''", meetingId);
-			String query2 = MessageFormat.format("DELETE FROM participants WHERE meetings_id = ''{0}''", meetingId);
-			connection.delete(query);
-			connection.delete(query2);
+			String queryMeeting = MessageFormat.format("DELETE FROM meetings WHERE meetings_id = ''{0}''", meetingId);
+			String queryParticipants = MessageFormat.format("DELETE FROM participants WHERE meetings_id = ''{0}''",
+					meetingId);
+			connection.delete(queryMeeting);
+			connection.delete(queryParticipants);
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}

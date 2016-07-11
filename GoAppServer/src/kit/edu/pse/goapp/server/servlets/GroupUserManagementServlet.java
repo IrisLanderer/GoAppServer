@@ -63,10 +63,11 @@ public class GroupUserManagementServlet extends HttpServlet {
 		try {
 			String jsonString = request.getReader().readLine();
 			GroupMemberDAO groupMemberDao = new GroupMemberDaoConverter().parse(jsonString);
+			// every group member is an admin automatically (priority A
+			// requirement)
+			groupMemberDao.setAdmin(true);
 			if (groupMemberDao != null) {
 				groupMemberDao.addMember();
-			} else {
-				throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 			}
 			GroupDAO groupDao = new GroupDaoImpl();
 			groupDao.setGroupId(groupMemberDao.getGroupId());

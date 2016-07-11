@@ -58,6 +58,7 @@ public class UserServlet extends HttpServlet {
 		String googleId = request.getParameter("googleId");
 		String jsonString = request.getReader().readLine();
 		UserDAO dao = new UserDaoConverter().parse(jsonString);
+		// every user has notifications enabled by default
 		dao.setNotificationEnabled(true);
 		dao.setGoogleId(googleId);
 		if (dao != null) {

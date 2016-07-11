@@ -8,13 +8,13 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public interface GroupDAO {
 
-	public void addGroup() throws IOException;
+	public void addGroup() throws IOException, CustomServerException;
 
 	public List<Group> getAllGroups() throws IOException, CustomServerException;
 
-	public void updateGroup() throws IOException;
+	public void updateGroup() throws IOException, CustomServerException;
 
-	public void deleteGroup() throws IOException;
+	public void deleteGroup() throws IOException, CustomServerException;
 
 	public Group getGroupByID() throws IOException, CustomServerException;
 

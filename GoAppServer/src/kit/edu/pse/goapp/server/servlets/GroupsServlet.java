@@ -42,10 +42,9 @@ public class GroupsServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			HttpSession session = request.getSession(true);
-
 			int userId = 1;// (int) session.getAttribute("userId");
 			if (userId <= 0) {
-				response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 			}
 			GroupDAO dao = new GroupDaoImpl();
 			dao.setUserId(userId);

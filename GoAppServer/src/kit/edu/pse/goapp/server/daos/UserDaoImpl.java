@@ -50,8 +50,13 @@ public class UserDaoImpl implements UserDAO {
 			throw new IllegalArgumentException("A user must have an ID!");
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
-			String query = MessageFormat.format("DELETE FROM users WHERE users_id = ''{0}''", userId);
-			connection.delete(query);
+			String queryUser = MessageFormat.format("DELETE FROM users WHERE users_id = ''{0}''", userId);
+			String queryGroupMembers = MessageFormat.format("DELETE FROM group_members WHERE users_id = ''{0}''",
+					userId);
+			String queryParticipant = MessageFormat.format("DELETE FROM participants WHERE users_id = ''{0}''", userId);
+			connection.delete(queryUser);
+			connection.delete(queryGroupMembers);
+			connection.delete(queryParticipant);
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}

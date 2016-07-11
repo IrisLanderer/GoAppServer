@@ -16,6 +16,7 @@ import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
 import kit.edu.pse.goapp.server.daos.ParticipantDAO;
 import kit.edu.pse.goapp.server.daos.ParticipantDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
+import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
 import kit.edu.pse.goapp.server.datamodels.Participant;
 
 /**
@@ -56,10 +57,9 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String jsonString = request.getReader().readLine();
 		ParticipantDAO dao = new ParticipantDaoConverter().parse(jsonString);
+		dao.setConfirmation(MeetingConfirmation.PENDING);
 		if (dao != null) {
 			dao.addParticipant();
-		} else {
-			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		MeetingDAO meetingDao = new MeetingDaoImpl();
 		meetingDao.setMeetingId(dao.getMeetingId());

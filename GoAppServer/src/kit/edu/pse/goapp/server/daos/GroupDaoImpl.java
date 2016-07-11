@@ -31,16 +31,17 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	@Override
-	public void addGroup() throws IOException {
+	public void addGroup() throws IOException, CustomServerException {
 		if (name == null) {
-			throw new IllegalArgumentException("A new group must have a name!");
+			throw new CustomServerException("A new group must have a name!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 
 		try (DatabaseConnection conn = new DatabaseConnection()) {
 			String sqlStmt = MessageFormat.format("INSERT INTO groups (name) VALUES (''{0}'')", name);
 			groupId = conn.insert(sqlStmt);
 			if (groupId <= 0) {
-				throw new IllegalArgumentException("The GroupID wasn't assigned to a value!");
+				throw new CustomServerException("The GroupID wasn't assigned to a value!",
+						HttpServletResponse.SC_NO_CONTENT);
 			}
 		} catch (Throwable e) {
 			throw new IOException(e);
@@ -68,14 +69,16 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	@Override
-	public void updateGroup() throws IOException {
+	public void updateGroup() throws IOException, CustomServerException {
 		if (groupId <= 0) {
-			throw new IllegalArgumentException("A group must have an GroupID!");
+			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (name == null) {
-			throw new IllegalArgumentException(
-					"You cannot change the name of a group to null, because a group must have a name!");
+			throw new CustomServerException(
+					"You cannot change the name of a group to null, because a group must have a name!",
+					HttpServletResponse.SC_BAD_REQUEST);
 		}
+		checkAuthorization();
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
 			String query = MessageFormat.format("UPDATE groups SET name = ''{0}'' WHERE group_id = ''{1}''", name,
 					groupId);
@@ -87,13 +90,18 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	@Override
-	public void deleteGroup() throws IOException {
+	public void deleteGroup() throws IOException, CustomServerException {
 		if (groupId <= 0) {
-			throw new IllegalArgumentException("A group must have an GroupID!");
+			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
+		checkAuthorization();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
-			String query = MessageFormat.format("DELETE FROM groups WHERE group_id = ''{0}''", groupId);
-			connection.delete(query);
+			String queryGroup = MessageFormat.format("DELETE FROM groups WHERE group_id = ''{0}''", groupId);
+			String queryGroupMember = MessageFormat.format("DELETE FROM group_members WHERE groups_id = ''{0}''",
+					groupId);
+			connection.delete(queryGroup);
+			connection.delete(queryGroupMember);
+
 		} catch (Throwable e) {
 
 			throw new IOException(e);
@@ -106,6 +114,7 @@ public class GroupDaoImpl implements GroupDAO {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
+		checkAuthorization();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat
 					.format("SELECT g.group_id, g.name, m.users_id, m.is_admin, u.name FROM groups g left outer join "
@@ -123,6 +132,37 @@ public class GroupDaoImpl implements GroupDAO {
 		group.setGroupMembers(members);
 		group.setAdmins(admins);
 		return group;
+	}
+
+	private void checkAuthorization() throws IOException, CustomServerException {
+
+		GroupMemberDAO groupMemberDao = new GroupMemberDaoImpl();
+		groupMemberDao.setGroupId(groupId);
+		groupMemberDao.setUserId(userId);
+		UserDAO userDao = new UserDaoImpl();
+		userDao.setUserId(userId);
+		User user = userDao.getUserByID();
+		List<User> tmpMembers = groupMemberDao.getAllMembers();
+
+		if (!checkMemberAndAdmin(user, tmpMembers)) {
+			throw new CustomServerException("The user has to be member of this group to access it!",
+					HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		List<User> tmpAdmins = groupMemberDao.getAllAdmins();
+		if (!checkMemberAndAdmin(user, tmpAdmins)) {
+			throw new CustomServerException("The user has to be admin of this group to access it!",
+					HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+
+	private boolean checkMemberAndAdmin(User user, List<User> users) {
+		boolean isAuthorized = false;
+		for (User tmpUser : users) {
+			if (user.getId() == tmpUser.getId()) {
+				isAuthorized = true;
+			}
+		}
+		return isAuthorized;
 	}
 
 	@Override
@@ -191,6 +231,7 @@ public class GroupDaoImpl implements GroupDAO {
 			boolean resultEmpty = true;
 
 			while (resultSet.next()) {
+				resultEmpty = false;
 				groupIds.add(resultSet.getInt(1));
 
 			}
