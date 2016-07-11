@@ -120,7 +120,7 @@ public class GroupDaoImpl implements GroupDAO {
 			throw new IOException(e);
 		}
 		Group group = new Group(groupId, name.toString());
-		group.setMembers(members);
+		group.setGroupMembers(members);
 		group.setAdmins(admins);
 		return group;
 	}

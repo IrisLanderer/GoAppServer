@@ -3,17 +3,17 @@ package kit.edu.pse.goapp.server.datamodels;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Meeting {
+public abstract class Meeting {
 
 	public static double RADIUS = 200.00;
 
-	private int meetingId;
-	private String name;
-	private GPS place;
-	private long timespamp;
-	private int duration;
-	private Participant creator;
-	private List<Participant> participants;
+	protected int meetingId;
+	protected String name;
+	protected GPS place;
+	protected long timespamp;
+	protected int duration;
+	protected Participant creator;
+	protected List<Participant> participants;
 
 	public Meeting(int meetingId, String name, GPS place, long timestamp, int duration, Participant creator) {
 		this.meetingId = meetingId;
@@ -60,6 +60,21 @@ public class Meeting {
 
 	public void setParticipants(List<Participant> participants) {
 		this.participants = participants;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (this.getClass() != obj.getClass())
+			return false;
+		// Class name is Employ & have lastname
+		Meeting m = (Meeting) obj;
+		 if(m.getMeetingId() == meetingId && m.getPlace().equals(place) && m.getCreator().equals(creator)  && m.getDuration() == duration && m.getName().equals(name) && m.getParticipants().equals(participants) 
+				 &&equals(m.getTimespamp() == timespamp) ) {			 
+			return true;
+		}
+		return false;
 	}
 
 }

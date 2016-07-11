@@ -29,5 +29,21 @@ public class GroupMember {
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (this.getClass() != obj.getClass())
+			return false;
+		// Class name is Employ & have lastname
+		GroupMember g = (GroupMember) obj;
+		 if(g.getGroupId()==groupId && g.getUserId() == userId && g.isAdmin() == isAdmin) {
+			return true;
+		}
+		return false;
+	}
 
 }
