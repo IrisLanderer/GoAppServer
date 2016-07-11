@@ -61,6 +61,7 @@ public abstract class Meeting {
 	public void setParticipants(List<Participant> participants) {
 		this.participants = participants;
 	}
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
