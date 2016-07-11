@@ -1,3 +1,7 @@
+/*
+ * @version 1.0
+ * @author Iris
+ */
 package kit.edu.pse.goapp.server.converter.objects;
 
 import com.google.gson.Gson;

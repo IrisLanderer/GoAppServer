@@ -1,3 +1,7 @@
+/*
+ * @version 1.0
+ * @author Iris
+ */
 package kit.edu.pse.goapp.server.daos;
 
 import java.sql.Connection;
@@ -19,6 +23,17 @@ public class DatabaseConnection implements AutoCloseable {
 		connection = DriverManager.getConnection(URL);
 	}
 
+	/**
+	 * executes SQL INSERT query
+	 * 
+	 * @param sqlStatement
+	 *            INSERT query for the database
+	 * @return the ID which is automatically created in the database
+	 * @throws Exception
+	 *             if sqlStatement isn't correct
+	 * @author Iris
+	 * @version 1.0
+	 */
 	public int insert(String sqlStatement) throws Exception {
 		Statement statement = null;
 		try {

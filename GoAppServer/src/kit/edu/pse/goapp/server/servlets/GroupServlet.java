@@ -1,3 +1,7 @@
+/*
+ * @version 1.0
+ * @author Iris
+ */
 package kit.edu.pse.goapp.server.servlets;
 
 import java.io.IOException;
@@ -34,6 +38,7 @@ public class GroupServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
@@ -67,6 +72,7 @@ public class GroupServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
@@ -86,6 +92,7 @@ public class GroupServlet extends HttpServlet {
 		}
 	}
 
+	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
@@ -114,6 +121,7 @@ public class GroupServlet extends HttpServlet {
 		}
 	}
 
+	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {

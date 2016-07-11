@@ -1,3 +1,7 @@
+/*
+ * @version 1.0
+ * @author Iris
+ */
 package kit.edu.pse.goapp.server.daos;
 
 import java.io.IOException;
@@ -131,6 +135,7 @@ public class UserDaoImpl implements UserDAO {
 		}
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -161,10 +166,12 @@ public class UserDaoImpl implements UserDAO {
 		this.notificationEnabled = notificationEnabled;
 	}
 
+	@Override
 	public int getUserId() {
 		return userId;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

@@ -1,3 +1,7 @@
+/*
+ * @version 1.0
+ * @author Iris
+ */
 package kit.edu.pse.goapp.server.datamodels;
 
 import java.util.ArrayList;
@@ -61,6 +65,7 @@ public abstract class Meeting {
 	public void setParticipants(List<Participant> participants) {
 		this.participants = participants;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -71,8 +76,9 @@ public abstract class Meeting {
 			return false;
 		// Class name is Employ & have lastname
 		Meeting m = (Meeting) obj;
-		 if(m.getMeetingId() == meetingId && m.getPlace().equals(place) && m.getCreator().equals(creator)  && m.getDuration() == duration && m.getName().equals(name) && m.getParticipants().equals(participants) 
-				 &&equals(m.getTimespamp() == timespamp) ) {			 
+		if (m.getMeetingId() == meetingId && m.getPlace().equals(place) && m.getCreator().equals(creator)
+				&& m.getDuration() == duration && m.getName().equals(name) && m.getParticipants().equals(participants)
+				&& equals(m.getTimespamp() == timespamp)) {
 			return true;
 		}
 		return false;

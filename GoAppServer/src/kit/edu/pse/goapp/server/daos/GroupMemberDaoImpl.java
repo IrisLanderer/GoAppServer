@@ -1,3 +1,7 @@
+/*
+ * @version 1.0
+ * @author Iris
+ */
 package kit.edu.pse.goapp.server.daos;
 
 import java.io.IOException;
@@ -118,26 +122,32 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		return admins;
 	}
 
+	@Override
 	public int getGroupId() {
 		return groupId;
 	}
 
+	@Override
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
 	}
 
+	@Override
 	public int getUserId() {
 		return userId;
 	}
 
+	@Override
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 
+	@Override
 	public boolean isAdmin() {
 		return isAdmin;
 	}
 
+	@Override
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
