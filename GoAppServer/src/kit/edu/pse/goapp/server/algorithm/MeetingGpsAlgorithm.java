@@ -1,9 +1,10 @@
-/**
- * 
+/*
+ * @version 1.0
+ * @author PSE group
  */
+
 package kit.edu.pse.goapp.server.algorithm;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,37 +40,33 @@ public class MeetingGpsAlgorithm {
 			while (!abort) {
 				abort = true;
 				for (Participant inner : participants) {
-                        if(!smallBlob.contains(inner))
-                        {
-                        	if(isInBlob(smallBlob, inner))
-                        	{
-                        		smallBlob.add(inner);
-                        		abort = false;
-                        	}
-                        }
+					if (!smallBlob.contains(inner)) {
+						if (isInBlob(smallBlob, inner)) {
+							smallBlob.add(inner);
+							abort = false;
+						}
+					}
 				}
 			}
-			if(smallBlob.size() > biggestBlob.size())
-			{
+			if (smallBlob.size() > biggestBlob.size()) {
 				biggestBlob = new ArrayList<>(smallBlob);
 			}
-		}        
+		}
 		List<GPS> positions = new ArrayList<>();
-		for(Participant p : biggestBlob)
-		{
+		for (Participant p : biggestBlob) {
 			GpsDaoImpl dao = new GpsDaoImpl();
 			dao.setUserId(p.getUser().getId());
 			GPS gpsP = dao.userGetGPS();
 			positions.add(gpsP);
 			p.getUser().setGPS(gpsP);
-		}		
-		
-	   GPS median = GPS.median(positions);
-	   MeetingCenter center = new MeetingCenter(median);
-	  center.setParticipants(biggestBlob);   			
+		}
+
+		GPS median = GPS.median(positions);
+		MeetingCenter center = new MeetingCenter(median);
+		center.setParticipants(biggestBlob);
 		return tour;
 	}
-   
+
 	public static boolean isInBlob(List<Participant> blob, Participant test) {
 		for (Participant p : blob) {
 			GpsDaoImpl dao = new GpsDaoImpl();

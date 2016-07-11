@@ -1,3 +1,8 @@
+/*
+ * @version 1.0
+ * @author PSE group
+ */
+
 package kit.edu.pse.goapp.server.datamodels;
 
 public class GroupMember {
@@ -29,7 +34,7 @@ public class GroupMember {
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -40,7 +45,7 @@ public class GroupMember {
 			return false;
 		// Class name is Employ & have lastname
 		GroupMember g = (GroupMember) obj;
-		 if(g.getGroupId()==groupId && g.getUserId() == userId && g.isAdmin() == isAdmin) {
+		if (g.getGroupId() == groupId && g.getUserId() == userId && g.isAdmin() == isAdmin) {
 			return true;
 		}
 		return false;

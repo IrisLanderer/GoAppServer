@@ -1,7 +1,8 @@
 /*
  * @version 1.0
- * @author Iris
+ * @author PSE group
  */
+
 package kit.edu.pse.goapp.server.servlets;
 
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class MeetingsServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -48,15 +50,11 @@ public class MeetingsServlet extends HttpServlet {
 		dao.setUserId(1);
 		if (dao != null) {
 			List<Meeting> meetings = dao.getAllMeetings();
-			for(Meeting m : meetings)
-			{
-				if(m instanceof Tour)
-				{
-					MeetingGpsAlgorithm.setGpsTour((Tour)m);
-				}
-				else
-				{
-					MeetingGpsAlgorithm.setGpsEvent((Event)m);
+			for (Meeting m : meetings) {
+				if (m instanceof Tour) {
+					MeetingGpsAlgorithm.setGpsTour((Tour) m);
+				} else {
+					MeetingGpsAlgorithm.setGpsEvent((Event) m);
 				}
 			}
 			response.getWriter().write(new ObjectConverter<List<Meeting>>().serialize(meetings,

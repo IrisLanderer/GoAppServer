@@ -1,7 +1,8 @@
 /*
  * @version 1.0
- * @author Iris
+ * @author PSE group
  */
+
 package kit.edu.pse.goapp.server.servlets;
 
 import java.io.IOException;
@@ -43,6 +44,7 @@ public class MeetingServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String meetingId = request.getParameter("meetingId");
@@ -50,15 +52,12 @@ public class MeetingServlet extends HttpServlet {
 		dao.setMeetingId(Integer.parseInt(meetingId));
 		if (dao != null) {
 			Meeting meeting = dao.getMeetingByID();
-			if(meeting instanceof Tour)
-			{
-				MeetingGpsAlgorithm.setGpsTour((Tour)meeting);
+			if (meeting instanceof Tour) {
+				MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+			} else {
+				MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
 			}
-			else
-			{
-				MeetingGpsAlgorithm.setGpsEvent((Event)meeting);
-			}
-			
+
 			String json = new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
 
 			response.getWriter().write(json);
@@ -71,6 +70,7 @@ public class MeetingServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String jsonString = request.getReader().readLine();
@@ -82,15 +82,12 @@ public class MeetingServlet extends HttpServlet {
 		}
 		Meeting meeting = dao.getMeetingByID();
 
-		if(meeting instanceof Tour)
-		{
-			MeetingGpsAlgorithm.setGpsTour((Tour)meeting);
+		if (meeting instanceof Tour) {
+			MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+		} else {
+			MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
 		}
-		else
-		{
-			MeetingGpsAlgorithm.setGpsEvent((Event)meeting);
-		}
-		
+
 		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
 
 	}
@@ -100,6 +97,7 @@ public class MeetingServlet extends HttpServlet {
 	 * 
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
+	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String jsonString = request.getReader().readLine();
@@ -110,15 +108,12 @@ public class MeetingServlet extends HttpServlet {
 			throw new HTTPException(HttpServletResponse.SC_BAD_REQUEST);
 		}
 		Meeting meeting = dao.getMeetingByID();
-		if(meeting instanceof Tour)
-		{
-			MeetingGpsAlgorithm.setGpsTour((Tour)meeting);
+		if (meeting instanceof Tour) {
+			MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+		} else {
+			MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
 		}
-		else
-		{
-			MeetingGpsAlgorithm.setGpsEvent((Event)meeting);
-		}
-		
+
 		response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
 
 	}
@@ -128,6 +123,7 @@ public class MeetingServlet extends HttpServlet {
 	 * 
 	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
 	 */
+	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String meetingId = request.getParameter("meetingId");

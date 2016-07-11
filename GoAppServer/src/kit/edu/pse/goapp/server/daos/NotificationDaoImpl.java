@@ -1,3 +1,7 @@
+/*
+ * @version 1.0
+ * @author PSE group
+ */
 package kit.edu.pse.goapp.server.daos;
 
 import java.util.HashMap;

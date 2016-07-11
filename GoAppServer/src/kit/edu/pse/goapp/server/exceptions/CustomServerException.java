@@ -3,10 +3,6 @@
  */
 package kit.edu.pse.goapp.server.exceptions;
 
-/**
- * @author Iris
- *
- */
 public class CustomServerException extends Exception {
 
 	/**
@@ -27,6 +23,7 @@ public class CustomServerException extends Exception {
 		return Integer.toString(statusCode) + " " + message;
 	}
 
+	@Override
 	public String getMessage() {
 		return message;
 	}

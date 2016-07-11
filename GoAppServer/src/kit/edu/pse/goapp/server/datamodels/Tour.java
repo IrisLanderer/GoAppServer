@@ -1,7 +1,8 @@
 /*
  * @version 1.0
- * @author Iris
+ * @author PSE group
  */
+
 package kit.edu.pse.goapp.server.datamodels;
 
 public class Tour extends Meeting {
@@ -32,7 +33,7 @@ public class Tour extends Meeting {
 			Meeting m = (Meeting) obj;
 			if (m.getMeetingId() == meetingId && m.getPlace().equals(place) && m.getCreator().equals(creator)
 					&& m.getDuration() == duration && m.getName().equals(name)
-					&& m.getParticipants().equals(participants) && m.getTimespamp() == timespamp ) {
+					&& m.getParticipants().equals(participants) && m.getTimespamp() == timespamp) {
 				return true;
 			}
 		}

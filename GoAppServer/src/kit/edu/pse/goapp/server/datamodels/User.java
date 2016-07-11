@@ -1,3 +1,7 @@
+/*
+ * @version 1.0
+ * @author PSE group
+ */
 
 package kit.edu.pse.goapp.server.datamodels;
 
@@ -56,7 +60,7 @@ public class User {
 	public void setNotificationEnabled(boolean notificationEnabled) {
 		this.notificationEnabled = notificationEnabled;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -67,7 +71,7 @@ public class User {
 			return false;
 		// Class name is Employ & have lastname
 		User u = (User) obj;
-		 if((u.getId() == userId)  &&( u.getName().equals(name))) {
+		if ((u.getId() == userId) && (u.getName().equals(name))) {
 			return true;
 		}
 
