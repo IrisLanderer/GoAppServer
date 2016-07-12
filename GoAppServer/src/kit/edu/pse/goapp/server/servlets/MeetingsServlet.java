@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import kit.edu.pse.goapp.server.algorithm.MeetingGpsAlgorithm;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
+import kit.edu.pse.goapp.server.daos.MeetingDAO;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
@@ -49,13 +50,9 @@ public class MeetingsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
-			MeetingDaoImpl dao = new MeetingDaoImpl();
-			dao.setUserId(1);
+			int userId = authenticateUser(request);
+			MeetingDAO dao = new MeetingDaoImpl();
+			dao.setUserId(userId);
 			if (dao != null) {
 				List<Meeting> meetings = dao.getAllMeetings();
 				for (Meeting m : meetings) {
@@ -73,6 +70,16 @@ public class MeetingsServlet extends HttpServlet {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.getMessage());
 		}
+	}
+
+	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
+		HttpSession session = request.getSession(true);
+
+		int userId = 1;// (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		return userId;
 	}
 
 }

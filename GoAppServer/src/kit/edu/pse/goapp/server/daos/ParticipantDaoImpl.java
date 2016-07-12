@@ -15,6 +15,7 @@ import java.util.List;
 import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
 import kit.edu.pse.goapp.server.datamodels.Participant;
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public class ParticipantDaoImpl implements ParticipantDAO {
 
@@ -59,7 +60,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public List<Participant> getAllParticipants() throws IOException {
+	public List<Participant> getAllParticipants() throws IOException, CustomServerException {
 		List<Participant> participants = new ArrayList<>();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format("SELECT participants.participants_id FROM participants  "
@@ -78,7 +79,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public Participant getParticipantByID() throws IOException {
+	public Participant getParticipantByID() throws IOException, CustomServerException {
 		if (participantId <= 0) {
 			throw new IllegalArgumentException("A participant must have an ID!");
 		}

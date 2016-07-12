@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public class UserDaoImpl implements UserDAO {
 
@@ -29,7 +30,7 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public void addUser() throws IOException {
+	public void addUser() throws IOException, CustomServerException {
 		if (name == null) {
 			throw new IllegalArgumentException("A new user must have a name!");
 		}
@@ -50,7 +51,7 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public void deleteUser() throws IOException {
+	public void deleteUser() throws IOException, CustomServerException {
 		if (userId == -1) {
 			throw new IllegalArgumentException("A user must have an ID!");
 		}
@@ -69,7 +70,7 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public void updateUser() throws IOException {
+	public void updateUser() throws IOException, CustomServerException {
 		if (userId <= 0) {
 			throw new IllegalArgumentException("A user must have an ID!");
 		}
@@ -85,7 +86,7 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public List<User> getAllUsers() throws IOException {
+	public List<User> getAllUsers() throws IOException, CustomServerException {
 		List<User> users = new ArrayList<>();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format("SELECT users.users_id FROM users", userId);
@@ -103,7 +104,7 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUserByID() throws IOException {
+	public User getUserByID() throws IOException, CustomServerException {
 		if (userId <= 0) {
 			throw new IllegalArgumentException("A user must have an ID!");
 		}

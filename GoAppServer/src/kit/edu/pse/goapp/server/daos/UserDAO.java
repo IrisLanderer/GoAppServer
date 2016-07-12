@@ -9,18 +9,19 @@ import java.io.IOException;
 import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public interface UserDAO {
 
-	public void addUser() throws IOException;
+	public void addUser() throws IOException, CustomServerException;
 
-	public void deleteUser() throws IOException;
+	public void deleteUser() throws IOException, CustomServerException;
 
-	public void updateUser() throws IOException;
+	public void updateUser() throws IOException, CustomServerException;
 
-	public List<User> getAllUsers() throws IOException;
+	public List<User> getAllUsers() throws IOException, CustomServerException;
 
-	public User getUserByID() throws IOException;
+	public User getUserByID() throws IOException, CustomServerException;
 
 	public String getGoogleID();
 

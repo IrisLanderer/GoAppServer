@@ -18,6 +18,7 @@ import kit.edu.pse.goapp.server.datamodels.Meeting;
 import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
 import kit.edu.pse.goapp.server.datamodels.Participant;
 import kit.edu.pse.goapp.server.datamodels.Tour;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public class MeetingDaoImpl implements MeetingDAO {
 
@@ -64,7 +65,6 @@ public class MeetingDaoImpl implements MeetingDAO {
 			throw new IllegalArgumentException("A new meeting must have a creator!");
 		}
 		creatorId = 0;
-
 		try (DatabaseConnection conn = new DatabaseConnection()) {
 			String query = MessageFormat.format(
 					"INSERT INTO meetings "
@@ -88,7 +88,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 	}
 
 	@Override
-	public List<Meeting> getAllMeetings() throws IOException {
+	public List<Meeting> getAllMeetings() throws IOException, CustomServerException {
 		List<Meeting> meetings = new ArrayList<>();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format(
@@ -109,10 +109,11 @@ public class MeetingDaoImpl implements MeetingDAO {
 	}
 
 	@Override
-	public void updateMeeting() throws IOException {
+	public void updateMeeting() throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new IllegalArgumentException("A meeting must have an ID!");
 		}
+		// checkUserIsCreator();
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
 			String query = MessageFormat.format(
 					"UPDATE meetings " + "SET name = ''{0}'', place_x = ''{1}'', place_y = ''{2}'', place_z = ''{3}'',"
@@ -126,10 +127,11 @@ public class MeetingDaoImpl implements MeetingDAO {
 	}
 
 	@Override
-	public void deleteMeeting() throws IOException {
+	public void deleteMeeting() throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new IllegalArgumentException("A meeting must have an ID!");
 		}
+		// checkUserIsCreator();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String queryMeeting = MessageFormat.format("DELETE FROM meetings WHERE meetings_id = ''{0}''", meetingId);
 			String queryParticipants = MessageFormat.format("DELETE FROM participants WHERE meetings_id = ''{0}''",
@@ -143,7 +145,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 	}
 
 	@Override
-	public Meeting getMeetingByID() throws IOException {
+	public Meeting getMeetingByID() throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new IllegalArgumentException("A meeting must have an ID!");
 		}
@@ -156,6 +158,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		GPS gps = new GPS(placeX, placeY, placeZ);
 		ParticipantDAO dao = new ParticipantDaoImpl();
 		dao.setParticipantId(creatorId);
+		dao.setUserId(userId);
 		Participant creator = dao.getParticipantByID();
 
 		ParticipantDAO pdao = new ParticipantDaoImpl();
@@ -173,6 +176,29 @@ public class MeetingDaoImpl implements MeetingDAO {
 		}
 
 	}
+
+	// private void checkUserIsCreator() throws IOException,
+	// CustomServerException {
+	// ParticipantDAO participantDao = new ParticipantDaoImpl();
+	// participantDao.setMeetingId(meetingId);
+	// List<Participant> participants = participantDao.getAllParticipants();
+	// MeetingDAO meetingDao = new MeetingDaoImpl();
+	// meetingDao.setMeetingId(meetingId);
+	// meetingDao.setUserId(userId);
+	// Meeting meeting = meetingDao.getMeetingByID();
+	// boolean isCreator = false;
+	// for (Participant participant : participants) {
+	// if (participant.getParticipantId() ==
+	// meeting.getCreator().getParticipantId()) {
+	// isCreator = true;
+	// }
+	// }
+	// if (!isCreator) {
+	// throw new CustomServerException("The user has to be creator of this
+	// meeting to access it!",
+	// HttpServletResponse.SC_UNAUTHORIZED);
+	// }
+	// }
 
 	@Override
 	public int getMeetingId() {
@@ -268,6 +294,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		return userId;
 	}
 
+	@Override
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}

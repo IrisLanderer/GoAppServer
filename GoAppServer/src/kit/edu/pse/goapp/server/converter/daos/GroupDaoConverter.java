@@ -22,8 +22,8 @@ public class GroupDaoConverter implements DaoConverter<GroupDAO> {
 			return null;
 		}
 		Group groupJsonObject = null;
-		Gson gson = new Gson();
 		try {
+			Gson gson = new Gson();
 			groupJsonObject = gson.fromJson(jsonString, Group.class);
 		} catch (Exception e) {
 			throw new CustomServerException("The JSON-String is not correct!", HttpServletResponse.SC_BAD_REQUEST);

@@ -33,7 +33,6 @@ public class GroupsServlet extends HttpServlet {
 	 */
 	public GroupsServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -47,11 +46,7 @@ public class GroupsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
+			int userId = authenticateUser(request);
 			GroupDAO dao = new GroupDaoImpl();
 			dao.setUserId(userId);
 			if (dao != null) {
@@ -65,33 +60,14 @@ public class GroupsServlet extends HttpServlet {
 		}
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
+		HttpSession session = request.getSession(true);
 
-	/**
-	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
-	 */
-	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
-	@Override
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		int userId = 1;// (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		return userId;
 	}
 
 }

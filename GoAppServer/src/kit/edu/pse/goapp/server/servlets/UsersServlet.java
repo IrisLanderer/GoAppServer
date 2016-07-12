@@ -18,6 +18,7 @@ import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.UserDAO;
 import kit.edu.pse.goapp.server.daos.UserDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.User;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
  * Servlet implementation class Users
@@ -42,11 +43,16 @@ public class UsersServlet extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		UserDAO dao = new UserDaoImpl();
-		if (dao != null) {
-			List<User> users = dao.getAllUsers();
-			response.getWriter()
-					.write(new ObjectConverter<List<User>>().serialize(users, (Class<List<User>>) users.getClass()));
+		try {
+			UserDAO dao = new UserDaoImpl();
+			if (dao != null) {
+				List<User> users = dao.getAllUsers();
+				response.getWriter().write(
+						new ObjectConverter<List<User>>().serialize(users, (Class<List<User>>) users.getClass()));
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 		}
 	}
 

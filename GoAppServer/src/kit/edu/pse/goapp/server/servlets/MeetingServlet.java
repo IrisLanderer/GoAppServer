@@ -19,9 +19,12 @@ import kit.edu.pse.goapp.server.converter.daos.MeetingDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.MeetingDAO;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
+import kit.edu.pse.goapp.server.daos.UserDAO;
+import kit.edu.pse.goapp.server.daos.UserDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
 import kit.edu.pse.goapp.server.datamodels.Tour;
+import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
@@ -36,7 +39,6 @@ public class MeetingServlet extends HttpServlet {
 	 */
 	public MeetingServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -49,12 +51,7 @@ public class MeetingServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
+			int userId = authenticateUser(request);
 			String meetingId = request.getParameter("meetingId");
 			MeetingDAO dao = new MeetingDaoImpl();
 			try {
@@ -63,6 +60,9 @@ public class MeetingServlet extends HttpServlet {
 				throw new CustomServerException("The MeetingID from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
+			User user = createUserWithDao(userId);
+			Meeting meetingCheckParticipant = createMeetingWithDao(dao.getMeetingId());
+			meetingCheckParticipant.isParticipant(user);
 			if (dao != null) {
 				Meeting meeting = dao.getMeetingByID();
 				if (meeting instanceof Tour) {
@@ -90,12 +90,12 @@ public class MeetingServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
+			int userId = authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
+			dao.setUserId(userId);
 			if (dao != null) {
 				dao.addMeeting();
-			} else {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 			}
 			Meeting meeting = dao.getMeetingByID();
 
@@ -123,19 +123,12 @@ public class MeetingServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
-			HttpSession session = request.getSession(true);
-
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
-
+			int userId = authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
+			checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
 			if (dao != null) {
 				dao.updateMeeting();
-			} else {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 			}
 			Meeting meeting = dao.getMeetingByID();
 			if (meeting instanceof Tour) {
@@ -161,21 +154,16 @@ public class MeetingServlet extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
+			int userId = authenticateUser(request);
 			String meetingId = request.getParameter("meetingId");
 			MeetingDAO dao = new MeetingDaoImpl();
-
 			try {
 				dao.setMeetingId(Integer.parseInt(meetingId));
 			} catch (Exception e) {
 				throw new CustomServerException("The MeetingID from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
+			checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
 			if (dao != null) {
 				dao.deleteMeeting();
 			}
@@ -184,6 +172,38 @@ public class MeetingServlet extends HttpServlet {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
 		}
+	}
+
+	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
+		HttpSession session = request.getSession(true);
+
+		int userId = 1;// (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		return userId;
+	}
+
+	private User createUserWithDao(int userId) throws IOException, CustomServerException {
+		UserDAO userDao = new UserDaoImpl();
+		userDao.setUserId(userId);
+		User user = userDao.getUserByID();
+		return user;
+	}
+
+	private Meeting createMeetingWithDao(int meetingId) throws IOException, CustomServerException {
+		MeetingDAO dao = new MeetingDaoImpl();
+		dao.setMeetingId(meetingId);
+		Meeting meeting = dao.getMeetingByID();
+		return meeting;
+	}
+
+	private void checkIfUserIsParticipantAndCreator(int userId, int meetingId)
+			throws IOException, CustomServerException {
+		User user = createUserWithDao(userId);
+		Meeting meetingCheckParticipant = createMeetingWithDao(meetingId);
+		meetingCheckParticipant.isParticipant(user);
+		meetingCheckParticipant.isCreator(user);
 	}
 
 }

@@ -10,6 +10,7 @@ import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
 import kit.edu.pse.goapp.server.datamodels.Participant;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public interface ParticipantDAO {
 
@@ -17,9 +18,9 @@ public interface ParticipantDAO {
 
 	public void deleteParticipant() throws IOException;
 
-	public List<Participant> getAllParticipants() throws IOException;
+	public List<Participant> getAllParticipants() throws IOException, CustomServerException;
 
-	public Participant getParticipantByID() throws IOException;
+	public Participant getParticipantByID() throws IOException, CustomServerException;
 
 	public void updateParticipant() throws IOException;
 

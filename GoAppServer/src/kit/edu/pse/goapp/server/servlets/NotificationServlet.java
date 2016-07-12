@@ -45,15 +45,9 @@ public class NotificationServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-
-			int userId = (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
+			int userId = authenticateUser(request);
 			NotificationDaoImpl dao = new NotificationDaoImpl();
 			dao.setUserId(userId);
-
 			List<Notification> notifications = dao.getNotifications();
 			response.getWriter().write(new ObjectConverter<List<Notification>>().serialize(notifications,
 					(Class<List<Notification>>) notifications.getClass()));
@@ -61,6 +55,16 @@ public class NotificationServlet extends HttpServlet {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
 		}
+	}
+
+	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
+		HttpSession session = request.getSession(true);
+
+		int userId = 1;// (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		return userId;
 	}
 
 }

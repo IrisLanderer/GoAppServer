@@ -9,18 +9,19 @@ import java.io.IOException;
 import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.Meeting;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public interface MeetingDAO {
 
 	public void addMeeting() throws IOException;
 
-	public List<Meeting> getAllMeetings() throws IOException;
+	public List<Meeting> getAllMeetings() throws IOException, CustomServerException;
 
-	public void updateMeeting() throws IOException;
+	public void updateMeeting() throws IOException, CustomServerException;
 
-	public void deleteMeeting() throws IOException;
+	public void deleteMeeting() throws IOException, CustomServerException;
 
-	public Meeting getMeetingByID() throws IOException;
+	public Meeting getMeetingByID() throws IOException, CustomServerException;
 
 	void setCreatorId(int creatorId);
 
@@ -57,5 +58,7 @@ public interface MeetingDAO {
 	void setMeetingId(int meetingId);
 
 	int getMeetingId();
+
+	void setUserId(int userId);
 
 }

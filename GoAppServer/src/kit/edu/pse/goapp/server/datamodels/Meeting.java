@@ -5,8 +5,17 @@
 
 package kit.edu.pse.goapp.server.datamodels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import kit.edu.pse.goapp.server.daos.MeetingDAO;
+import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
+import kit.edu.pse.goapp.server.daos.ParticipantDAO;
+import kit.edu.pse.goapp.server.daos.ParticipantDaoImpl;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public abstract class Meeting {
 
@@ -29,6 +38,36 @@ public abstract class Meeting {
 		this.creator = creator;
 		this.participants = new ArrayList<Participant>();
 
+	}
+
+	public void isParticipant(User user) throws IOException, CustomServerException {
+		ParticipantDAO participantDao = new ParticipantDaoImpl();
+		participantDao.setMeetingId(meetingId);
+		List<Participant> participants = participantDao.getAllParticipants();
+		boolean isParticipant = false;
+		for (Participant participant : participants) {
+			if (participant.getUser().getId() == user.getId()) {
+				isParticipant = true;
+			}
+		}
+		if (!isParticipant) {
+			throw new CustomServerException("The user has to be participant of this meeting to access it!",
+					HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+
+	public void isCreator(User user) throws IOException, CustomServerException {
+		MeetingDAO meetingDao = new MeetingDaoImpl();
+		meetingDao.setMeetingId(meetingId);
+		Meeting meeting = meetingDao.getMeetingByID();
+		int creatorId = meeting.getCreator().getParticipantId();
+		ParticipantDAO participantDAO = new ParticipantDaoImpl();
+		participantDAO.setParticipantId(creatorId);
+		Participant creator = participantDAO.getParticipantByID();
+		if (!(creator.getUser().getId() == user.getId())) {
+			throw new CustomServerException("The user has to be creator of this meeting to access it!",
+					HttpServletResponse.SC_UNAUTHORIZED);
+		}
 	}
 
 	public void addParticipant(Participant participant) {

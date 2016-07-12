@@ -5,8 +5,15 @@
 
 package kit.edu.pse.goapp.server.datamodels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import kit.edu.pse.goapp.server.daos.GroupMemberDAO;
+import kit.edu.pse.goapp.server.daos.GroupMemberDaoImpl;
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 // TODO: Auto-generated Javadoc
 public class Group {
@@ -48,6 +55,39 @@ public class Group {
 	 */
 	public void addGroupMember(User user) {
 		members.add(user);
+	}
+
+	public void isMember(User user) throws CustomServerException, IOException {
+		GroupMemberDAO groupMemberDao = new GroupMemberDaoImpl();
+		groupMemberDao.setGroupId(groupId);
+		groupMemberDao.setUserId(user.getId());
+
+		List<User> tmpMembers = groupMemberDao.getAllMembers();
+		if (!checkMemberAndAdmin(user, tmpMembers)) {
+			throw new CustomServerException("The user has to be member of this group to access it!",
+					HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+
+	public void isAdmin(User user) throws CustomServerException, IOException {
+		GroupMemberDAO groupMemberDao = new GroupMemberDaoImpl();
+		groupMemberDao.setGroupId(groupId);
+		groupMemberDao.setUserId(user.getId());
+		List<User> tmpAdmins = groupMemberDao.getAllAdmins();
+		if (!checkMemberAndAdmin(user, tmpAdmins)) {
+			throw new CustomServerException("The user has to be admin of this group to access it!",
+					HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+
+	private boolean checkMemberAndAdmin(User user, List<User> users) {
+		boolean isAuthorized = false;
+		for (User tmpUser : users) {
+			if (user.getId() == tmpUser.getId()) {
+				isAuthorized = true;
+			}
+		}
+		return isAuthorized;
 	}
 
 	/**

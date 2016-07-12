@@ -37,13 +37,16 @@ public class GroupDaoImpl implements GroupDAO {
 
 	@Override
 	public void addGroup() throws IOException, CustomServerException {
-		if (name == null) {
+		if (name == null || name.equals("")) {
 			throw new CustomServerException("A new group must have a name!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 
 		try (DatabaseConnection conn = new DatabaseConnection()) {
-			String sqlStmt = MessageFormat.format("INSERT INTO groups (name) VALUES (''{0}'')", name);
-			groupId = conn.insert(sqlStmt);
+			String queryAddGroup = MessageFormat.format("INSERT INTO groups (name) VALUES (''{0}'')", name);
+			groupId = conn.insert(queryAddGroup);
+			String queryAddCreatorToGroup = MessageFormat
+					.format("INSERT INTO group_members VALUES (''{0}'', ''{1}'', ''{2}'')", groupId, userId, 1);
+			conn.insert(queryAddCreatorToGroup);
 			if (groupId <= 0) {
 				throw new CustomServerException("The GroupID wasn't assigned to a value!",
 						HttpServletResponse.SC_NO_CONTENT);
@@ -78,12 +81,11 @@ public class GroupDaoImpl implements GroupDAO {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		if (name == null) {
+		if (name == null || name.equals("")) {
 			throw new CustomServerException(
 					"You cannot change the name of a group to null, because a group must have a name!",
 					HttpServletResponse.SC_BAD_REQUEST);
 		}
-		checkAuthorization();
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
 			String query = MessageFormat.format("UPDATE groups SET name = ''{0}'' WHERE group_id = ''{1}''", name,
 					groupId);
@@ -99,7 +101,6 @@ public class GroupDaoImpl implements GroupDAO {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		checkAuthorization();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String queryGroup = MessageFormat.format("DELETE FROM groups WHERE group_id = ''{0}''", groupId);
 			String queryGroupMember = MessageFormat.format("DELETE FROM group_members WHERE groups_id = ''{0}''",
@@ -136,37 +137,6 @@ public class GroupDaoImpl implements GroupDAO {
 		group.setGroupMembers(members);
 		group.setAdmins(admins);
 		return group;
-	}
-
-	private void checkAuthorization() throws IOException, CustomServerException {
-
-		GroupMemberDAO groupMemberDao = new GroupMemberDaoImpl();
-		groupMemberDao.setGroupId(groupId);
-		groupMemberDao.setUserId(userId);
-		UserDAO userDao = new UserDaoImpl();
-		userDao.setUserId(userId);
-		User user = userDao.getUserByID();
-		List<User> tmpMembers = groupMemberDao.getAllMembers();
-
-		if (!checkMemberAndAdmin(user, tmpMembers)) {
-			throw new CustomServerException("The user has to be member of this group to access it!",
-					HttpServletResponse.SC_UNAUTHORIZED);
-		}
-		List<User> tmpAdmins = groupMemberDao.getAllAdmins();
-		if (!checkMemberAndAdmin(user, tmpAdmins)) {
-			throw new CustomServerException("The user has to be admin of this group to access it!",
-					HttpServletResponse.SC_UNAUTHORIZED);
-		}
-	}
-
-	private boolean checkMemberAndAdmin(User user, List<User> users) {
-		boolean isAuthorized = false;
-		for (User tmpUser : users) {
-			if (user.getId() == tmpUser.getId()) {
-				isAuthorized = true;
-			}
-		}
-		return isAuthorized;
 	}
 
 	@Override

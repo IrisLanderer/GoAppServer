@@ -41,11 +41,7 @@ public class GpsServlet extends HttpServlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized", HttpServletResponse.SC_UNAUTHORIZED);
-			}
+			int userId = authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			GpsDaoImpl dao = (GpsDaoImpl) new GpsDaoConverter().parse(jsonString);
 			dao.setUserId(userId);
@@ -59,6 +55,16 @@ public class GpsServlet extends HttpServlet {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
 		}
+	}
+
+	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
+		HttpSession session = request.getSession(true);
+
+		int userId = 1;// (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		return userId;
 	}
 
 }

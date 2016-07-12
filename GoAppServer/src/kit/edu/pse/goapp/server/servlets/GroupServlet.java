@@ -18,7 +18,10 @@ import kit.edu.pse.goapp.server.converter.daos.GroupDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.GroupDAO;
 import kit.edu.pse.goapp.server.daos.GroupDaoImpl;
+import kit.edu.pse.goapp.server.daos.UserDAO;
+import kit.edu.pse.goapp.server.daos.UserDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Group;
+import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
@@ -43,21 +46,18 @@ public class GroupServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
+			int userId = authenticateUser(request);
 			String groupId = request.getParameter("groupId");
 			GroupDAO dao = new GroupDaoImpl();
-			dao.setUserId(userId);
 			try {
 				dao.setGroupId(Integer.parseInt(groupId));
 			} catch (Exception e) {
 				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
+			User user = createUserWithDao(userId);
+			Group groupCheckingAuthorization = createGroupWithDao(dao.getGroupId());
+			groupCheckingAuthorization.isMember(user);
 			if (dao != null) {
 				Group group = dao.getGroupByID();
 				response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
@@ -76,14 +76,13 @@ public class GroupServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
+			int userId = authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			GroupDAO dao = new GroupDaoConverter().parse(jsonString);
+			dao.setUserId(userId);
 			if (dao != null) {
 				dao.addGroup();
-			} else {
-				throw new CustomServerException("The DataAccessObject is empty!", HttpServletResponse.SC_BAD_REQUEST);
 			}
-
 			Group group = dao.getGroupByID();
 			response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 		} catch (CustomServerException e) {
@@ -96,21 +95,16 @@ public class GroupServlet extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
+			int userId = authenticateUser(request);
 			String groupId = request.getParameter("groupId");
 			GroupDAO dao = new GroupDaoImpl();
-			dao.setUserId(userId);
 			try {
 				dao.setGroupId(Integer.parseInt(groupId));
 			} catch (Exception e) {
 				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
+			checkIfUserIsMemberAndAdmin(userId, dao.getGroupId());
 			if (dao != null) {
 				dao.deleteGroup();
 			}
@@ -125,15 +119,10 @@ public class GroupServlet extends HttpServlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-
-			int userId = 1;// (int) session.getAttribute("userId");
-			if (userId <= 0) {
-				throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-			}
+			int userId = authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			GroupDAO dao = new GroupDaoConverter().parse(jsonString);
-			dao.setUserId(userId);
+			checkIfUserIsMemberAndAdmin(userId, dao.getGroupId());
 			if (dao != null) {
 				dao.updateGroup();
 			}
@@ -143,5 +132,36 @@ public class GroupServlet extends HttpServlet {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
 		}
+	}
+
+	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
+		HttpSession session = request.getSession(true);
+
+		int userId = 1;// (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		return userId;
+	}
+
+	private Group createGroupWithDao(int groupId) throws IOException, CustomServerException {
+		GroupDAO dao = new GroupDaoImpl();
+		dao.setGroupId(groupId);
+		Group group = dao.getGroupByID();
+		return group;
+	}
+
+	private User createUserWithDao(int userId) throws IOException, CustomServerException {
+		UserDAO userDao = new UserDaoImpl();
+		userDao.setUserId(userId);
+		User user = userDao.getUserByID();
+		return user;
+	}
+
+	private void checkIfUserIsMemberAndAdmin(int userId, int groupId) throws IOException, CustomServerException {
+		User user = createUserWithDao(userId);
+		Group groupCheckingAuthorization = createGroupWithDao(groupId);
+		groupCheckingAuthorization.isMember(user);
+		groupCheckingAuthorization.isAdmin(user);
 	}
 }

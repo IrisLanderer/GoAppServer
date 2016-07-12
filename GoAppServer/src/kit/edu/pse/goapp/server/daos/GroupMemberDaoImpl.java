@@ -105,7 +105,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public List<User> getAllAdmins() throws IOException {
+	public List<User> getAllAdmins() throws IOException, CustomServerException {
 		List<User> admins = new ArrayList<>();
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format(

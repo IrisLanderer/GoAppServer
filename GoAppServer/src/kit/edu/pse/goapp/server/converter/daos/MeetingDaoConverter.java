@@ -23,7 +23,7 @@ public class MeetingDaoConverter implements DaoConverter<MeetingDAO> {
 		Gson gson = new Gson();
 		ObjectConverter<Meeting> converter = new ObjectConverter<>();
 		Meeting meetingJsonObject = converter.deserialize(jsonString, Meeting.class);
-		MeetingDaoImpl dao = new MeetingDaoImpl();
+		MeetingDAO dao = new MeetingDaoImpl();
 		dao.setUserId(1);
 		dao.setMeetingId(meetingJsonObject.getMeetingId());
 		dao.setName(meetingJsonObject.getName());

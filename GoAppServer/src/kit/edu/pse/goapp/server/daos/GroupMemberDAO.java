@@ -23,7 +23,7 @@ public interface GroupMemberDAO {
 
 	public void setAdmin();
 
-	public List<User> getAllAdmins() throws IOException;
+	public List<User> getAllAdmins() throws IOException, CustomServerException;
 
 	public int getGroupId();
 
