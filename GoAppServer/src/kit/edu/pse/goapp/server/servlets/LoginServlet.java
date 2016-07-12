@@ -59,10 +59,16 @@ public class LoginServlet extends HttpServlet {
 					HttpSession session = request.getSession(true);
 					UserDAO userDao = new UserDaoImpl();
 					userDao.setGoogleId(googleId);
-					String userId = Integer.toString(userDao.getUserByGoogleID().getId());
-					session.setAttribute("userId", userId);
-					session.setAttribute("loggedIn", true);
-					response.setStatus(HttpServletResponse.SC_OK);
+					if (userDao.getUserByGoogleID() != null) {
+						throw new CustomServerException("Google id already registered, pleas log in",
+								HttpServletResponse.SC_BAD_REQUEST);
+					}
+					{
+						String userId = Integer.toString(userDao.getUserByGoogleID().getId());
+						session.setAttribute("userId", userId);
+						session.setAttribute("loggedIn", true);
+						response.setStatus(HttpServletResponse.SC_OK);
+					}
 				} else {
 					throw new CustomServerException("The GroupID from the JSON string isn't correct!",
 							HttpServletResponse.SC_BAD_REQUEST);
