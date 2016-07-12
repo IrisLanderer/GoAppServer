@@ -61,6 +61,7 @@ public class LoginServlet extends HttpServlet {
 					userDao.setGoogleId(googleId);
 					String userId = Integer.toString(userDao.getUserByGoogleID().getId());
 					session.setAttribute("userId", userId);
+					session.setAttribute("loggedIn", true);
 					response.setStatus(HttpServletResponse.SC_OK);
 				} else {
 					throw new CustomServerException("The GroupID from the JSON string isn't correct!",
@@ -84,6 +85,37 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		try {
+			if (request.getParameter("token") != null) {
+				String requestToken = request.getParameter("token").toString();
+				System.out.println("token:" + requestToken);
+
+				GoogleIdToken googleToken = validateToken(requestToken);
+				String googleId = getGoogleId(googleToken);
+				if (googleId.length() > 0) {
+					HttpSession session = request.getSession(true);
+					UserDAO userDao = new UserDaoImpl();
+					userDao.setGoogleId(googleId);
+					String userId = Integer.toString(userDao.getUserByGoogleID().getId());
+					session.setAttribute("userId", userId);
+					session.setAttribute("googleId", googleId);
+					session.setAttribute("register", true);
+					session.setAttribute("registerToken", true);
+
+					response.setStatus(HttpServletResponse.SC_OK);
+				} else {
+					throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+							HttpServletResponse.SC_BAD_REQUEST);
+				}
+			} else {
+				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
+		}
 
 	}
 

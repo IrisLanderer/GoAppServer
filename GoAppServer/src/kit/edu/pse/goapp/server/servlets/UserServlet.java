@@ -73,17 +73,22 @@ public class UserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			String googleId = request.getParameter("googleId");
-			String jsonString = request.getReader().readLine();
-			UserDAO dao = new UserDaoConverter().parse(jsonString);
-			// every user has notifications enabled by default
-			dao.setNotificationEnabled(true);
-			dao.setGoogleId(googleId);
-			if (dao != null) {
-				dao.addUser();
+			HttpSession session = request.getSession(true);
+
+			if ((boolean) session.getAttribute("register")) {
+				session.setAttribute("register", false);
+				String googleId = request.getParameter("googleId");
+				String jsonString = request.getReader().readLine();
+				UserDAO dao = new UserDaoConverter().parse(jsonString);
+				// every user has notifications enabled by default
+				dao.setNotificationEnabled(true);
+				dao.setGoogleId(googleId);
+				if (dao != null) {
+					dao.addUser();
+				}
+				User user = dao.getUserByID();
+				response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 			}
-			User user = dao.getUserByID();
-			response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
