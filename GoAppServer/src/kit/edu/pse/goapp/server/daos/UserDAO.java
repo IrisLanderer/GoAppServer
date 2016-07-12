@@ -25,7 +25,7 @@ public interface UserDAO {
 
 	public String getGoogleID();
 
-	public User getUserByGoogleID() throws IOException;
+	public User getUserByGoogleID() throws IOException, CustomServerException;
 
 	public int getUserId();
 

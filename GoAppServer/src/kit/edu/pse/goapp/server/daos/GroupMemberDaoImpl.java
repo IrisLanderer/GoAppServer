@@ -12,6 +12,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import kit.edu.pse.goapp.server.datamodels.Group;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
@@ -29,12 +32,19 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public void addMember() throws IOException {
+	public void addMember() throws IOException, CustomServerException {
 		if (groupId <= 0) {
-			throw new IllegalArgumentException("A group must have an GroupID!");
+			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (userId <= 0) {
-			throw new IllegalArgumentException("A group must have an UserID!");
+			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
+		}
+		List<User> groupMembers = createMembersWithDao();
+		for (User member : groupMembers) {
+			if (member.getId() == userId) {
+				throw new CustomServerException("The user is already a member of this group!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
 		}
 		try (DatabaseConnection conn = new DatabaseConnection()) {
 			String query = MessageFormat.format(
@@ -48,13 +58,15 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public void deleteMember() throws IOException {
+	public void deleteMember() throws IOException, CustomServerException {
 		if (groupId <= 0) {
-			throw new IllegalArgumentException("A group must have an GroupID!");
+			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (userId <= 0) {
-			throw new IllegalArgumentException("A group must have an UserID!");
+			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
+		List<User> groupMembers = createMembersWithDao();
+		checkIfMember(groupMembers);
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format(
 					"DELETE FROM group_members" + " WHERE groups_id = ''{0}'' AND users_id = ''{1}''", groupId, userId);
@@ -66,13 +78,15 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public void updateMember() throws IOException {
+	public void updateMember() throws IOException, CustomServerException {
 		if (groupId <= 0) {
-			throw new IllegalArgumentException("A group must have an GroupID!");
+			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (userId <= 0) {
-			throw new IllegalArgumentException("A group must have an UserID!");
+			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
+		List<User> groupMembers = createMembersWithDao();
+		checkIfMember(groupMembers);
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
 			String query = MessageFormat.format(
 					"UPDATE group_members SET is_admin = ''{0}'' " + "WHERE groups_id = ''{1}'' AND users_id = ''{2}''",
@@ -160,13 +174,42 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 
 	}
 
+	private List<User> createMembersWithDao() throws IOException, CustomServerException {
+		GroupDAO dao = new GroupDaoImpl();
+		dao.setGroupId(groupId);
+		Group group = dao.getGroupByID();
+		List<User> groupMembers = group.getGroupMembers();
+		return groupMembers;
+	}
+
+	private void checkIfMember(List<User> groupMembers) throws CustomServerException {
+		boolean isMember = false;
+		for (User member : groupMembers) {
+			if (member.getId() == userId) {
+				isMember = true;
+			}
+		}
+		if (!isMember) {
+			throw new CustomServerException("The user is not a member of this group!",
+					HttpServletResponse.SC_BAD_REQUEST);
+		}
+	}
+
 	private final class MembersSqlSelectionHandler implements SqlSelectHandler {
 		@Override
-		public void handleResultSet(ResultSet resultSet) throws SQLException {
+		public void handleResultSet(ResultSet resultSet) throws SQLException, CustomServerException {
+
+			boolean resultEmpty = true;
 
 			while (resultSet.next()) {
+				resultEmpty = false;
 				memberIds.add(resultSet.getInt(1));
 
+			}
+
+			if (resultEmpty) {
+				throw new CustomServerException("The selected resultset from the database is empty",
+						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
 
@@ -174,13 +217,21 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 
 	private final class AdminsSqlSelectionHandler implements SqlSelectHandler {
 		@Override
-		public void handleResultSet(ResultSet resultSet) throws SQLException {
+		public void handleResultSet(ResultSet resultSet) throws SQLException, CustomServerException {
+
+			boolean resultEmpty = true;
 
 			while (resultSet.next()) {
+				resultEmpty = false;
 				if (resultSet.getBoolean(2)) {
 					adminIds.add(resultSet.getInt(1));
 				}
 
+			}
+
+			if (resultEmpty) {
+				throw new CustomServerException("The selected resultset from the database is empty",
+						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
 

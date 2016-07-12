@@ -13,11 +13,11 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public interface GroupMemberDAO {
 
-	public void addMember() throws IOException;
+	public void addMember() throws IOException, CustomServerException;
 
-	public void deleteMember() throws IOException;
+	public void deleteMember() throws IOException, CustomServerException;
 
-	public void updateMember() throws IOException;
+	public void updateMember() throws IOException, CustomServerException;
 
 	public List<User> getAllMembers() throws IOException, CustomServerException;
 

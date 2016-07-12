@@ -12,6 +12,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
 import kit.edu.pse.goapp.server.datamodels.Participant;
 import kit.edu.pse.goapp.server.datamodels.User;
@@ -30,9 +32,10 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public void addParticipant() throws IOException {
+	public void addParticipant() throws IOException, CustomServerException {
 		if (meetingId <= 0) {
-			throw new IllegalArgumentException("A participant must have an MeetingID!");
+			throw new CustomServerException("A participant must have an MeetingID!",
+					HttpServletResponse.SC_BAD_REQUEST);
 		}
 		try (DatabaseConnection conn = new DatabaseConnection()) {
 			String query = MessageFormat.format("INSERT INTO participants (users_id, meetings_id, confirmation) VALUES"
@@ -45,9 +48,9 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public void deleteParticipant() throws IOException {
+	public void deleteParticipant() throws IOException, CustomServerException {
 		if (participantId <= 0) {
-			throw new IllegalArgumentException("A participant must have an ID!");
+			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format("DELETE FROM participants WHERE participants_id = ''{0}''",
@@ -81,13 +84,17 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	@Override
 	public Participant getParticipantByID() throws IOException, CustomServerException {
 		if (participantId <= 0) {
-			throw new IllegalArgumentException("A participant must have an ID!");
+			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		try (DatabaseConnection connection = new DatabaseConnection()) {
 			String query = MessageFormat.format("SELECT participants_id, users_id, meetings_id, confirmation "
 					+ "FROM participants " + "WHERE participants_id = ''{0}''", participantId);
 			connection.select(query, new ParticipantSqlSelectionHandler());
 		} catch (Throwable e) {
+			if (e.getCause().getClass() == CustomServerException.class) {
+				throw new CustomServerException("The selected resultset from the database is empty",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
 			throw new IOException(e);
 		}
 		UserDAO dao = new UserDaoImpl();
@@ -98,9 +105,9 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public void updateParticipant() throws IOException {
+	public void updateParticipant() throws IOException, CustomServerException {
 		if (participantId <= 0) {
-			throw new IllegalArgumentException("A participant must have an ID!");
+			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		try (DatabaseConnection connetion = new DatabaseConnection()) {
 			String query = MessageFormat.format(
@@ -153,28 +160,58 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		this.confirmation = confirmation;
 	}
 
+	// private List<User> createParticipantsWithDao() throws IOException,
+	// CustomServerException {
+	// GroupDAO dao = new GroupDaoImpl();
+	// dao.setGroupId(groupId);
+	// Group group = dao.getGroupByID();
+	// List<User> groupMembers = group.getGroupMembers();
+	// return groupMembers;
+	// }
+	//
+	// private void checkIfParticipant(List<User> groupMembers) throws
+	// CustomServerException {
+	// boolean isMember = false;
+	// for (User member : groupMembers) {
+	// if (member.getId() == userId) {
+	// isMember = true;
+	// }
+	// }
+	// if (!isMember) {
+	// throw new CustomServerException("The user is not a member of this
+	// group!",
+	// HttpServletResponse.SC_BAD_REQUEST);
+	// }
+	// }
+
 	private final class ParticipantSqlSelectionHandler implements SqlSelectHandler {
 		@Override
-		public void handleResultSet(ResultSet resultSet) throws SQLException {
+		public void handleResultSet(ResultSet resultSet) throws SQLException, CustomServerException {
+			boolean resultEmpty = true;
 			while (resultSet.next()) {
-				if (userId <= 0) {
-					userId = resultSet.getInt(2);
-				}
-				if (meetingId <= 0) {
-					meetingId = resultSet.getInt(3);
-				}
+				resultEmpty = false;
+				userId = resultSet.getInt(2);
+				meetingId = resultSet.getInt(3);
 				confirmation = MeetingConfirmation.valueOf(resultSet.getString(4).toUpperCase());
+			}
+			if (resultEmpty) {
+				throw new CustomServerException("The selected resultset from the database is empty",
+						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
 	}
 
 	private final class ParticipantsSqlSelectionHandler implements SqlSelectHandler {
 		@Override
-		public void handleResultSet(ResultSet resultSet) throws SQLException {
-
+		public void handleResultSet(ResultSet resultSet) throws SQLException, CustomServerException {
+			boolean resultEmpty = true;
 			while (resultSet.next()) {
+				resultEmpty = false;
 				participantIds.add(resultSet.getInt(1));
-
+			}
+			if (resultEmpty) {
+				throw new CustomServerException("The selected resultset from the database is empty",
+						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
 

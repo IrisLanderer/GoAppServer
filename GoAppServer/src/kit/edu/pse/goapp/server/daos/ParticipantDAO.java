@@ -14,15 +14,15 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public interface ParticipantDAO {
 
-	public void addParticipant() throws IOException;
+	public void addParticipant() throws IOException, CustomServerException;
 
-	public void deleteParticipant() throws IOException;
+	public void deleteParticipant() throws IOException, CustomServerException;
 
 	public List<Participant> getAllParticipants() throws IOException, CustomServerException;
 
 	public Participant getParticipantByID() throws IOException, CustomServerException;
 
-	public void updateParticipant() throws IOException;
+	public void updateParticipant() throws IOException, CustomServerException;
 
 	void setConfirmation(MeetingConfirmation confirmation);
 

@@ -13,7 +13,7 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public interface MeetingDAO {
 
-	public void addMeeting() throws IOException;
+	public void addMeeting() throws IOException, CustomServerException;
 
 	public List<Meeting> getAllMeetings() throws IOException, CustomServerException;
 
