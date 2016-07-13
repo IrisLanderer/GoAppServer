@@ -36,12 +36,20 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	@Override
-	public void addGroup() throws IOException, CustomServerException {
+	public void addGroup() throws IOException {
+		try {
+			this.addGroup(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	protected void addGroup(DatabaseConnection conn) throws IOException, CustomServerException {
 		if (name == null || name.equals("")) {
 			throw new CustomServerException("A new group must have a name!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 
-		try (DatabaseConnection conn = new DatabaseConnection()) {
+		try {
 			String queryAddGroup = MessageFormat.format("INSERT INTO groups (name) VALUES (''{0}'')", name);
 			groupId = conn.insert(queryAddGroup);
 			String queryAddCreatorToGroup = MessageFormat
@@ -49,7 +57,7 @@ public class GroupDaoImpl implements GroupDAO {
 			conn.insert(queryAddCreatorToGroup);
 			if (groupId <= 0) {
 				throw new CustomServerException("The GroupID wasn't assigned to a value!",
-						HttpServletResponse.SC_NO_CONTENT);
+						HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 		} catch (Throwable e) {
 			throw new IOException(e);
@@ -57,9 +65,19 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	@Override
-	public List<Group> getAllGroups() throws IOException, CustomServerException {
+	public List<Group> getAllGroups() throws IOException {
+		List<Group> groups = null;
+		try {
+			groups = getAllGroups(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return groups;
+	}
+
+	public List<Group> getAllGroups(DatabaseConnection connection) throws IOException, CustomServerException {
 		List<Group> groups = new ArrayList<>();
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format(
 					"SELECT group_members.groups_id FROM group_members WHERE group_members.users_id =  ''{0}''",
 					userId);
@@ -77,7 +95,15 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	@Override
-	public void updateGroup() throws IOException, CustomServerException {
+	public void updateGroup() throws IOException {
+		try {
+			updateGroup(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void updateGroup(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -86,10 +112,10 @@ public class GroupDaoImpl implements GroupDAO {
 					"You cannot change the name of a group to null, because a group must have a name!",
 					HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connetion = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format("UPDATE groups SET name = ''{0}'' WHERE group_id = ''{1}''", name,
 					groupId);
-			connetion.update(query);
+			connection.update(query);
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -97,11 +123,19 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	@Override
-	public void deleteGroup() throws IOException, CustomServerException {
+	public void deleteGroup() throws IOException {
+		try {
+			deleteGroup(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void deleteGroup(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String queryGroup = MessageFormat.format("DELETE FROM groups WHERE group_id = ''{0}''", groupId);
 			String queryGroupMember = MessageFormat.format("DELETE FROM group_members WHERE groups_id = ''{0}''",
 					groupId);
@@ -116,11 +150,21 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	@Override
-	public Group getGroupByID() throws IOException, CustomServerException {
+	public Group getGroupByID() throws IOException {
+		Group group = null;
+		try {
+			group = getGroupByID(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return group;
+	}
+
+	protected Group getGroupByID(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat
 					.format("SELECT g.group_id, g.name, m.users_id, m.is_admin, u.name FROM groups g left outer join "
 							+ "(group_members m left outer join users u on m.users_id = u.users_id)"

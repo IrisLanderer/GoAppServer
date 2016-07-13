@@ -32,15 +32,23 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public void addUser() throws IOException, CustomServerException {
-		if (name == null) {
+	public void addUser() throws IOException {
+		try {
+			this.addUser(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void addUser(DatabaseConnection conn) throws IOException, CustomServerException {
+		if (name == null || name.equals("")) {
 			throw new CustomServerException("A new user must have a name!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		if (googleId == null) {
+		if (googleId == null || googleId.equals("")) {
 			throw new CustomServerException("A new user must have a googleId!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 
-		try (DatabaseConnection conn = new DatabaseConnection()) {
+		try {
 			String sqlStmt = MessageFormat.format(
 					"INSERT INTO users (name, google_id, notifications_enabled) "
 							+ "VALUES (''{0}'', ''{1}'', ''{2}'')",
@@ -57,11 +65,19 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public void deleteUser() throws IOException, CustomServerException {
+	public void deleteUser() throws IOException {
+		try {
+			this.deleteUser(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void deleteUser(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (userId <= 0) {
 			throw new CustomServerException("A user must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String queryUser = MessageFormat.format("DELETE FROM users WHERE users_id = ''{0}''", userId);
 			String queryGroupMembers = MessageFormat.format("DELETE FROM group_members WHERE users_id = ''{0}''",
 					userId);
@@ -76,15 +92,28 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public void updateUser() throws IOException, CustomServerException {
+	public void updateUser() throws IOException {
+		try {
+			this.updateUser(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void updateUser(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (userId <= 0) {
 			throw new CustomServerException("A user must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connetion = new DatabaseConnection()) {
+		if (name == null || name.equals("")) {
+			throw new CustomServerException(
+					"You cannot change the name of a user to null, because a user must have a name!",
+					HttpServletResponse.SC_BAD_REQUEST);
+		}
+		try {
 			String query = MessageFormat.format(
 					"UPDATE users SET name = ''{0}'', notifications_enabled = ''{1}'' WHERE users_id = ''{2}''", name,
 					(notificationEnabled == true) ? 1 : 0, userId);
-			connetion.update(query);
+			connection.update(query);
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -92,9 +121,19 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public List<User> getAllUsers() throws IOException, CustomServerException {
+	public List<User> getAllUsers() throws IOException {
+		List<User> users = null;
+		try {
+			users = getAllUsers(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return users;
+	}
+
+	public List<User> getAllUsers(DatabaseConnection connection) throws IOException, CustomServerException {
 		List<User> users = new ArrayList<>();
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format("SELECT users.users_id FROM users", userId);
 			connection.select(query, new UsersSqlSelectionHandler());
 		} catch (Throwable e) {
@@ -110,11 +149,21 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUserByID() throws IOException, CustomServerException {
+	public User getUserByID() throws IOException {
+		User user = null;
+		try {
+			user = getUserByID(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return user;
+	}
+
+	public User getUserByID(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (userId <= 0) {
 			throw new CustomServerException("A user must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format("SELECT u.users_id, u.name, u.notifications_enabled " + "FROM users u  "
 					+ "WHERE u.users_id = ''{0}''", userId);
 			connection.select(query, new UserSqlSelectionHandler());
@@ -130,13 +179,23 @@ public class UserDaoImpl implements UserDAO {
 		}
 	}
 
-	// TODO
 	@Override
-	public User getUserByGoogleID() throws IOException, CustomServerException {
-		if (googleId == null) {
+	public User getUserByGoogleID() throws IOException {
+		User user = null;
+		try {
+			user = getUserByGoogleID(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return user;
+	}
+
+	// TODO
+	public User getUserByGoogleID(DatabaseConnection connection) throws IOException, CustomServerException {
+		if (googleId == null || googleId.equals("")) {
 			throw new CustomServerException("A user must have an GoogleID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format(
 					"SELECT u.users_id, u.name, u.notifications_enabled FROM users u  " + "WHERE u.google_id = ''{0}''",
 					googleId);

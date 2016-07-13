@@ -32,21 +32,32 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public void addMember() throws IOException, CustomServerException {
+	public void addMember() throws IOException {
+		try {
+			this.addMember(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void addMember(DatabaseConnection conn) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		List<User> groupMembers = createMembersWithDao();
-		for (User member : groupMembers) {
-			if (member.getId() == userId) {
-				throw new CustomServerException("The user is already a member of this group!",
-						HttpServletResponse.SC_BAD_REQUEST);
-			}
-		}
-		try (DatabaseConnection conn = new DatabaseConnection()) {
+		// checks if this user is already a member of this group. not yet tested
+		// and a requirement with priority b
+		// List<User> groupMembers = createMembersWithDao();
+		// for (User member : groupMembers) {
+		// if (member.getId() == userId) {
+		// throw new CustomServerException("The user is already a member of this
+		// group!",
+		// HttpServletResponse.SC_BAD_REQUEST);
+		// }
+		// }
+		try {
 			String query = MessageFormat.format(
 					"INSERT INTO group_members (groups_id, users_id, is_admin) VALUES (''{0}'', ''{1}'', ''{2}'')",
 					groupId, userId, isAdmin == true ? 1 : 0);
@@ -58,16 +69,26 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public void deleteMember() throws IOException, CustomServerException {
+	public void deleteMember() throws IOException {
+		try {
+			this.deleteMember(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void deleteMember(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		List<User> groupMembers = createMembersWithDao();
-		checkIfMember(groupMembers);
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		// checks if this user is a member of this group at all. not yet tested
+		// and a requirement with priority b
+		// List<User> groupMembers = createMembersWithDao();
+		// checkIfMember(groupMembers);
+		try {
 			String query = MessageFormat.format(
 					"DELETE FROM group_members" + " WHERE groups_id = ''{0}'' AND users_id = ''{1}''", groupId, userId);
 			connection.delete(query);
@@ -78,20 +99,30 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public void updateMember() throws IOException, CustomServerException {
+	public void updateMember() throws IOException {
+		try {
+			this.updateMember(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void updateMember(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		List<User> groupMembers = createMembersWithDao();
-		checkIfMember(groupMembers);
-		try (DatabaseConnection connetion = new DatabaseConnection()) {
+		// checks if this user is a member of this group at all. not yet tested
+		// and a requirement with priority b
+		// List<User> groupMembers = createMembersWithDao();
+		// checkIfMember(groupMembers);
+		try {
 			String query = MessageFormat.format(
 					"UPDATE group_members SET is_admin = ''{0}'' " + "WHERE groups_id = ''{1}'' AND users_id = ''{2}''",
 					isAdmin == true ? 1 : 0, groupId, userId);
-			connetion.update(query);
+			connection.update(query);
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -99,9 +130,22 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public List<User> getAllMembers() throws IOException, CustomServerException {
+	public List<User> getAllMembers() throws IOException {
+		List<User> members = null;
+		try {
+			members = getAllMembers(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return members;
+	}
+
+	public List<User> getAllMembers(DatabaseConnection connection) throws IOException, CustomServerException {
+		if (groupId <= 0) {
+			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
+		}
 		List<User> members = new ArrayList<>();
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format(
 					"SELECT group_members.users_id FROM group_members WHERE group_members.groups_id =  ''{0}''",
 					groupId);
@@ -119,9 +163,22 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	@Override
-	public List<User> getAllAdmins() throws IOException, CustomServerException {
+	public List<User> getAllAdmins() throws IOException {
+		List<User> admins = null;
+		try {
+			admins = getAllAdmins(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return admins;
+	}
+
+	public List<User> getAllAdmins(DatabaseConnection connection) throws IOException, CustomServerException {
+		if (groupId <= 0) {
+			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
+		}
 		List<User> admins = new ArrayList<>();
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format(
 					"SELECT group_members.users_id, group_members.is_admin FROM group_members WHERE group_members.groups_id =  ''{0}''",
 					groupId);
@@ -166,12 +223,6 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	@Override
 	public void setAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
-	}
-
-	@Override
-	public void setAdmin() {
-		// TODO Auto-generated method stub
-
 	}
 
 	private List<User> createMembersWithDao() throws IOException, CustomServerException {

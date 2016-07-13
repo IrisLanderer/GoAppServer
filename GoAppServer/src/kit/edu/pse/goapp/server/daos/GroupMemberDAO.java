@@ -21,8 +21,6 @@ public interface GroupMemberDAO {
 
 	public List<User> getAllMembers() throws IOException, CustomServerException;
 
-	public void setAdmin();
-
 	public List<User> getAllAdmins() throws IOException, CustomServerException;
 
 	public int getGroupId();

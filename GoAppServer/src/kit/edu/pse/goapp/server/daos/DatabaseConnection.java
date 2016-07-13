@@ -11,6 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.servlet.http.HttpServletResponse;
+
+import kit.edu.pse.goapp.server.exceptions.CustomServerException;
+
 public class DatabaseConnection implements AutoCloseable {
 
 	private static final String URL = "jdbc:mysql://localhost:3306/PSESoSe16GoGruppe2"
@@ -86,7 +90,7 @@ public class DatabaseConnection implements AutoCloseable {
 			statement = connection.createStatement();
 			int affectedRows = statement.executeUpdate(sqlStatement);
 			if (affectedRows == 0) {
-				throw new IllegalArgumentException("This entry doesn't exist!");
+				throw new CustomServerException("This entry doesn't exist!", HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
 			throw new Exception(e);
@@ -107,7 +111,7 @@ public class DatabaseConnection implements AutoCloseable {
 			statement = connection.createStatement();
 			int affectedRows = statement.executeUpdate(sqlStatement);
 			if (affectedRows == 0) {
-				throw new IllegalArgumentException("This entry doesn't exist!");
+				throw new CustomServerException("This entry doesn't exist!", HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
 			throw new Exception(e);

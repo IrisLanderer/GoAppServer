@@ -32,15 +32,30 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public void addParticipant() throws IOException, CustomServerException {
+	public void addParticipant() throws IOException {
+		try {
+			this.addParticipant(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void addParticipant(DatabaseConnection conn) throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new CustomServerException("A participant must have an MeetingID!",
 					HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection conn = new DatabaseConnection()) {
+		if (userId <= 0) {
+			throw new CustomServerException("A participant must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
+		}
+		try {
 			String query = MessageFormat.format("INSERT INTO participants (users_id, meetings_id, confirmation) VALUES"
 					+ " (''{0}'', ''{1}'', ''{2}'')", userId, meetingId, confirmation);
 			participantId = conn.insert(query);
+			if (participantId <= 0) {
+				throw new CustomServerException("The ParticipantID wasn't assigned to a value!",
+						HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -48,11 +63,19 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public void deleteParticipant() throws IOException, CustomServerException {
+	public void deleteParticipant() throws IOException {
+		try {
+			this.deleteParticipant(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
+	public void deleteParticipant(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (participantId <= 0) {
 			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format("DELETE FROM participants WHERE participants_id = ''{0}''",
 					participantId);
 			connection.delete(query);
@@ -63,9 +86,24 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public List<Participant> getAllParticipants() throws IOException, CustomServerException {
+	public List<Participant> getAllParticipants() throws IOException {
+		List<Participant> participants = null;
+		try {
+			participants = getAllParticipants(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return participants;
+	}
+
+	public List<Participant> getAllParticipants(DatabaseConnection connection)
+			throws IOException, CustomServerException {
+		if (meetingId <= 0) {
+			throw new CustomServerException("The MeetingId is necessary to get all participants!",
+					HttpServletResponse.SC_BAD_REQUEST);
+		}
 		List<Participant> participants = new ArrayList<>();
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format("SELECT participants.participants_id FROM participants  "
 					+ " WHERE participants.meetings_id = ''{0}''", meetingId);
 			connection.select(query, new ParticipantsSqlSelectionHandler());
@@ -82,11 +120,21 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public Participant getParticipantByID() throws IOException, CustomServerException {
+	public Participant getParticipantByID() throws IOException {
+		Participant participant = null;
+		try {
+			participant = getParticipantByID(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+		return participant;
+	}
+
+	public Participant getParticipantByID(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (participantId <= 0) {
 			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		try (DatabaseConnection connection = new DatabaseConnection()) {
+		try {
 			String query = MessageFormat.format("SELECT participants_id, users_id, meetings_id, confirmation "
 					+ "FROM participants " + "WHERE participants_id = ''{0}''", participantId);
 			connection.select(query, new ParticipantSqlSelectionHandler());
@@ -105,15 +153,35 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	@Override
-	public void updateParticipant() throws IOException, CustomServerException {
-		if (participantId <= 0) {
-			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
+	public void updateParticipant() throws IOException {
+		try {
+			this.updateParticipant(new DatabaseConnection());
+		} catch (Exception e) {
+			throw new IOException(e);
 		}
-		try (DatabaseConnection connetion = new DatabaseConnection()) {
+	}
+
+	public void updateParticipant(DatabaseConnection connection) throws IOException, CustomServerException {
+		if (participantId <= 0) {
+			throw new CustomServerException("A participant must have a ParticipantID!",
+					HttpServletResponse.SC_BAD_REQUEST);
+		}
+		if (userId <= 0) {
+			throw new CustomServerException("A participant must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
+		}
+		if (meetingId <= 0) {
+			throw new CustomServerException("A participant must have an MeetingID!",
+					HttpServletResponse.SC_BAD_REQUEST);
+		}
+		if (confirmation == null) {
+			throw new CustomServerException("A participant must give a cofirmation status of a meeting!",
+					HttpServletResponse.SC_BAD_REQUEST);
+		}
+		try {
 			String query = MessageFormat.format(
 					"UPDATE participants SET confirmation = ''{0}''" + " WHERE participants_id = ''{1}''", confirmation,
 					participantId);
-			connetion.update(query);
+			connection.update(query);
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
