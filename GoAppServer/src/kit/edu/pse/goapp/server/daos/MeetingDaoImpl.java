@@ -278,6 +278,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		this.creatorId = creatorId;
 	}
 
+	@Override
 	public int getUserId() {
 		return userId;
 	}

@@ -54,6 +54,7 @@ public class MeetingServlet extends HttpServlet {
 			int userId = authenticateUser(request);
 			String meetingId = request.getParameter("meetingId");
 			MeetingDAO dao = new MeetingDaoImpl();
+			dao.setUserId(userId);
 			try {
 				dao.setMeetingId(Integer.parseInt(meetingId));
 			} catch (Exception e) {
@@ -61,7 +62,7 @@ public class MeetingServlet extends HttpServlet {
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 			User user = createUserWithDao(userId);
-			Meeting meetingCheckParticipant = createMeetingWithDao(dao.getMeetingId());
+			Meeting meetingCheckParticipant = createMeetingWithDao(dao.getMeetingId(), dao.getUserId());
 			meetingCheckParticipant.isParticipant(user);
 			if (dao != null) {
 				Meeting meeting = dao.getMeetingByID();
@@ -191,9 +192,10 @@ public class MeetingServlet extends HttpServlet {
 		return user;
 	}
 
-	private Meeting createMeetingWithDao(int meetingId) throws IOException, CustomServerException {
+	private Meeting createMeetingWithDao(int meetingId, int userId) throws IOException, CustomServerException {
 		MeetingDAO dao = new MeetingDaoImpl();
 		dao.setMeetingId(meetingId);
+		dao.setUserId(userId);
 		Meeting meeting = dao.getMeetingByID();
 		return meeting;
 	}
@@ -201,7 +203,7 @@ public class MeetingServlet extends HttpServlet {
 	private void checkIfUserIsParticipantAndCreator(int userId, int meetingId)
 			throws IOException, CustomServerException {
 		User user = createUserWithDao(userId);
-		Meeting meetingCheckParticipant = createMeetingWithDao(meetingId);
+		Meeting meetingCheckParticipant = createMeetingWithDao(meetingId, userId);
 		meetingCheckParticipant.isParticipant(user);
 		meetingCheckParticipant.isCreator(user);
 	}

@@ -61,4 +61,6 @@ public interface MeetingDAO {
 
 	void setUserId(int userId);
 
+	int getUserId();
+
 }

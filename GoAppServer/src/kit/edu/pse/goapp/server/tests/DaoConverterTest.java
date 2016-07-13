@@ -19,6 +19,7 @@ import kit.edu.pse.goapp.server.daos.GroupDAO;
 import kit.edu.pse.goapp.server.daos.GroupDaoImpl;
 import kit.edu.pse.goapp.server.daos.GroupMemberDAO;
 import kit.edu.pse.goapp.server.daos.GroupMemberDaoImpl;
+import kit.edu.pse.goapp.server.daos.MeetingDAO;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
 import kit.edu.pse.goapp.server.daos.ParticipantDAO;
 import kit.edu.pse.goapp.server.daos.ParticipantDaoImpl;
@@ -129,8 +130,8 @@ public class DaoConverterTest {
 				+ "\"user\":{\"userId\":1,\"name\":\"Iris\",\"notificationEnabled\":false,\"meetings\":[],\"groups\":[]},\"confirmation\":\"REJECTED\"},"
 				+ "\"participants\":[]}";
 		MeetingDaoConverter converter = new MeetingDaoConverter();
-		MeetingDaoImpl dao = (MeetingDaoImpl) converter.parse(jsonString);
-		MeetingDaoImpl expectedDao = new MeetingDaoImpl();
+		MeetingDAO dao = (MeetingDAO) converter.parse(jsonString);
+		MeetingDAO expectedDao = new MeetingDaoImpl();
 		expectedDao.setUserId(1);
 		expectedDao.setMeetingId(1);
 		expectedDao.setName("test");
