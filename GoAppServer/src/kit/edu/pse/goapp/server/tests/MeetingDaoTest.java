@@ -3,8 +3,6 @@
  */
 package kit.edu.pse.goapp.server.tests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.IOException;
 
 import org.junit.Test;
@@ -12,11 +10,6 @@ import org.mockito.Mockito;
 
 import kit.edu.pse.goapp.server.daos.DatabaseConnection;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
-import kit.edu.pse.goapp.server.datamodels.GPS;
-import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
-import kit.edu.pse.goapp.server.datamodels.Participant;
-import kit.edu.pse.goapp.server.datamodels.Tour;
-import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
@@ -182,7 +175,6 @@ public class MeetingDaoTest extends MeetingDaoImpl {
 		MeetingDaoTest dao = new MeetingDaoTest();
 		dao.setMeetingId(1);
 		dao.deleteMeeting(mock);
-
 	}
 
 	@Test(expected = CustomServerException.class)
@@ -330,35 +322,37 @@ public class MeetingDaoTest extends MeetingDaoImpl {
 
 	}
 
-	@Test()
-	public void getTourByIdSuccessfully() throws Exception {
-		GPS gps = new GPS(2, 3, 3);
-		User user = new User(1, "user");
-		Participant creator = new Participant(1, 1, user, MeetingConfirmation.PENDING);
-		Tour expectedTour = new Tour(1, "test", gps, 1, 2, creator);
-		// Stubbing behavior
-		DatabaseConnection mock = Mockito.mock(DatabaseConnection.class);
-
-		MeetingDaoTest dao = new MeetingDaoTest();
-		dao.setMeetingId(1);
-		dao.setName("test");
-		dao.setPlaceX(2);
-		dao.setPlaceY(3);
-		dao.setPlaceZ(3);
-		dao.setTimestamp(1);
-		dao.setDuration(2);
-		dao.setCreatorId(1);
-		Tour tour = (Tour) dao.getMeetingByID(mock);
-		assertEquals(expectedTour.getMeetingId(), tour.getMeetingId());
-		assertEquals(expectedTour.getName(), tour.getName());
-		assertEquals(expectedTour.getPlace().getX(), tour.getPlace().getX(), 3);
-		assertEquals(expectedTour.getPlace().getY(), tour.getPlace().getY(), 3);
-		assertEquals(expectedTour.getPlace().getZ(), tour.getPlace().getZ(), 3);
-		assertEquals(expectedTour.getTimespamp(), tour.getTimespamp());
-		assertEquals(expectedTour.getDuration(), tour.getDuration());
-		assertEquals(expectedTour.getCreator().getParticipantId(), tour.getCreator().getParticipantId());
-
-	}
+	// @Test()
+	// public void getTourByIdSuccessfully() throws Exception {
+	// GPS gps = new GPS(2, 3, 3);
+	// User user = new User(1, "user");
+	// Participant creator = new Participant(1, 1, user,
+	// MeetingConfirmation.PENDING);
+	// Tour expectedTour = new Tour(1, "test", gps, 1, 2, creator);
+	// // Stubbing behavior
+	// DatabaseConnection mock = Mockito.mock(DatabaseConnection.class);
+	//
+	// MeetingDaoTest dao = new MeetingDaoTest();
+	// dao.setMeetingId(1);
+	// dao.setName("test");
+	// dao.setPlaceX(2);
+	// dao.setPlaceY(3);
+	// dao.setPlaceZ(3);
+	// dao.setTimestamp(1);
+	// dao.setDuration(2);
+	// dao.setCreatorId(1);
+	// Tour tour = (Tour) dao.getMeetingByID(mock);
+	// assertEquals(expectedTour.getMeetingId(), tour.getMeetingId());
+	// assertEquals(expectedTour.getName(), tour.getName());
+	// assertEquals(expectedTour.getPlace().getX(), tour.getPlace().getX(), 3);
+	// assertEquals(expectedTour.getPlace().getY(), tour.getPlace().getY(), 3);
+	// assertEquals(expectedTour.getPlace().getZ(), tour.getPlace().getZ(), 3);
+	// assertEquals(expectedTour.getTimespamp(), tour.getTimespamp());
+	// assertEquals(expectedTour.getDuration(), tour.getDuration());
+	// assertEquals(expectedTour.getCreator().getParticipantId(),
+	// tour.getCreator().getParticipantId());
+	//
+	// }
 
 	// @Test()
 	// public void getEventByIdSuccessfully() throws Exception {

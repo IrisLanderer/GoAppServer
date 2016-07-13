@@ -143,4 +143,25 @@ public class GroupDaoTest extends GroupDaoImpl {
 
 	}
 
+	// @Test(expected = CustomServerException.class)
+	// public void testDatabaseDelete() throws Exception {
+	// DatabaseConnection conn = new DatabaseConnection();
+	// int groupId = 1;
+	// String query = MessageFormat.format("delete from groups where group_id =
+	// ''{0}''", groupId);
+	// conn.delete(query);
+	// conn.close();
+	// }
+	//
+	// @Test(expected = CustomServerException.class)
+	// public void testDatabaseUpdate() throws Exception {
+	// DatabaseConnection conn = new DatabaseConnection();
+	// int groupId = 1;
+	// String name = "test";
+	// String query = MessageFormat.format("update group set group_id = ''{0}'',
+	// name = ''{1}''", groupId, name);
+	// conn.update(query);
+	// conn.close();
+	// }
+
 }

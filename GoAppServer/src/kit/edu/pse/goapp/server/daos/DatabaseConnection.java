@@ -93,7 +93,7 @@ public class DatabaseConnection implements AutoCloseable {
 				throw new CustomServerException("This entry doesn't exist!", HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			throw new Exception(e);
+			throw new CustomServerException(e.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
 		} finally {
 			if (statement != null) {
 				try {
@@ -114,7 +114,7 @@ public class DatabaseConnection implements AutoCloseable {
 				throw new CustomServerException("This entry doesn't exist!", HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			throw new Exception(e);
+			throw new CustomServerException(e.getMessage(), HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
 
