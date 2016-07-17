@@ -56,6 +56,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 				throw new CustomServerException("The ParticipantID wasn't assigned to a value!",
 						HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
+			conn.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -79,6 +80,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 			String query = MessageFormat.format("DELETE FROM participants WHERE participants_id = ''{0}''",
 					participantId);
 			connection.delete(query);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -96,8 +98,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		return participants;
 	}
 
-	protected List<Participant> getAllParticipants(DatabaseConnection connection)
-			throws IOException, CustomServerException {
+	protected List<Participant> getAllParticipants(DatabaseConnection connection) throws Exception {
 		if (meetingId <= 0) {
 			throw new CustomServerException("The MeetingId is necessary to get all participants!",
 					HttpServletResponse.SC_BAD_REQUEST);
@@ -116,6 +117,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 			Participant participant = dao.getParticipantByID();
 			participants.add(participant);
 		}
+		connection.close();
 		return participants;
 	}
 
@@ -130,7 +132,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		return participant;
 	}
 
-	protected Participant getParticipantByID(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected Participant getParticipantByID(DatabaseConnection connection) throws Exception {
 		if (participantId <= 0) {
 			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -149,6 +151,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		dao.setUserId(userId);
 		User user = dao.getUserByID();
 		Participant participant = new Participant(participantId, meetingId, user, confirmation);
+		connection.close();
 		return participant;
 	}
 
@@ -182,6 +185,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 					"UPDATE participants SET confirmation = ''{0}''" + " WHERE participants_id = ''{1}''", confirmation,
 					participantId);
 			connection.update(query);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}

@@ -125,7 +125,7 @@ public class DaoConverterTest {
 	@Test
 	public void testJsonToMeetingDao() throws CustomServerException {
 		String jsonString = "{\"type\":\"Tour\",\"center\":{\"participants\":[],\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0}},"
-				+ "\"meetingId\":1,\"name\":\"test\",\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0},\"timespamp\":\"15\",\"duration\":3,"
+				+ "\"meetingId\":1,\"name\":\"test\",\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0},\"timestamp\":\"15\",\"duration\":3,"
 				+ "\"creator\":{\"participantId\":14,\"meetingId\":13,"
 				+ "\"user\":{\"userId\":1,\"name\":\"Iris\",\"notificationEnabled\":false,\"meetings\":[],\"groups\":[]},\"confirmation\":\"REJECTED\"},"
 				+ "\"participants\":[]}";

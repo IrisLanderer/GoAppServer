@@ -37,7 +37,7 @@ public class ObjectConverterTest {
 		String expected = "{\"type\":\"Tour\",\"center\":{\""
 				+ "participants\":[],\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0}},\"meetingId\""
 				+ ":15,\"name\":\"testTour\",\"place\":{\"x\":1.0,\"y\":2.0,\"z"
-				+ "\":3.0},\"timespamp\":0,\"duration\":2,\"creator"
+				+ "\":3.0},\"timestamp\":0,\"duration\":2,\"creator"
 				+ "\":{\"participantId\":1,\"meetingId\":15,\"user\":{\"userId\":1,\"name\":\"testName\",\"notificationEnabled\":false,\"meetings\":[],\"groups\":[]},\"confirmation\":"
 				+ "\"CONFIRMED\"},\"participants\":[]}";
 
@@ -83,18 +83,6 @@ public class ObjectConverterTest {
 		assertEquals(expectedGroup2.getName(), groups.get(1).getName());
 
 	}
-	// Group expectedGroup1 = new Group(1, "test");
-	// Group expectedGroup2 = new Group(2, "pse");
-	// ObjectConverter<List<Group>> converter = new ObjectConverter<>();
-	// List<Group> groups = new ArrayList<>();
-	// groups = converter.deserialize(json, (Class<List<Group>>)
-	// groups.getClass());
-	// assertEquals(expectedGroup1.getId(), groups.get(0).getId());
-	// assertEquals(expectedGroup2.getId(), groups.get(1).getId());
-	// assertEquals(expectedGroup1.getName(), groups.get(0).getName());
-	// assertEquals(expectedGroup2.getName(), groups.get(1).getName());
-
-	// }
 
 	@Test
 	public void testDoubleDirection() throws CustomServerException {

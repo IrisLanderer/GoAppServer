@@ -98,6 +98,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 			String updateQuery = MessageFormat.format(
 					"UPDATE meetings SET creator_id = ''{0}''  WHERE meetings_id = ''{1}''", creatorId, meetingId);
 			connection.update(updateQuery);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -115,7 +116,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		return meetings;
 	}
 
-	protected List<Meeting> getAllMeetings(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<Meeting> getAllMeetings(DatabaseConnection connection) throws Exception {
 		List<Meeting> meetings = new ArrayList<>();
 		try {
 			String query = MessageFormat.format("SELECT meetings.meetings_id FROM meetings join participants "
@@ -131,6 +132,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 			Meeting meeting = dao.getMeetingByID();
 			meetings.add(meeting);
 		}
+		connection.close();
 		return meetings;
 	}
 
@@ -182,6 +184,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 							+ " WHERE meetings_id = ''{8}''",
 					name, placeX, placeY, placeZ, timestamp, duration, type, creatorId, meetingId);
 			connection.update(query);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -206,6 +209,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 					meetingId);
 			connection.delete(queryMeeting);
 			connection.delete(queryParticipants);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -223,7 +227,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		return meeting;
 	}
 
-	protected Meeting getMeetingByID(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected Meeting getMeetingByID(DatabaseConnection connection) throws Exception {
 		if (meetingId <= 0) {
 			throw new CustomServerException("A meeting must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -250,10 +254,12 @@ public class MeetingDaoImpl implements MeetingDAO {
 		if (type.equals("Event")) {
 			Event event = new Event(meetingId, name, gps, timestamp, duration, creator);
 			event.setParticipants(participants);
+			connection.close();
 			return event;
 		} else {
 			Tour tour = new Tour(meetingId, name, gps, timestamp, duration, creator);
 			tour.setParticipants(participants);
+			connection.close();
 			return tour;
 		}
 

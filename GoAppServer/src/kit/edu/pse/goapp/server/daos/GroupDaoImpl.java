@@ -59,6 +59,7 @@ public class GroupDaoImpl implements GroupDAO {
 				throw new CustomServerException("The GroupID wasn't assigned to a value!",
 						HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
+			conn.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -75,7 +76,7 @@ public class GroupDaoImpl implements GroupDAO {
 		return groups;
 	}
 
-	protected List<Group> getAllGroups(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<Group> getAllGroups(DatabaseConnection connection) throws Exception {
 		List<Group> groups = new ArrayList<>();
 		try {
 			String query = MessageFormat.format(
@@ -91,6 +92,7 @@ public class GroupDaoImpl implements GroupDAO {
 			Group group = dao.getGroupByID();
 			groups.add(group);
 		}
+		connection.close();
 		return groups;
 	}
 
@@ -116,6 +118,7 @@ public class GroupDaoImpl implements GroupDAO {
 			String query = MessageFormat.format("UPDATE groups SET name = ''{0}'' WHERE group_id = ''{1}''", name,
 					groupId);
 			connection.update(query);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -141,7 +144,7 @@ public class GroupDaoImpl implements GroupDAO {
 					groupId);
 			connection.delete(queryGroup);
 			connection.delete(queryGroupMember);
-
+			connection.close();
 		} catch (Throwable e) {
 
 			throw new IOException(e);
@@ -160,7 +163,7 @@ public class GroupDaoImpl implements GroupDAO {
 		return group;
 	}
 
-	protected Group getGroupByID(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected Group getGroupByID(DatabaseConnection connection) throws Exception {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -180,6 +183,7 @@ public class GroupDaoImpl implements GroupDAO {
 		Group group = new Group(groupId, name.toString());
 		group.setGroupMembers(members);
 		group.setAdmins(admins);
+		connection.close();
 		return group;
 	}
 

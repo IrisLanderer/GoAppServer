@@ -58,6 +58,7 @@ public class UserDaoImpl implements UserDAO {
 				throw new CustomServerException("The UserID wasn't assigned to a value!",
 						HttpServletResponse.SC_NO_CONTENT);
 			}
+			conn.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -85,6 +86,7 @@ public class UserDaoImpl implements UserDAO {
 			connection.delete(queryUser);
 			connection.delete(queryGroupMembers);
 			connection.delete(queryParticipant);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -114,6 +116,7 @@ public class UserDaoImpl implements UserDAO {
 					"UPDATE users SET name = ''{0}'', notifications_enabled = ''{1}'' WHERE users_id = ''{2}''", name,
 					(notificationEnabled == true) ? 1 : 0, userId);
 			connection.update(query);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -131,7 +134,7 @@ public class UserDaoImpl implements UserDAO {
 		return users;
 	}
 
-	protected List<User> getAllUsers(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<User> getAllUsers(DatabaseConnection connection) throws Exception {
 		List<User> users = new ArrayList<>();
 		try {
 			String query = MessageFormat.format("SELECT users.users_id FROM users order by users.name asc", userId);
@@ -145,6 +148,7 @@ public class UserDaoImpl implements UserDAO {
 			User user = dao.getUserByID();
 			users.add(user);
 		}
+		connection.close();
 		return users;
 	}
 
@@ -169,6 +173,7 @@ public class UserDaoImpl implements UserDAO {
 			connection.select(query, new UserSqlSelectionHandler());
 			User user = new User(userId, name.toString());
 			user.setNotificationEnabled(notificationEnabled);
+			connection.close();
 			return user;
 		} catch (Throwable e) {
 			if (e.getCause().getClass() == CustomServerException.class) {
@@ -205,6 +210,7 @@ public class UserDaoImpl implements UserDAO {
 			}
 			User user = new User(userId, name.toString());
 			user.setNotificationEnabled(notificationEnabled);
+			connection.close();
 			return user;
 		} catch (Throwable e) {
 			throw new IOException(e);

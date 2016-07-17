@@ -62,6 +62,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 					"INSERT INTO group_members (groups_id, users_id, is_admin) VALUES (''{0}'', ''{1}'', ''{2}'')",
 					groupId, userId, isAdmin == true ? 1 : 0);
 			conn.insert(query);
+			conn.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -92,6 +93,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 			String query = MessageFormat.format(
 					"DELETE FROM group_members" + " WHERE groups_id = ''{0}'' AND users_id = ''{1}''", groupId, userId);
 			connection.delete(query);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -123,6 +125,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 					"UPDATE group_members SET is_admin = ''{0}'' " + "WHERE groups_id = ''{1}'' AND users_id = ''{2}''",
 					isAdmin == true ? 1 : 0, groupId, userId);
 			connection.update(query);
+			connection.close();
 		} catch (Throwable e) {
 			throw new IOException(e);
 		}
@@ -140,7 +143,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		return members;
 	}
 
-	protected List<User> getAllMembers(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<User> getAllMembers(DatabaseConnection connection) throws Exception {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -159,6 +162,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 			User user = dao.getUserByID();
 			members.add(user);
 		}
+		connection.close();
 		return members;
 	}
 
@@ -173,7 +177,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		return admins;
 	}
 
-	protected List<User> getAllAdmins(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<User> getAllAdmins(DatabaseConnection connection) throws Exception {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -192,6 +196,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 			User user = dao.getUserByID();
 			admins.add(user);
 		}
+		connection.close();
 		return admins;
 	}
 
