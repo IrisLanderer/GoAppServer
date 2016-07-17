@@ -26,49 +26,60 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
  */
 @WebServlet("/Groups")
 public class GroupsServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GroupsServlet() {
-		super();
-	}
+    /**
+     * Constructor
+     */
+    public GroupsServlet() {
+        super();
+    }
 
-	/**
-	 * Get All Groups
-	 * 
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		try {
-			int userId = authenticateUser(request);
-			GroupDAO dao = new GroupDaoImpl();
-			dao.setUserId(userId);
-			if (dao != null) {
-				List<Group> groups = dao.getAllGroups();
-				response.getWriter().write(
-						new ObjectConverter<List<Group>>().serialize(groups, (Class<List<Group>>) groups.getClass()));
-			}
-		} catch (CustomServerException e) {
-			response.setStatus(e.getStatusCode());
-			response.getWriter().write(e.getMessage());
-		}
-	}
+    /**
+     * Get All Groups
+     * 
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        try {
+            int userId = authenticateUser(request);
+            GroupDAO dao = new GroupDaoImpl();
+            dao.setUserId(userId);
+            if (dao != null) {
+                List<Group> groups = dao.getAllGroups();
+                response.getWriter()
+                        .write(new ObjectConverter<List<Group>>().serialize(
+                                groups,
+                                (Class<List<Group>>) groups.getClass()));
+            }
+        } catch (CustomServerException e) {
+            response.setStatus(e.getStatusCode());
+            response.getWriter().write(e.getMessage());
+        }
+    }
 
-	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
-		HttpSession session = request.getSession(true);
+    /**
+     * Authenticates an user
+     * 
+     * @param request
+     *            HttpServletRequest
+     * @return userId
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    private int authenticateUser(HttpServletRequest request)
+            throws CustomServerException {
+        HttpSession session = request.getSession(true);
 
-		int userId = 1;// (int) session.getAttribute("userId");
-		// int userId = (int) session.getAttribute("userId");
-		if (userId <= 0) {
-			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-		}
-		return userId;
-	}
+        int userId = 1;// (int) session.getAttribute("userId");
+        // int userId = (int) session.getAttribute("userId");
+        if (userId <= 0) {
+            throw new CustomServerException("This user is unauthorized!",
+                    HttpServletResponse.SC_UNAUTHORIZED);
+        }
+        return userId;
+    }
 
 }

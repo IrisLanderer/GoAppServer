@@ -25,64 +25,75 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
  */
 @WebServlet("/Users")
 public class UsersServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public UsersServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Constructor
+     * 
+     * @see HttpServlet#HttpServlet()
+     */
+    public UsersServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		try {
-			UserDAO dao = new UserDaoImpl();
-			if (dao != null) {
-				List<User> users = dao.getAllUsers();
-				response.getWriter().write(
-						new ObjectConverter<List<User>>().serialize(users, (Class<List<User>>) users.getClass()));
-			}
-		} catch (CustomServerException e) {
-			response.setStatus(e.getStatusCode());
-			response.getWriter().write(e.toString());
-		}
-	}
+    /**
+     * Gets users
+     * 
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        try {
+            UserDAO dao = new UserDaoImpl();
+            if (dao != null) {
+                List<User> users = dao.getAllUsers();
+                response.getWriter().write(
+                        new ObjectConverter<List<User>>().serialize(users,
+                                (Class<List<User>>) users.getClass()));
+            }
+        } catch (CustomServerException e) {
+            response.setStatus(e.getStatusCode());
+            response.getWriter().write(e.toString());
+        }
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    /**
+     * Create list of users
+     * 
+     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+     *      response)
+     */
+    @Override
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        // TODO Auto-generated method stub
+        doGet(request, response);
+    }
 
-	/**
-	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
-	 */
-	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
+    /**
+     * Updates list of users
+     * 
+     * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
+     */
+    @Override
+    protected void doPut(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        // TODO Auto-generated method stub
+    }
 
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
-	@Override
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
+    /**
+     * Deletes users from list
+     * 
+     * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
+     */
+    @Override
+    protected void doDelete(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        // TODO Auto-generated method stub
+    }
 
 }
