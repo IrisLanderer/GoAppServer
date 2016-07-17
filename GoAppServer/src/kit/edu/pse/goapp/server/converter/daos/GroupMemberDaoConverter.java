@@ -14,26 +14,41 @@ import kit.edu.pse.goapp.server.daos.GroupMemberDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.GroupMember;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
+/**
+ * GroupMember dao converter
+ */
 public class GroupMemberDaoConverter implements DaoConverter<GroupMemberDAO> {
 
-	@Override
-	public GroupMemberDAO parse(String jsonString) throws CustomServerException {
-		if (jsonString == null) {
-			return null;
-		}
-		GroupMember groupMemberJsonObject = null;
-		try {
-			Gson gson = new Gson();
-			groupMemberJsonObject = gson.fromJson(jsonString, GroupMember.class);
-		} catch (Exception e) {
-			throw new CustomServerException("The JSON-String is not correct!", HttpServletResponse.SC_BAD_REQUEST);
-		}
+    /**
+     * Converts GroupMemeber json string to GroupMember dao
+     * 
+     * @param jsonString
+     *            JsonString
+     * @return dao GroupMember dao
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    @Override
+    public GroupMemberDAO parse(String jsonString)
+            throws CustomServerException {
+        if (jsonString == null) {
+            return null;
+        }
+        GroupMember groupMemberJsonObject = null;
+        try {
+            Gson gson = new Gson();
+            groupMemberJsonObject = gson.fromJson(jsonString,
+                    GroupMember.class);
+        } catch (Exception e) {
+            throw new CustomServerException("The JSON-String is not correct!",
+                    HttpServletResponse.SC_BAD_REQUEST);
+        }
 
-		GroupMemberDAO dao = new GroupMemberDaoImpl();
-		dao.setGroupId(groupMemberJsonObject.getGroupId());
-		dao.setUserId(groupMemberJsonObject.getUserId());
-		dao.setAdmin(groupMemberJsonObject.isAdmin());
-		return dao;
-	}
+        GroupMemberDAO dao = new GroupMemberDaoImpl();
+        dao.setGroupId(groupMemberJsonObject.getGroupId());
+        dao.setUserId(groupMemberJsonObject.getUserId());
+        dao.setAdmin(groupMemberJsonObject.isAdmin());
+        return dao;
+    }
 
 }

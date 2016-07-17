@@ -14,26 +14,41 @@ import kit.edu.pse.goapp.server.daos.ParticipantDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Participant;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
+/**
+ * participant dao converter
+ */
 public class ParticipantDaoConverter implements DaoConverter<ParticipantDAO> {
 
-	@Override
-	public ParticipantDAO parse(String jsonString) throws CustomServerException {
-		if (jsonString == null) {
-			return null;
-		}
-		Participant participantJsonObject = null;
-		Gson gson = new Gson();
-		try {
-			participantJsonObject = gson.fromJson(jsonString, Participant.class);
-		} catch (Exception e) {
-			throw new CustomServerException("The JSON-String is not correct!", HttpServletResponse.SC_BAD_REQUEST);
-		}
-		ParticipantDAO dao = new ParticipantDaoImpl();
-		dao.setParticipantId(participantJsonObject.getParticipantId());
-		dao.setUserId(participantJsonObject.getUser().getId());
-		dao.setMeetingId(participantJsonObject.getMeetingId());
-		dao.setConfirmation(participantJsonObject.getConfirmation());
-		return dao;
-	}
+    /**
+     * Converts participant json string to participant dao
+     * 
+     * @param jsonString
+     *            JsonString
+     * @return dao participant dao
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    @Override
+    public ParticipantDAO parse(String jsonString)
+            throws CustomServerException {
+        if (jsonString == null) {
+            return null;
+        }
+        Participant participantJsonObject = null;
+        Gson gson = new Gson();
+        try {
+            participantJsonObject = gson.fromJson(jsonString,
+                    Participant.class);
+        } catch (Exception e) {
+            throw new CustomServerException("The JSON-String is not correct!",
+                    HttpServletResponse.SC_BAD_REQUEST);
+        }
+        ParticipantDAO dao = new ParticipantDaoImpl();
+        dao.setParticipantId(participantJsonObject.getParticipantId());
+        dao.setUserId(participantJsonObject.getUser().getId());
+        dao.setMeetingId(participantJsonObject.getMeetingId());
+        dao.setConfirmation(participantJsonObject.getConfirmation());
+        return dao;
+    }
 
 }
