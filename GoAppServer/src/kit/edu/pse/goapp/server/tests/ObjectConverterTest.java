@@ -84,6 +84,41 @@ public class ObjectConverterTest {
 
 	}
 
+	// @Test
+	// public void testJsonToMeetingListObject() throws CustomServerException {
+	//
+	// String json =
+	// "[{\"type\":\"Tour\",\"center\":{\"participants\":[],\"place\":{\"x\":55.0,\"y\":4.0,\"z\":0.0}},\"meetingId\":32,\"name\":\"rgrg\",\"place\":{\"x\":55.0,\"y\":4.0,\"z\":0.0},\"timestamp\":1,\"duration\":1,\"creator\":{\"participantId\":178,\"meetingId\":32,\"user\":{\"userId\":1,\"name\":\"Iris\","
+	// +
+	// "\"notificationEnabled\":false,\"meetings\":[],\"groups\":[]},\"confirmation\":\"PENDING\"},\"participants\":[{\"participantId\":178,\"meetingId\":32,\"user\":{\"userId\":1,\"name\":\"Iris\",\"notificationEnabled\":false,"
+	// +
+	// "\"meetings\":[],\"groups\":[]},\"confirmation\":\"PENDING\"}]}{\"type\":\"Tour\",\"center\":{\"participants\":[],\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0}},"
+	// +
+	// "\"meetingId\":31,\"name\":\"pse\",\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0},\"timestamp\":157,\"duration\":3,\"creator\":{\"participantId\":177,"
+	// +
+	// "\"meetingId\":31,\"user\":{\"userId\":1,\"name\":\"Iris\",\"notificationEnabled\":false,\"meetings\":[],\"groups\":[]},"
+	// +
+	// "\"confirmation\":\"PENDING\"},\"participants\":[{\"participantId\":177,\"meetingId\":31,\"user\":{\"userId\":1,\"name\":\"Iris\","
+	// +
+	// "\"notificationEnabled\":false,\"meetings\":[],\"groups\":[]},\"confirmation\":\"PENDING\"}]}]";
+	// User user = new User(1, "Iris");
+	// Participant creator1 = new Participant(178, 32, user,
+	// MeetingConfirmation.PENDING);
+	// Participant creator2 = new Participant(177, 31, user,
+	// MeetingConfirmation.PENDING);
+	// Meeting expected1 = new Tour(32, "rgrg", new GPS(55, 4, 0), 1, 1,
+	// creator1);
+	// Meeting expected2 = new Tour(31, "pse", new GPS(1, 2, 3), 157, 3,
+	// creator2);
+	// ObjectConverter<Meeting> converter = new ObjectConverter<>();
+	// List<Meeting> meetings = new ArrayList<>();
+	// meetings = converter.deserializeList(json, Meeting[].class);
+	// assertEquals(expected1.getMeetingId(), meetings.get(0).getMeetingId());
+	//
+	//
+	//
+	// }
+
 	@Test
 	public void testDoubleDirection() throws CustomServerException {
 		User user = new User(1, "testName");

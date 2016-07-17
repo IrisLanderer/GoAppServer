@@ -65,6 +65,7 @@ public class MeetingsServlet extends HttpServlet {
 				}
 
 				json += new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
+				json += ",";
 			}
 			json += "]";
 			response.getWriter().write(json);
