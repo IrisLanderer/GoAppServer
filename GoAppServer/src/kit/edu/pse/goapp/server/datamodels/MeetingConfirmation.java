@@ -5,7 +5,10 @@
 
 package kit.edu.pse.goapp.server.datamodels;
 
+/**
+ * Enum with meeting confirmations confirmed, pending and rejected
+ */
 public enum MeetingConfirmation {
-	CONFIRMED, PENDING, REJECTED
+    CONFIRMED, PENDING, REJECTED
 
 }

@@ -15,167 +15,191 @@ import kit.edu.pse.goapp.server.daos.GroupMemberDAO;
 import kit.edu.pse.goapp.server.daos.GroupMemberDaoImpl;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
-// TODO: Auto-generated Javadoc
+/**
+ * Datamodel of Class Group
+ */
 public class Group {
-	private int groupId;
-	private String name;
-	private List<User> admins;
-	private List<User> members;
+    private int groupId;
+    private String name;
+    private List<User> admins;
+    private List<User> members;
 
-	/**
-	 * Instantiates a new group.
-	 *
-	 * @param groupId
-	 *            the group id
-	 * @param name
-	 *            the name
-	 */
-	public Group(int groupId, String name) {
-		this.groupId = groupId;
-		this.name = name;
-		admins = new ArrayList<User>();
-		members = new ArrayList<User>();
-	}
+    /**
+     * Instantiates a new group.
+     *
+     * @param groupId
+     *            the group id
+     * @param name
+     *            the name
+     */
+    public Group(int groupId, String name) {
+        this.groupId = groupId;
+        this.name = name;
+        admins = new ArrayList<User>();
+        members = new ArrayList<User>();
+    }
 
-	/**
-	 * Adds the admin.
-	 *
-	 * @param user
-	 *            the user
-	 */
-	public void addAdmin(User user) {
-		admins.add(user);
-	}
+    /**
+     * Adds the admin.
+     *
+     * @param user
+     *            the user
+     */
+    public void addAdmin(User user) {
+        admins.add(user);
+    }
 
-	/**
-	 * Adds the group member.
-	 *
-	 * @param user
-	 *            the user
-	 */
-	public void addGroupMember(User user) {
-		members.add(user);
-	}
+    /**
+     * Adds the group member.
+     *
+     * @param user
+     *            the user
+     */
+    public void addGroupMember(User user) {
+        members.add(user);
+    }
 
-	public void isMember(User user) throws CustomServerException, IOException {
-		GroupMemberDAO groupMemberDao = new GroupMemberDaoImpl();
-		groupMemberDao.setGroupId(groupId);
-		groupMemberDao.setUserId(user.getId());
+    public void isMember(User user) throws CustomServerException, IOException {
+        GroupMemberDAO groupMemberDao = new GroupMemberDaoImpl();
+        groupMemberDao.setGroupId(groupId);
+        groupMemberDao.setUserId(user.getId());
 
-		List<User> tmpMembers = groupMemberDao.getAllMembers();
-		if (!checkMemberAndAdmin(user, tmpMembers)) {
-			throw new CustomServerException("The user has to be member of this group to access it!",
-					HttpServletResponse.SC_UNAUTHORIZED);
-		}
-	}
+        List<User> tmpMembers = groupMemberDao.getAllMembers();
+        if (!checkMemberAndAdmin(user, tmpMembers)) {
+            throw new CustomServerException(
+                    "The user has to be member of this group to access it!",
+                    HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
 
-	public void isAdmin(User user) throws CustomServerException, IOException {
-		GroupMemberDAO groupMemberDao = new GroupMemberDaoImpl();
-		groupMemberDao.setGroupId(groupId);
-		groupMemberDao.setUserId(user.getId());
-		List<User> tmpAdmins = groupMemberDao.getAllAdmins();
-		if (!checkMemberAndAdmin(user, tmpAdmins)) {
-			throw new CustomServerException("The user has to be admin of this group to access it!",
-					HttpServletResponse.SC_UNAUTHORIZED);
-		}
-	}
+    /**
+     * Admin status of group members
+     * 
+     * @param user
+     *            group member
+     * @throws CustomServerException
+     *             CustomServerException
+     * @throws IOException
+     *             IOException
+     */
+    public void isAdmin(User user) throws CustomServerException, IOException {
+        GroupMemberDAO groupMemberDao = new GroupMemberDaoImpl();
+        groupMemberDao.setGroupId(groupId);
+        groupMemberDao.setUserId(user.getId());
+        List<User> tmpAdmins = groupMemberDao.getAllAdmins();
+        if (!checkMemberAndAdmin(user, tmpAdmins)) {
+            throw new CustomServerException(
+                    "The user has to be admin of this group to access it!",
+                    HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
 
-	private boolean checkMemberAndAdmin(User user, List<User> users) {
-		boolean isAuthorized = false;
-		for (User tmpUser : users) {
-			if (user.getId() == tmpUser.getId()) {
-				isAuthorized = true;
-			}
-		}
-		return isAuthorized;
-	}
+    /**
+     * Checks if an user is autorised as group member or group admin.
+     * 
+     * @param user
+     *            user
+     * @param users
+     *            list of all users
+     * @return isAutorised true if user is autorised as member or admin, else
+     *         false
+     */
+    private boolean checkMemberAndAdmin(User user, List<User> users) {
+        boolean isAuthorized = false;
+        for (User tmpUser : users) {
+            if (user.getId() == tmpUser.getId()) {
+                isAuthorized = true;
+            }
+        }
+        return isAuthorized;
+    }
 
-	/**
-	 * Gets the admins.
-	 *
-	 * @return the admins
-	 */
-	public List<User> getAdmins() {
-		return admins;
-	}
+    /**
+     * Gets the admins.
+     *
+     * @return the admins
+     */
+    public List<User> getAdmins() {
+        return admins;
+    }
 
-	/**
-	 * Gets the group members.
-	 *
-	 * @return the group members
-	 */
-	public List<User> getGroupMembers() {
-		return members;
-	}
+    /**
+     * Gets the group members.
+     *
+     * @return the group members
+     */
+    public List<User> getGroupMembers() {
+        return members;
+    }
 
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
-	public int getId() {
-		return groupId;
-	}
+    /**
+     * Gets the id.
+     *
+     * @return the id
+     */
+    public int getId() {
+        return groupId;
+    }
 
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Gets the name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
 
-	/**
-	 * Sets the name.
-	 *
-	 * @param name
-	 *            the new name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+    /**
+     * Sets the name.
+     *
+     * @param name
+     *            the new name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * Sets the group members.
-	 *
-	 * @param members
-	 *            the new group members
-	 */
-	public void setGroupMembers(List<User> members) {
-		this.members = members;
-	}
+    /**
+     * Sets the group members.
+     *
+     * @param members
+     *            the new group members
+     */
+    public void setGroupMembers(List<User> members) {
+        this.members = members;
+    }
 
-	/**
-	 * Sets the admins.
-	 *
-	 * @param admins
-	 *            the new admins
-	 */
-	public void setAdmins(List<User> admins) {
-		this.admins = admins;
-	}
+    /**
+     * Sets the admins.
+     *
+     * @param admins
+     *            the new admins
+     */
+    public void setAdmins(List<User> admins) {
+        this.admins = admins;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (this.getClass() != obj.getClass())
-			return false;
-		// Class name is Employ & have lastname
-		Group g = (Group) obj;
-		if (g.getAdmins().equals(admins) && g.getGroupMembers().equals(members) && g.getId() == groupId
-				&& g.getName().equals(name)) {
-			return true;
-		}
-		return false;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        // Class name is Employ & have lastname
+        Group g = (Group) obj;
+        if (g.getAdmins().equals(admins) && g.getGroupMembers().equals(members)
+                && g.getId() == groupId && g.getName().equals(name)) {
+            return true;
+        }
+        return false;
+    }
 
 }
