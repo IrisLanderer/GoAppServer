@@ -11,34 +11,133 @@ import java.util.List;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
+/**
+ * Interface userDAO
+ * 
+ */
 public interface UserDAO {
 
-	public void addUser() throws IOException, CustomServerException;
+    /**
+     * Add user
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public void addUser() throws IOException, CustomServerException;
 
-	public void deleteUser() throws IOException, CustomServerException;
+    /**
+     * Deletes user
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public void deleteUser() throws IOException, CustomServerException;
 
-	public void updateUser() throws IOException, CustomServerException;
+    /**
+     * Updates user
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomUserException
+     */
+    public void updateUser() throws IOException, CustomServerException;
 
-	public List<User> getAllUsers() throws IOException, CustomServerException;
+    /**
+     * Return list of all users
+     * 
+     * @return users list of all users
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public List<User> getAllUsers() throws IOException, CustomServerException;
 
-	public User getUserByID() throws IOException, CustomServerException;
+    /**
+     * Return user by its ID
+     * 
+     * @return user user
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public User getUserByID() throws IOException, CustomServerException;
 
-	public String getGoogleID();
+    /**
+     * Return google ID
+     * 
+     * @return googleID String googleID
+     */
+    public String getGoogleID();
 
-	public User getUserByGoogleID() throws IOException, CustomServerException;
+    /**
+     * Return user by user ID
+     * 
+     * @return user user
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public User getUserByGoogleID() throws IOException, CustomServerException;
 
-	public int getUserId();
+    /**
+     * Return userId
+     * 
+     * @return userId userId
+     */
+    public int getUserId();
 
-	public String getName();
+    /**
+     * Return name
+     * 
+     * @return name String name
+     */
+    public String getName();
 
-	public void setName(String name);
+    /**
+     * Set user name
+     * 
+     * @param name
+     *            user name
+     */
+    public void setName(String name);
 
-	public void setUserId(int userId);
+    /**
+     * Set userId
+     * 
+     * @param userId
+     *            userId
+     */
+    public void setUserId(int userId);
 
-	void setGoogleId(String googleId);
+    /**
+     * set googleId
+     * 
+     * @param googleId
+     *            googleId
+     */
+    void setGoogleId(String googleId);
 
-	void setNotificationEnabled(boolean notificationEnabled);
+    /**
+     * Set notification enabled
+     * 
+     * @param notificationEnabled
+     *            notifications enabled
+     */
+    void setNotificationEnabled(boolean notificationEnabled);
 
-	boolean isNotificationEnabled();
+    /**
+     * Shows if notifications are enabled
+     * 
+     * @return boolean true if notifications are enabled, else false
+     */
+    boolean isNotificationEnabled();
 
 }

@@ -12,32 +12,123 @@ import kit.edu.pse.goapp.server.datamodels.MeetingConfirmation;
 import kit.edu.pse.goapp.server.datamodels.Participant;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
+/**
+ * Interface ParticipantDAO
+ */
 public interface ParticipantDAO {
 
-	public void addParticipant() throws IOException, CustomServerException;
+    /**
+     * Add participant
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomerException
+     */
+    public void addParticipant() throws IOException, CustomServerException;
 
-	public void deleteParticipant() throws IOException, CustomServerException;
+    /**
+     * Deletes participant
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public void deleteParticipant() throws IOException, CustomServerException;
 
-	public List<Participant> getAllParticipants() throws IOException, CustomServerException;
+    /**
+     * Returns a list of all participants
+     * 
+     * @return participants list of all participants
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public List<Participant> getAllParticipants()
+            throws IOException, CustomServerException;
 
-	public Participant getParticipantByID() throws IOException, CustomServerException;
+    /**
+     * Returns a participant
+     * 
+     * @return participant participant
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public Participant getParticipantByID()
+            throws IOException, CustomServerException;
 
-	public void updateParticipant() throws IOException, CustomServerException;
+    /**
+     * Updates participant information
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerexception
+     */
+    public void updateParticipant() throws IOException, CustomServerException;
 
-	void setConfirmation(MeetingConfirmation confirmation);
+    /**
+     * Sets participant confirmation
+     * 
+     * @param confirmation
+     *            participant confirmation
+     */
+    void setConfirmation(MeetingConfirmation confirmation);
 
-	MeetingConfirmation getConfirmation();
+    /**
+     * Returns meetingConfirmation of an user
+     * 
+     * @return meetingConfirmation meeting confirmation
+     */
+    MeetingConfirmation getConfirmation();
 
-	void setMeetingId(int meetingId);
+    /**
+     * set meeting id
+     * 
+     * @param meetingId
+     *            meetingId
+     */
+    void setMeetingId(int meetingId);
 
-	int getMeetingId();
+    /**
+     * Return meetingId
+     * 
+     * @return meetingId meetingId
+     */
+    int getMeetingId();
 
-	void setUserId(int userId);
+    /**
+     * Set userId
+     * 
+     * @param userId
+     *            userId
+     */
+    void setUserId(int userId);
 
-	int getUserId();
+    /**
+     * Return userId
+     * 
+     * @return userId
+     */
+    int getUserId();
 
-	void setParticipantId(int participantId);
+    /**
+     * Set participantId
+     * 
+     * @param participantId
+     *            participantId
+     */
+    void setParticipantId(int participantId);
 
-	int getParticipantId();
+    /**
+     * Return participantId
+     * 
+     * @return participantId participantId
+     */
+    int getParticipantId();
 
 }

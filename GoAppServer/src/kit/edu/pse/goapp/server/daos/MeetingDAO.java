@@ -11,56 +11,212 @@ import java.util.List;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
+/**
+ * Interface Meeting DAO
+ */
 public interface MeetingDAO {
 
-	public void addMeeting() throws IOException, CustomServerException;
+    /**
+     * Add new meeting
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public void addMeeting() throws IOException, CustomServerException;
 
-	public List<Meeting> getAllMeetings() throws IOException, CustomServerException;
+    /**
+     * Returns list of all meetings
+     * 
+     * @return meetings list of all meetings
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public List<Meeting> getAllMeetings()
+            throws IOException, CustomServerException;
 
-	public void updateMeeting() throws IOException, CustomServerException;
+    /**
+     * Updates meeting information
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public void updateMeeting() throws IOException, CustomServerException;
 
-	public void deleteMeeting() throws IOException, CustomServerException;
+    /**
+     * Deletes a meeting
+     * 
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public void deleteMeeting() throws IOException, CustomServerException;
 
-	public Meeting getMeetingByID() throws IOException, CustomServerException;
+    /**
+     * Returns a meeting by its ID
+     * 
+     * @return meeting meeting by ID
+     * @throws IOException
+     *             IOException
+     * @throws CustomServerException
+     *             CustomServerException
+     */
+    public Meeting getMeetingByID() throws IOException, CustomServerException;
 
-	void setCreatorId(int creatorId);
+    /**
+     * Sets creatorId of the meeting
+     * 
+     * @param creatorId
+     *            creatorId
+     */
+    void setCreatorId(int creatorId);
 
-	int getCreatorId();
+    /**
+     * Returns creatorId
+     * 
+     * @return creatorId creatorId
+     */
+    int getCreatorId();
 
-	void setType(String type);
+    /**
+     * Sets type of meeting ('tour' or 'event')
+     * 
+     * @param type
+     *            type of meeting
+     */
+    void setType(String type);
 
-	String getType();
+    /**
+     * Returns type of meeting ('tour' or 'event'
+     * 
+     * @return type type of meeting as string
+     */
+    String getType();
 
-	void setDuration(int duration);
+    /**
+     * Set duration of the meeting
+     * 
+     * @param duration
+     *            duration of the meeting
+     */
+    void setDuration(int duration);
 
-	int getDuration();
+    /**
+     * Returns duration of the meeting
+     * 
+     * @return duration duration
+     */
+    int getDuration();
 
-	void setTimestamp(long timestamp);
+    /**
+     * Set timestamp of the meeting
+     * 
+     * @param timestamp
+     *            timestamp
+     */
+    void setTimestamp(long timestamp);
 
-	long getTimestamp();
+    /**
+     * Return timestamp
+     * 
+     * @return timestamp timestamp
+     */
+    long getTimestamp();
 
-	void setPlaceZ(double placeZ);
+    /**
+     * Set GPS z parameter
+     * 
+     * @param placeZ
+     *            GPS z parameter
+     */
+    void setPlaceZ(double placeZ);
 
-	double getPlaceZ();
+    /**
+     * Returns GPS z parameter
+     * 
+     * @return z GPS z parameter
+     */
+    double getPlaceZ();
 
-	void setPlaceY(double placeY);
+    /**
+     * Set GPS y parameter
+     * 
+     * @param placeY
+     *            GPS y parameter
+     */
+    void setPlaceY(double placeY);
 
-	double getPlaceY();
+    /**
+     * Returns GPS y parameter
+     * 
+     * @return y GPS y parameter
+     */
+    double getPlaceY();
 
-	void setPlaceX(double placeX);
+    /**
+     * Set GPS x parameter
+     * 
+     * @param placeX
+     *            GPS x parameter
+     */
+    void setPlaceX(double placeX);
 
-	double getPlaceX();
+    /**
+     * Returns GPS x parameter
+     * 
+     * @return x GPS x parameter
+     */
+    double getPlaceX();
 
-	void setName(String name);
+    /**
+     * Set name of the meeting
+     * 
+     * @param name
+     *            name
+     */
+    void setName(String name);
 
-	String getName();
+    /**
+     * Returns name of the meeting
+     * 
+     * @return name name of the meeting
+     */
+    String getName();
 
-	void setMeetingId(int meetingId);
+    /**
+     * Sets meetingId
+     * 
+     * @param meetingId
+     *            meetingId
+     */
+    void setMeetingId(int meetingId);
 
-	int getMeetingId();
+    /**
+     * Returns meetingId
+     * 
+     * @return meetingId meetingId
+     */
+    int getMeetingId();
 
-	void setUserId(int userId);
+    /**
+     * Sets userId
+     * 
+     * @param userId
+     *            userId
+     */
+    void setUserId(int userId);
 
-	int getUserId();
+    /**
+     * Returns userId
+     * 
+     * @return userId userId
+     */
+    int getUserId();
 
 }

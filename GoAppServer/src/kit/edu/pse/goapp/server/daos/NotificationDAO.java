@@ -8,9 +8,20 @@ import java.util.List;
 
 import kit.edu.pse.goapp.server.datamodels.Notification;;
 
+/**
+ * Interface Notification dao
+ */
 public interface NotificationDAO {
 
-	public List<Notification> userGetNotification();
+    /**
+     * Returns list of notification of an user
+     * 
+     * @return notification list of notification
+     */
+    public List<Notification> userGetNotification();
 
-	public void setNotification();
+    /**
+     * Sets notifications of an user
+     */
+    public void setNotification();
 }
