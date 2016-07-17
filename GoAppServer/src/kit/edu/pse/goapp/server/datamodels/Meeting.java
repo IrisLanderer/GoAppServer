@@ -24,7 +24,7 @@ public abstract class Meeting {
 	protected int meetingId;
 	protected String name;
 	protected GPS place;
-	protected long timespamp;
+	protected long timestamp;
 	protected int duration;
 	protected Participant creator;
 	protected List<Participant> participants;
@@ -33,7 +33,7 @@ public abstract class Meeting {
 		this.meetingId = meetingId;
 		this.name = name;
 		this.place = place;
-		this.timespamp = timestamp;
+		this.timestamp = timestamp;
 		this.duration = duration;
 		this.creator = creator;
 		this.participants = new ArrayList<Participant>();
@@ -78,8 +78,8 @@ public abstract class Meeting {
 		return place;
 	}
 
-	public long getTimespamp() {
-		return timespamp;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 	public List<Participant> getParticipants() {
@@ -118,7 +118,7 @@ public abstract class Meeting {
 		Meeting m = (Meeting) obj;
 		if (m.getMeetingId() == meetingId && m.getPlace().equals(place) && m.getCreator().equals(creator)
 				&& m.getDuration() == duration && m.getName().equals(name) && m.getParticipants().equals(participants)
-				&& equals(m.getTimespamp() == timespamp)) {
+				&& equals(m.getTimestamp() == timestamp)) {
 			return true;
 		}
 		return false;

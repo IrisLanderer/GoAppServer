@@ -73,22 +73,23 @@ public class UserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
-
-			if ((boolean) session.getAttribute("register")) {
-				session.setAttribute("register", false);
-				String googleId = request.getParameter("googleId");
-				String jsonString = request.getReader().readLine();
-				UserDAO dao = new UserDaoConverter().parse(jsonString);
-				// every user has notifications enabled by default
-				dao.setNotificationEnabled(true);
-				dao.setGoogleId(googleId);
-				if (dao != null) {
-					dao.addUser();
-				}
-				User user = dao.getUserByID();
-				response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
+			// HttpSession session = request.getSession(true);
+			//
+			// if ((boolean) session.getAttribute("register")) {
+			// session.setAttribute("register", false);
+			String googleId = "test";// request.getParameter("googleId");
+			// String googleId = request.getParameter("googleId");
+			String jsonString = request.getReader().readLine();
+			UserDAO dao = new UserDaoConverter().parse(jsonString);
+			// every user has notifications enabled by default
+			dao.setNotificationEnabled(true);
+			dao.setGoogleId(googleId);
+			if (dao != null) {
+				dao.addUser();
 			}
+			User user = dao.getUserByID();
+			response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
+			// }
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
@@ -160,6 +161,7 @@ public class UserServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 
 		int userId = 1;// (int) session.getAttribute("userId");
+		// int userId = (int) session.getAttribute("userId");
 		if (userId <= 0) {
 			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 		}

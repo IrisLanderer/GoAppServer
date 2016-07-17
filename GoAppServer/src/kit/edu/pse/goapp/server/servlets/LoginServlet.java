@@ -20,8 +20,10 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
+import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.UserDAO;
 import kit.edu.pse.goapp.server.daos.UserDaoImpl;
+import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 /**
@@ -59,15 +61,16 @@ public class LoginServlet extends HttpServlet {
 					HttpSession session = request.getSession(true);
 					UserDAO userDao = new UserDaoImpl();
 					userDao.setGoogleId(googleId);
-					if (userDao.getUserByGoogleID() != null) {
-						throw new CustomServerException("Google id already registered, pleas log in",
+					User user = userDao.getUserByGoogleID();
+					if (user == null) {
+						throw new CustomServerException("GoogleID unknown! Please register!",
 								HttpServletResponse.SC_BAD_REQUEST);
 					}
 					{
 						String userId = Integer.toString(userDao.getUserByGoogleID().getId());
 						session.setAttribute("userId", userId);
 						session.setAttribute("loggedIn", true);
-						response.setStatus(HttpServletResponse.SC_OK);
+						response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 					}
 				} else {
 					throw new CustomServerException("The GroupID from the JSON string isn't correct!",
@@ -111,11 +114,10 @@ public class LoginServlet extends HttpServlet {
 
 					response.setStatus(HttpServletResponse.SC_OK);
 				} else {
-					throw new CustomServerException("The GroupID from the JSON string isn't correct!",
-							HttpServletResponse.SC_BAD_REQUEST);
+					throw new CustomServerException("The GoogleID isn't correct!", HttpServletResponse.SC_BAD_REQUEST);
 				}
 			} else {
-				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+				throw new CustomServerException("The GoogleToken from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		} catch (CustomServerException e) {

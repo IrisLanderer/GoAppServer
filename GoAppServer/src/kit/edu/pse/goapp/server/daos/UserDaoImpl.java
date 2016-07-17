@@ -40,7 +40,7 @@ public class UserDaoImpl implements UserDAO {
 		}
 	}
 
-	public void addUser(DatabaseConnection conn) throws IOException, CustomServerException {
+	protected void addUser(DatabaseConnection conn) throws IOException, CustomServerException {
 		if (name == null || name.equals("")) {
 			throw new CustomServerException("A new user must have a name!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -73,7 +73,7 @@ public class UserDaoImpl implements UserDAO {
 		}
 	}
 
-	public void deleteUser(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void deleteUser(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (userId <= 0) {
 			throw new CustomServerException("A user must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -100,7 +100,7 @@ public class UserDaoImpl implements UserDAO {
 		}
 	}
 
-	public void updateUser(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void updateUser(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (userId <= 0) {
 			throw new CustomServerException("A user must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -131,10 +131,10 @@ public class UserDaoImpl implements UserDAO {
 		return users;
 	}
 
-	public List<User> getAllUsers(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<User> getAllUsers(DatabaseConnection connection) throws IOException, CustomServerException {
 		List<User> users = new ArrayList<>();
 		try {
-			String query = MessageFormat.format("SELECT users.users_id FROM users", userId);
+			String query = MessageFormat.format("SELECT users.users_id FROM users order by users.name asc", userId);
 			connection.select(query, new UsersSqlSelectionHandler());
 		} catch (Throwable e) {
 			throw new IOException();
@@ -159,7 +159,7 @@ public class UserDaoImpl implements UserDAO {
 		return user;
 	}
 
-	public User getUserByID(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected User getUserByID(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (userId <= 0) {
 			throw new CustomServerException("A user must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -191,7 +191,7 @@ public class UserDaoImpl implements UserDAO {
 	}
 
 	// TODO
-	public User getUserByGoogleID(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected User getUserByGoogleID(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (googleId == null || googleId.equals("")) {
 			throw new CustomServerException("A user must have an GoogleID!", HttpServletResponse.SC_BAD_REQUEST);
 		}

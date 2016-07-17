@@ -17,15 +17,26 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
 public class DatabaseConnection implements AutoCloseable {
 
+	// my local database
 	private static final String URL = "jdbc:mysql://localhost:3306/PSESoSe16GoGruppe2"
 			+ "?user=PSESoSe16User2&password=I059b4x275iYZ8wW&useUnicode=true&useJDBCCompliantTimezoneShift=true"
 			+ "&useLegacyDatetimeCode=false&serverTimezone=UTC";
+
+	// private static final String URL =
+	// "jdbc:mysql://https://i43pc164.ipd.kit.edu:3306/PSESoSe16GoGruppe2"
+	// +
+	// "?user=PSESoSe16User2&password=I059b4x275iYZ8wW&useUnicode=true&useJDBCCompliantTimezoneShift=true"
+	// + "&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
 	private Connection connection;
 
 	public DatabaseConnection() throws Exception {
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 		connection = DriverManager.getConnection(URL);
+	}
+
+	public void setConnection(Connection connection) {
+		this.connection = connection;
 	}
 
 	/**
@@ -41,6 +52,9 @@ public class DatabaseConnection implements AutoCloseable {
 	public int insert(String sqlStatement) throws Exception {
 		Statement statement = null;
 		try {
+			if (connection == null) {
+				connection = DriverManager.getConnection(URL);
+			}
 			statement = connection.createStatement();
 			statement.execute(sqlStatement, Statement.RETURN_GENERATED_KEYS);
 			ResultSet resultSet = statement.getGeneratedKeys();
@@ -65,6 +79,9 @@ public class DatabaseConnection implements AutoCloseable {
 	public void select(String sqlStatement, SqlSelectHandler handler) throws Exception {
 		Statement statement = null;
 		try {
+			if (connection == null) {
+				connection = DriverManager.getConnection(URL);
+			}
 			statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(sqlStatement);
 			if (handler != null) {
@@ -87,6 +104,9 @@ public class DatabaseConnection implements AutoCloseable {
 	public void delete(String sqlStatement) throws Exception {
 		Statement statement = null;
 		try {
+			if (connection == null) {
+				connection = DriverManager.getConnection(URL);
+			}
 			statement = connection.createStatement();
 			int affectedRows = statement.executeUpdate(sqlStatement);
 			if (affectedRows == 0) {
@@ -108,6 +128,9 @@ public class DatabaseConnection implements AutoCloseable {
 	public void update(String sqlStatement) throws Exception {
 		Statement statement = null;
 		try {
+			if (connection == null) {
+				connection = DriverManager.getConnection(URL);
+			}
 			statement = connection.createStatement();
 			int affectedRows = statement.executeUpdate(sqlStatement);
 			if (affectedRows == 0) {

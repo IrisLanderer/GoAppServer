@@ -75,7 +75,7 @@ public class GroupDaoImpl implements GroupDAO {
 		return groups;
 	}
 
-	public List<Group> getAllGroups(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<Group> getAllGroups(DatabaseConnection connection) throws IOException, CustomServerException {
 		List<Group> groups = new ArrayList<>();
 		try {
 			String query = MessageFormat.format(
@@ -103,7 +103,7 @@ public class GroupDaoImpl implements GroupDAO {
 		}
 	}
 
-	public void updateGroup(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void updateGroup(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -131,7 +131,7 @@ public class GroupDaoImpl implements GroupDAO {
 		}
 	}
 
-	public void deleteGroup(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void deleteGroup(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}

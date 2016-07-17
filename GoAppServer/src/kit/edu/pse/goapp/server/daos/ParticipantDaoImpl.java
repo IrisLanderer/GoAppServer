@@ -40,7 +40,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		}
 	}
 
-	public void addParticipant(DatabaseConnection conn) throws IOException, CustomServerException {
+	protected void addParticipant(DatabaseConnection conn) throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new CustomServerException("A participant must have an MeetingID!",
 					HttpServletResponse.SC_BAD_REQUEST);
@@ -71,7 +71,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		}
 	}
 
-	public void deleteParticipant(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void deleteParticipant(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (participantId <= 0) {
 			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -96,7 +96,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		return participants;
 	}
 
-	public List<Participant> getAllParticipants(DatabaseConnection connection)
+	protected List<Participant> getAllParticipants(DatabaseConnection connection)
 			throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new CustomServerException("The MeetingId is necessary to get all participants!",
@@ -130,7 +130,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		return participant;
 	}
 
-	public Participant getParticipantByID(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected Participant getParticipantByID(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (participantId <= 0) {
 			throw new CustomServerException("A participant must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -161,7 +161,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		}
 	}
 
-	public void updateParticipant(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void updateParticipant(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (participantId <= 0) {
 			throw new CustomServerException("A participant must have a ParticipantID!",
 					HttpServletResponse.SC_BAD_REQUEST);

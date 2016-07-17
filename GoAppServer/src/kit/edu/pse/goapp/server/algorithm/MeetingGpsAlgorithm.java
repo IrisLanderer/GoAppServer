@@ -67,7 +67,7 @@ public class MeetingGpsAlgorithm {
 		return tour;
 	}
 
-	public static boolean isInBlob(List<Participant> blob, Participant test) {
+	private static boolean isInBlob(List<Participant> blob, Participant test) {
 		for (Participant p : blob) {
 			GpsDaoImpl dao = new GpsDaoImpl();
 			dao.setUserId(p.getUser().getId());
@@ -99,12 +99,12 @@ public class MeetingGpsAlgorithm {
 		return event;
 	}
 
-	public static boolean isRunning(Meeting meeting) {
+	private static boolean isRunning(Meeting meeting) {
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
 		long halfHour = 30 * 60 * 1000;
 		long duration = meeting.getDuration() * 60 * 1000;
-		if ((stamp.getTime() >= meeting.getTimespamp() - halfHour)
-				&& (stamp.getTime() <= meeting.getTimespamp() + duration)) {
+		if ((stamp.getTime() >= meeting.getTimestamp() - halfHour)
+				&& (stamp.getTime() <= meeting.getTimestamp() + duration)) {
 			return true;
 		}
 

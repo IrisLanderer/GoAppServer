@@ -49,7 +49,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		}
 	}
 
-	public void addMeeting(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void addMeeting(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (name == null || name.equals("")) {
 			throw new CustomServerException("A new meeting must have a name!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -61,7 +61,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 			throw new CustomServerException("A new meeting must have a y-coordinate!",
 					HttpServletResponse.SC_BAD_REQUEST);
 		}
-		if (placeZ <= 0) {
+		if (placeZ < 0) {
 			throw new CustomServerException("A new meeting must have a z-coordinate!",
 					HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -71,7 +71,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		if (duration <= 0) {
 			throw new CustomServerException("A new meeting must have a duration!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		if (!(type.equals("Tour") || type.equals("Event"))) {
+		if ((type == null) || !(type.equals("Tour") || type.equals("Event"))) {
 			throw new CustomServerException("A new meeting must have a Type!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (userId <= 0) {
@@ -83,7 +83,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 					"INSERT INTO meetings "
 							+ "(name, place_x, place_y, place_z, timestamp, duration, type, creator_id) "
 							+ "VALUES (''{0}'', ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'')",
-					name, placeX, placeY, placeZ, timestamp, duration, type, creatorId);
+					name, placeX, placeY, placeZ, Long.toString(timestamp), duration, type, creatorId);
 			meetingId = connection.insert(query);
 			if (meetingId <= 0) {
 				throw new CustomServerException("The MeetingID wasn't assigned to a value!",
@@ -115,13 +115,12 @@ public class MeetingDaoImpl implements MeetingDAO {
 		return meetings;
 	}
 
-	public List<Meeting> getAllMeetings(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<Meeting> getAllMeetings(DatabaseConnection connection) throws IOException, CustomServerException {
 		List<Meeting> meetings = new ArrayList<>();
 		try {
-			String query = MessageFormat.format(
-					"SELECT meetings.meetings_id FROM meetings join participants "
-							+ "on meetings.meetings_id = participants.meetings_id where participants.users_id = ''{0}''",
-					userId);
+			String query = MessageFormat.format("SELECT meetings.meetings_id FROM meetings join participants "
+					+ "on meetings.meetings_id = participants.meetings_id where participants.users_id = ''{0}''"
+					+ "order by meetings.timestamp asc", userId);
 			connection.select(query, new MeetingsSqlSelectionHandler());
 		} catch (Throwable e) {
 			throw new IOException();
@@ -144,7 +143,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		}
 	}
 
-	public void updateMeeting(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void updateMeeting(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new CustomServerException("A meeting must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -169,8 +168,8 @@ public class MeetingDaoImpl implements MeetingDAO {
 		if (duration <= 0) {
 			throw new CustomServerException("A new meeting must have a duration!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		// !(type.equals("Tour")) || type.equals("Event"))
-		if (type == null || type.equals("")) {
+
+		if ((type == null) || !(type.equals("Tour") || type.equals("Event"))) {
 			throw new CustomServerException("A new meeting must have a Type!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (creatorId <= 0) {
@@ -197,7 +196,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		}
 	}
 
-	public void deleteMeeting(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void deleteMeeting(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new CustomServerException("A meeting must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -224,7 +223,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		return meeting;
 	}
 
-	public Meeting getMeetingByID(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected Meeting getMeetingByID(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (meetingId <= 0) {
 			throw new CustomServerException("A meeting must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -248,7 +247,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 		pdao.setMeetingId(meetingId);
 		List<Participant> participants = pdao.getAllParticipants();
 
-		if (type == "Event") {
+		if (type.equals("Event")) {
 			Event event = new Event(meetingId, name, gps, timestamp, duration, creator);
 			event.setParticipants(participants);
 			return event;

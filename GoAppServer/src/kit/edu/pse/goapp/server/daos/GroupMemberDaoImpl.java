@@ -40,7 +40,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		}
 	}
 
-	public void addMember(DatabaseConnection conn) throws IOException, CustomServerException {
+	protected void addMember(DatabaseConnection conn) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -77,7 +77,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		}
 	}
 
-	public void deleteMember(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void deleteMember(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -107,7 +107,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		}
 	}
 
-	public void updateMember(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected void updateMember(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -140,7 +140,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		return members;
 	}
 
-	public List<User> getAllMembers(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<User> getAllMembers(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -173,7 +173,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		return admins;
 	}
 
-	public List<User> getAllAdmins(DatabaseConnection connection) throws IOException, CustomServerException {
+	protected List<User> getAllAdmins(DatabaseConnection connection) throws IOException, CustomServerException {
 		if (groupId <= 0) {
 			throw new CustomServerException("A group must have an GroupID!", HttpServletResponse.SC_BAD_REQUEST);
 		}

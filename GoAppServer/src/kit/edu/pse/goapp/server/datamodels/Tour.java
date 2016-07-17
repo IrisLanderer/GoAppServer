@@ -33,7 +33,7 @@ public class Tour extends Meeting {
 			Meeting m = (Meeting) obj;
 			if (m.getMeetingId() == meetingId && m.getPlace().equals(place) && m.getCreator().equals(creator)
 					&& m.getDuration() == duration && m.getName().equals(name)
-					&& m.getParticipants().equals(participants) && m.getTimespamp() == timespamp) {
+					&& m.getParticipants().equals(participants) && m.getTimestamp() == timestamp) {
 				return true;
 			}
 		}

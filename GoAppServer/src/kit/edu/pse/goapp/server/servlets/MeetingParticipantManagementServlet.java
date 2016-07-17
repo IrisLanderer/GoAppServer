@@ -162,6 +162,7 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 
 		int userId = 1;// (int) session.getAttribute("userId");
+		// int userId = (int) session.getAttribute("userId");
 		if (userId <= 0) {
 			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 		}

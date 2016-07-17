@@ -46,26 +46,29 @@ public class MeetingsServlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
 			int userId = authenticateUser(request);
 			MeetingDAO dao = new MeetingDaoImpl();
-			dao.setUserId(userId);
-			if (dao != null) {
-				List<Meeting> meetings = dao.getAllMeetings();
-				for (Meeting m : meetings) {
-					if (m instanceof Tour) {
-						MeetingGpsAlgorithm.setGpsTour((Tour) m);
-					} else {
-						MeetingGpsAlgorithm.setGpsEvent((Event) m);
-					}
-				}
-				response.getWriter().write(new ObjectConverter<List<Meeting>>().serialize(meetings,
-						(Class<List<Meeting>>) meetings.getClass()));
 
+			dao.setUserId(userId);
+			List<Meeting> meetings = dao.getAllMeetings();
+
+			String json = "[";
+
+			for (Meeting meeting : meetings) {
+				if (meeting instanceof Tour) {
+					MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+				} else {
+					MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
+				}
+
+				json += new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
 			}
+			json += "]";
+			response.getWriter().write(json);
+
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.getMessage());
@@ -76,6 +79,7 @@ public class MeetingsServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 
 		int userId = 1;// (int) session.getAttribute("userId");
+		// int userId = (int) session.getAttribute("userId");
 		if (userId <= 0) {
 			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 		}

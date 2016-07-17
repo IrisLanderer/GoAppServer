@@ -105,8 +105,8 @@ public class MeetingServlet extends HttpServlet {
 			} else {
 				MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
 			}
-
 			response.getWriter().write(new ObjectConverter<Meeting>().serialize(meeting, Meeting.class));
+
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
@@ -179,6 +179,7 @@ public class MeetingServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 
 		int userId = 1;// (int) session.getAttribute("userId");
+		// int userId = (int) session.getAttribute("userId");
 		if (userId <= 0) {
 			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 		}
