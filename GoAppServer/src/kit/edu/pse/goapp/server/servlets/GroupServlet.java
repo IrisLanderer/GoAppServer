@@ -29,199 +29,186 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
  */
 @WebServlet("/Group")
 public class GroupServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Constructor
-     */
-    public GroupServlet() {
-        super();
-    }
+	/**
+	 * Constructor
+	 */
+	public GroupServlet() {
+		super();
+	}
 
-    /**
-     * Reads group information
-     */
-    @Override
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        try {
-            int userId = authenticateUser(request);
-            String groupId = request.getParameter("groupId");
-            GroupDAO dao = new GroupDaoImpl();
-            try {
-                dao.setGroupId(Integer.parseInt(groupId));
-            } catch (Exception e) {
-                throw new CustomServerException(
-                        "The GroupID from the JSON string isn't correct!",
-                        HttpServletResponse.SC_BAD_REQUEST);
-            }
-            User user = createUserWithDao(userId);
-            Group groupCheckingAuthorization = createGroupWithDao(
-                    dao.getGroupId());
-            groupCheckingAuthorization.isMember(user);
-            if (dao != null) {
-                Group group = dao.getGroupByID();
-                response.getWriter().write(new ObjectConverter<Group>()
-                        .serialize(group, Group.class));
-            }
-        } catch (CustomServerException e) {
-            response.setStatus(e.getStatusCode());
-            response.getWriter().write(e.toString());
+	/**
+	 * Reads group information
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			int userId = authenticateUser(request);
+			String groupId = request.getParameter("groupId");
+			GroupDAO dao = new GroupDaoImpl();
+			try {
+				dao.setGroupId(Integer.parseInt(groupId));
+			} catch (Exception e) {
+				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			User user = createUserWithDao(userId);
+			Group groupCheckingAuthorization = createGroupWithDao(dao.getGroupId());
+			groupCheckingAuthorization.isMember(user);
+			if (dao != null) {
+				Group group = dao.getGroupByID();
+				response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
 
-        }
-    }
+		}
+	}
 
-    /**
-     * Creates a new group
-     */
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            int userId = authenticateUser(request);
-            String jsonString = request.getReader().readLine();
-            GroupDAO dao = new GroupDaoConverter().parse(jsonString);
-            dao.setUserId(userId);
-            if (dao != null) {
-                dao.addGroup();
-            }
-            Group group = dao.getGroupByID();
-            response.getWriter().write(
-                    new ObjectConverter<Group>().serialize(group, Group.class));
-        } catch (CustomServerException e) {
-            response.setStatus(e.getStatusCode());
-            response.getWriter().write(e.toString());
-        }
-    }
+	/**
+	 * Creates a new group
+	 */
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			int userId = authenticateUser(request);
+			String jsonString = request.getReader().readLine();
+			GroupDAO dao = new GroupDaoConverter().parse(jsonString);
+			dao.setUserId(userId);
+			if (dao != null) {
+				dao.addGroup();
+			}
+			Group group = dao.getGroupByID();
+			response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
+		}
+	}
 
-    /**
-     * Deletes a group
-     */
-    @Override
-    protected void doDelete(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        try {
-            int userId = authenticateUser(request);
-            String groupId = request.getParameter("groupId");
-            GroupDAO dao = new GroupDaoImpl();
-            try {
-                dao.setGroupId(Integer.parseInt(groupId));
-            } catch (Exception e) {
-                throw new CustomServerException(
-                        "The GroupID from the JSON string isn't correct!",
-                        HttpServletResponse.SC_BAD_REQUEST);
-            }
-            checkIfUserIsMemberAndAdmin(userId, dao.getGroupId());
-            if (dao != null) {
-                dao.deleteGroup();
-            }
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (CustomServerException e) {
-            response.setStatus(e.getStatusCode());
-            response.getWriter().write(e.toString());
-        }
-    }
+	/**
+	 * Deletes a group
+	 */
+	@Override
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			int userId = authenticateUser(request);
+			String groupId = request.getParameter("groupId");
+			GroupDAO dao = new GroupDaoImpl();
+			try {
+				dao.setGroupId(Integer.parseInt(groupId));
+			} catch (Exception e) {
+				throw new CustomServerException("The GroupID from the JSON string isn't correct!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+			checkIfUserIsMemberAndAdmin(userId, dao.getGroupId());
+			if (dao != null) {
+				dao.deleteGroup();
+			}
+			response.setStatus(HttpServletResponse.SC_OK);
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
+		}
+	}
 
-    /**
-     * Updates group information
-     */
-    @Override
-    protected void doPut(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        try {
-            int userId = authenticateUser(request);
-            String jsonString = request.getReader().readLine();
-            GroupDAO dao = new GroupDaoConverter().parse(jsonString);
-            checkIfUserIsMemberAndAdmin(userId, dao.getGroupId());
-            if (dao != null) {
-                dao.updateGroup();
-            }
-            Group group = dao.getGroupByID();
-            response.getWriter().write(
-                    new ObjectConverter<Group>().serialize(group, Group.class));
-        } catch (CustomServerException e) {
-            response.setStatus(e.getStatusCode());
-            response.getWriter().write(e.toString());
-        }
-    }
+	/**
+	 * Updates group information
+	 */
+	@Override
+	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			int userId = authenticateUser(request);
+			String jsonString = request.getReader().readLine();
+			GroupDAO dao = new GroupDaoConverter().parse(jsonString);
+			checkIfUserIsMemberAndAdmin(userId, dao.getGroupId());
+			if (dao != null) {
+				dao.updateGroup();
+			}
+			Group group = dao.getGroupByID();
+			response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
+		}
+	}
 
-    /**
-     * Authenticates an user
-     * 
-     * @param request
-     *            HttpServletRequest
-     * @return userId userId
-     * @throws CustomServerException
-     *             CustomServerException
-     */
-    private int authenticateUser(HttpServletRequest request)
-            throws CustomServerException {
-        HttpSession session = request.getSession(true);
+	/**
+	 * Authenticates an user
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @return userId userId
+	 * @throws CustomServerException
+	 *             CustomServerException
+	 */
+	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
+		HttpSession session = request.getSession();
 
-        int userId = 1;// (int) session.getAttribute("userId");
-        // int userId = (int) session.getAttribute("userId");
-        if (userId <= 0) {
-            throw new CustomServerException("This user is unauthorized!",
-                    HttpServletResponse.SC_UNAUTHORIZED);
-        }
-        return userId;
-    }
+		int userId = (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		return userId;
+	}
 
-    /**
-     * Creates a group
-     * 
-     * @param groupId
-     *            groupId
-     * @return group group
-     * @throws IOException
-     *             IOException
-     * @throws CustomServerException
-     *             CustomServerException
-     */
-    private Group createGroupWithDao(int groupId)
-            throws IOException, CustomServerException {
-        GroupDAO dao = new GroupDaoImpl();
-        dao.setGroupId(groupId);
-        Group group = dao.getGroupByID();
-        return group;
-    }
+	/**
+	 * Creates a group
+	 * 
+	 * @param groupId
+	 *            groupId
+	 * @return group group
+	 * @throws IOException
+	 *             IOException
+	 * @throws CustomServerException
+	 *             CustomServerException
+	 */
+	private Group createGroupWithDao(int groupId) throws IOException, CustomServerException {
+		GroupDAO dao = new GroupDaoImpl();
+		dao.setGroupId(groupId);
+		Group group = dao.getGroupByID();
+		return group;
+	}
 
-    /**
-     * Creates an user
-     * 
-     * @param userId
-     *            userId
-     * @return user user
-     * @throws IOException
-     *             IOException
-     * @throws CustomServerException
-     *             CustomServerException
-     */
-    private User createUserWithDao(int userId)
-            throws IOException, CustomServerException {
-        UserDAO userDao = new UserDaoImpl();
-        userDao.setUserId(userId);
-        User user = userDao.getUserByID();
-        return user;
-    }
+	/**
+	 * Creates an user
+	 * 
+	 * @param userId
+	 *            userId
+	 * @return user user
+	 * @throws IOException
+	 *             IOException
+	 * @throws CustomServerException
+	 *             CustomServerException
+	 */
+	private User createUserWithDao(int userId) throws IOException, CustomServerException {
+		UserDAO userDao = new UserDaoImpl();
+		userDao.setUserId(userId);
+		User user = userDao.getUserByID();
+		return user;
+	}
 
-    /**
-     * Checks if the user is group member and group admin
-     * 
-     * @param userId
-     *            userId
-     * @param groupId
-     *            groupId
-     * @throws IOException
-     *             IOException
-     * @throws CustomServerException
-     *             CustomServerException
-     */
-    private void checkIfUserIsMemberAndAdmin(int userId, int groupId)
-            throws IOException, CustomServerException {
-        User user = createUserWithDao(userId);
-        Group groupCheckingAuthorization = createGroupWithDao(groupId);
-        groupCheckingAuthorization.isMember(user);
-        groupCheckingAuthorization.isAdmin(user);
-    }
+	/**
+	 * Checks if the user is group member and group admin
+	 * 
+	 * @param userId
+	 *            userId
+	 * @param groupId
+	 *            groupId
+	 * @throws IOException
+	 *             IOException
+	 * @throws CustomServerException
+	 *             CustomServerException
+	 */
+	private void checkIfUserIsMemberAndAdmin(int userId, int groupId) throws IOException, CustomServerException {
+		User user = createUserWithDao(userId);
+		Group groupCheckingAuthorization = createGroupWithDao(groupId);
+		groupCheckingAuthorization.isMember(user);
+		groupCheckingAuthorization.isAdmin(user);
+	}
 }
