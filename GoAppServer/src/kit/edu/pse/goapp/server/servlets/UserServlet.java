@@ -99,6 +99,7 @@ public class UserServlet extends HttpServlet {
 			response.getWriter().write(e.toString());
 		}
 
+
 	}
 
 	/**
@@ -173,7 +174,6 @@ public class UserServlet extends HttpServlet {
 	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
 		HttpSession session = request.getSession();
 
-		// int userId = 1;// (int) session.getAttribute("userId");
 		int userId = (int) session.getAttribute("userId");
 		if (userId <= 0) {
 			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
