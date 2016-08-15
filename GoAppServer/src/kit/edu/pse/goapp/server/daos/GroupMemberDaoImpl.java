@@ -185,7 +185,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	 */
 	@Override
 	public List<User> getAllMembers() throws IOException {
-		List<User> members = null;
+		List<User> members = new ArrayList<>();
 		try {
 			members = getAllMembers(new DatabaseConnection());
 		} catch (Exception e) {
@@ -221,6 +221,9 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 			dao.setUserId(tmpMemberId);
 			User user = dao.getUserByID();
 			members.add(user);
+		}
+		if (members.isEmpty()) {
+			throw new CustomServerException("A group must have a member!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		connection.close();
 		return members;

@@ -50,6 +50,9 @@ public class LoginFilterServlet implements Filter {
 			HttpServletRequest request = (HttpServletRequest) req;
 			HttpServletResponse response = (HttpServletResponse) res;
 
+			// chain.doFilter(request, response);
+			// return;
+
 			HttpSession session = request.getSession();
 			String loginURI = request.getContextPath() + "/Login";
 
@@ -73,6 +76,8 @@ public class LoginFilterServlet implements Filter {
 					throw new CustomServerException("The GroupID from the JSON string isn't correct!",
 							HttpServletResponse.SC_BAD_REQUEST);
 				}
+			} else {
+				throw new CustomServerException("The User is not logged in!", HttpServletResponse.SC_BAD_REQUEST);
 			}
 
 		} catch (CustomServerException e) {

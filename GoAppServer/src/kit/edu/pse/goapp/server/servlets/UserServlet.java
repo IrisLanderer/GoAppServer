@@ -76,10 +76,10 @@ public class UserServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			HttpSession session = request.getSession(true);
-			//
+			// für den client wieder einfügen
 			if (session.getAttribute("register") != "") {
 				session.setAttribute("register", "");
-				// String googleId = "test";// request.getParameter("googleId");
+				// String googleId = request.getParameter("googleId");
 				String googleId = (String) session.getAttribute("googleId");
 				String jsonString = request.getReader().readLine();
 				UserDAO dao = new UserDaoConverter().parse(jsonString);
@@ -94,11 +94,12 @@ public class UserServlet extends HttpServlet {
 			} else {
 				response.setStatus(HttpServletResponse.SC_CONFLICT);
 			}
-		} catch (CustomServerException e) {
+		} catch (
+
+		CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
 		}
-
 
 	}
 
@@ -173,7 +174,7 @@ public class UserServlet extends HttpServlet {
 	 */
 	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
 		HttpSession session = request.getSession();
-
+		// int userId = 1;
 		int userId = (int) session.getAttribute("userId");
 		if (userId <= 0) {
 			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);

@@ -83,7 +83,7 @@ public class LoginServlet extends HttpServlet {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
 		}
-		// doGet(request, response);
+
 	}
 
 	/**
