@@ -20,6 +20,8 @@ public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * constructor for class LogoutServlet
+	 * 
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public LogoutServlet() {
@@ -27,6 +29,8 @@ public class LogoutServlet extends HttpServlet {
 	}
 
 	/**
+	 * method for logout
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */

@@ -24,63 +24,58 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
  */
 @WebServlet("/Notification")
 public class NotificationServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Constructor
-     * 
-     * @see HttpServlet#HttpServlet()
-     */
-    public NotificationServlet() {
-        super();
-    }
+	/**
+	 * Constructor
+	 * 
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public NotificationServlet() {
+		super();
+	}
 
-    /**
-     * GetNotification
-     * 
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        try {
-            int userId = authenticateUser(request);
-            NotificationDaoImpl dao = new NotificationDaoImpl();
-            dao.setUserId(userId);
-            List<Notification> notifications = dao.getNotifications();
-            response.getWriter()
-                    .write(new ObjectConverter<List<Notification>>().serialize(
-                            notifications,
-                            (Class<List<Notification>>) notifications
-                                    .getClass()));
-        } catch (CustomServerException e) {
-            response.setStatus(e.getStatusCode());
-            response.getWriter().write(e.toString());
-        }
-    }
+	/**
+	 * GetNotification
+	 * 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			int userId = authenticateUser(request);
+			NotificationDaoImpl dao = new NotificationDaoImpl();
+			dao.setUserId(userId);
+			List<Notification> notifications = dao.getNotifications();
+			response.getWriter().write(new ObjectConverter<List<Notification>>().serialize(notifications,
+					(Class<List<Notification>>) notifications.getClass()));
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
+		}
+	}
 
-    /**
-     * Authenticates user
-     * 
-     * @param request
-     *            HttpServletRequest
-     * @return userId
-     * @throws CustomServerException
-     *             CustomServerException
-     */
-    private int authenticateUser(HttpServletRequest request)
-            throws CustomServerException {
-        HttpSession session = request.getSession(true);
+	/**
+	 * Authenticates user
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @return userId
+	 * @throws CustomServerException
+	 *             CustomServerException
+	 */
+	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
+		HttpSession session = request.getSession(true);
 
-        int userId = 1;// (int) session.getAttribute("userId");
-        // int userId = (int) session.getAttribute("userId");
-        if (userId <= 0) {
-            throw new CustomServerException("This user is unauthorized!",
-                    HttpServletResponse.SC_UNAUTHORIZED);
-        }
-        return userId;
-    }
+		// int userId = 1;// (int) session.getAttribute("userId");
+		int userId = (int) session.getAttribute("userId");
+		if (userId <= 0) {
+			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		return userId;
+	}
 
 }

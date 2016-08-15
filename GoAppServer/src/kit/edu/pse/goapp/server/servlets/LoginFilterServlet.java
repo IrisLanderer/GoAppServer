@@ -38,47 +38,45 @@ public class LoginFilterServlet implements Filter {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * checks if someone is logged in and ,if not, if he is on the login service
+	 */
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws ServletException, IOException {
 		// try {
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) res;
-		HttpSession session = request.getSession(false);
-		// session.setAttribute("userId", 1);
+		HttpSession session = request.getSession(true);
+		session.setAttribute("userId", 1);
 		chain.doFilter(request, response);
+		// session.setAttribute("userId", 1);
+		// chain.doFilter(request, response);
 		// return;
 		// todo delete above 2 lines
 
 		// HttpSession session = request.getSession(false);
 		// String loginURI = request.getContextPath() + "/Login";
-		//
-		// boolean loggedIn = session != null &&
-		// session.getAttribute("userId") != null;
-		// if (loggedIn) {
-		// loggedIn = false;
-		// if ((boolean) session.getAttribute("loggedIn")) {
-		// loggedIn = true;
-		// } else if ((boolean) session.getAttribute("registerToken")) {
-		// session.setAttribute("registerToken", false);
-		// loggedIn = true;
-		// }
-		//
-		// boolean loginRequest = request.getRequestURI().equals(loginURI);
-		//
-		// if (loggedIn || loginRequest) {
-		// chain.doFilter(request, response);
-		// } else {
-		// throw new CustomServerException("The GroupID from the JSON string
-		// isn't correct!",
-		// HttpServletResponse.SC_BAD_REQUEST);
-		// }
-		// }
-
-		// } catch (CustomServerException e) {
-		// ((HttpServletResponse) res).setStatus(e.getStatusCode());
-		// res.getWriter().write(e.toString());
-		// }
+		/*
+		 * if (session == null) { if (request.getRequestURI().contains("Login"))
+		 * { chain.doFilter(request, response); } else throw new
+		 * CustomServerException("error auth2",
+		 * HttpServletResponse.SC_NON_AUTHORITATIVE_INFORMATION); } else {
+		 * boolean loggedIn = false; if (session.getAttribute("loggedIn") !=
+		 * null) if ((boolean) session.getAttribute("loggedIn")) { loggedIn =
+		 * true; } else if (session.getAttribute("registerToken") != null) if
+		 * ((boolean) session.getAttribute("registerToken")) {
+		 * session.setAttribute("registerToken", false); loggedIn = true; }
+		 * 
+		 * boolean loginRequest = request.getRequestURI().contains("Login");
+		 * boolean register = request.getRequestURI().contains("User"); if
+		 * (loggedIn || loginRequest || register) { chain.doFilter(request,
+		 * response); } else { throw new CustomServerException("error auth",
+		 * HttpServletResponse.SC_UNAUTHORIZED); } } } catch
+		 * (CustomServerException e) { ((HttpServletResponse)
+		 * res).setStatus(e.getStatusCode());
+		 * res.getWriter().write(e.toString()); }
+		 */
 	}
 
 	/**

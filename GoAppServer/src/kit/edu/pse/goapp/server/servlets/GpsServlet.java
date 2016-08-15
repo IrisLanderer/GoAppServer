@@ -27,6 +27,8 @@ public class GpsServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * constructor of the class GpsServlet
+	 * 
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public GpsServlet() {
@@ -35,6 +37,8 @@ public class GpsServlet extends HttpServlet {
 	}
 
 	/**
+	 * updates the GPS data
+	 * 
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	@Override
@@ -60,8 +64,8 @@ public class GpsServlet extends HttpServlet {
 	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
 		HttpSession session = request.getSession(true);
 
-		int userId = 1;// (int) session.getAttribute("userId");
-		// int userId = (int) session.getAttribute("userId");
+		// int userId = 1;// (int) session.getAttribute("userId");
+		int userId = (int) session.getAttribute("userId");
 		if (userId <= 0) {
 			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 		}

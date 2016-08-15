@@ -15,21 +15,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
+/**
+ * 
+ * Class for the connection to the database
+ *
+ */
 public class DatabaseConnection implements AutoCloseable {
 
-	// my local database
 	private static final String URL = "jdbc:mysql://localhost:3306/PSESoSe16GoGruppe2"
 			+ "?user=PSESoSe16User2&password=I059b4x275iYZ8wW&useUnicode=true&useJDBCCompliantTimezoneShift=true"
 			+ "&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
-	// private static final String URL =
-	// "jdbc:mysql://https://i43pc164.ipd.kit.edu:3306/PSESoSe16GoGruppe2"
-	// +
-	// "?user=PSESoSe16User2&password=I059b4x275iYZ8wW&useUnicode=true&useJDBCCompliantTimezoneShift=true"
-	// + "&useLegacyDatetimeCode=false&serverTimezone=UTC";
-
 	private Connection connection;
 
+	/**
+	 * constructor of the class DatabaseConnection
+	 * 
+	 * @throws Exception
+	 *             if connection fails
+	 */
 	public DatabaseConnection() throws Exception {
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 		connection = DriverManager.getConnection(URL);
@@ -76,6 +80,15 @@ public class DatabaseConnection implements AutoCloseable {
 		}
 	}
 
+	/**
+	 * executes SQL select query
+	 * 
+	 * @param sqlStatement
+	 *            select query for the database
+	 * @throws Exception
+	 *             if connection fails
+	 * @version 1.0
+	 */
 	public void select(String sqlStatement, SqlSelectHandler handler) throws Exception {
 		Statement statement = null;
 		try {
@@ -101,6 +114,15 @@ public class DatabaseConnection implements AutoCloseable {
 		}
 	}
 
+	/**
+	 * executes SQL delete query
+	 * 
+	 * @param sqlStatement
+	 *            delete query for the database
+	 * @throws Exception
+	 *             if connection fails
+	 * @version 1.0
+	 */
 	public void delete(String sqlStatement) throws Exception {
 		Statement statement = null;
 		try {
@@ -125,6 +147,15 @@ public class DatabaseConnection implements AutoCloseable {
 		}
 	}
 
+	/**
+	 * executes SQL update query
+	 * 
+	 * @param sqlStatement
+	 *            update query for the database
+	 * @throws Exception
+	 *             if connection fails
+	 * @version 1.0
+	 */
 	public void update(String sqlStatement) throws Exception {
 		Statement statement = null;
 		try {
@@ -141,6 +172,9 @@ public class DatabaseConnection implements AutoCloseable {
 		}
 	}
 
+	/**
+	 * closes the connection
+	 */
 	@Override
 	public void close() throws Exception {
 		if (connection != null) {

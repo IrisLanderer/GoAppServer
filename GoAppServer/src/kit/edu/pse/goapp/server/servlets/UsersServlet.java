@@ -25,75 +25,63 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
  */
 @WebServlet("/Users")
 public class UsersServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Constructor
-     * 
-     * @see HttpServlet#HttpServlet()
-     */
-    public UsersServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * Constructor
+	 * 
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public UsersServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    /**
-     * Gets users
-     * 
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        try {
-            UserDAO dao = new UserDaoImpl();
-            if (dao != null) {
-                List<User> users = dao.getAllUsers();
-                response.getWriter().write(
-                        new ObjectConverter<List<User>>().serialize(users,
-                                (Class<List<User>>) users.getClass()));
-            }
-        } catch (CustomServerException e) {
-            response.setStatus(e.getStatusCode());
-            response.getWriter().write(e.toString());
-        }
-    }
+	/**
+	 * Gets users
+	 * 
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		try {
+			// int userId = authenticateUser(request);
+			UserDAO dao = new UserDaoImpl();
+			// dao.setUserId(userId);
+			if (dao != null) {
+				List<User> users = dao.getAllUsers();
+				response.getWriter().write(
+						new ObjectConverter<List<User>>().serialize(users, (Class<List<User>>) users.getClass()));
+			}
+		} catch (CustomServerException e) {
+			response.setStatus(e.getStatusCode());
+			response.getWriter().write(e.toString());
+		}
+	}
 
-    /**
-     * Create list of users
-     * 
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
-    @Override
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-        doGet(request, response);
-    }
-
-    /**
-     * Updates list of users
-     * 
-     * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
-     */
-    @Override
-    protected void doPut(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-    }
-
-    /**
-     * Deletes users from list
-     * 
-     * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-     */
-    @Override
-    protected void doDelete(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        // TODO Auto-generated method stub
-    }
+	/**
+	 * Authenticates an user
+	 * 
+	 * @param request
+	 *            HttpServletRequest
+	 * @return userId
+	 * @throws CustomServerException
+	 *             CustomServerException
+	 */
+	// private int authenticateUser(HttpServletRequest request) throws
+	// CustomServerException {
+	// HttpSession session = request.getSession(true);
+	//
+	// // int userId = 1;// (int) session.getAttribute("userId");
+	// int userId = (int) session.getAttribute("userId");
+	// if (userId <= 0) {
+	// throw new CustomServerException("This user is unauthorized!",
+	// HttpServletResponse.SC_UNAUTHORIZED);
+	// }
+	// return userId;
+	// }
 
 }

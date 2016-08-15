@@ -50,12 +50,11 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String token = request.getReader().readLine();
 		try {
-			if (request.getParameter("token") != null) {
-				String requestToken = request.getParameter("token").toString();
-				System.out.println("token:" + requestToken);
+			if (token != null) {
 
-				GoogleIdToken googleToken = validateToken(requestToken);
+				GoogleIdToken googleToken = validateToken(token);
 				String googleId = getGoogleId(googleToken);
 				if (googleId.length() > 0) {
 					HttpSession session = request.getSession(true);
@@ -88,30 +87,34 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	/**
+	 * method for registration
+	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		String token = request.getReader().readLine();
 		try {
-			if (request.getParameter("token") != null) {
-				String requestToken = request.getParameter("token").toString();
-				System.out.println("token:" + requestToken);
+			if (token != null) {
+				// String requestToken =
+				// request.getParameter("token").toString();
+				System.out.println("token:" + token);
 
-				GoogleIdToken googleToken = validateToken(requestToken);
+				GoogleIdToken googleToken = validateToken(token);
 				String googleId = getGoogleId(googleToken);
 				if (googleId.length() > 0) {
 					HttpSession session = request.getSession(true);
 					UserDAO userDao = new UserDaoImpl();
 					userDao.setGoogleId(googleId);
-					String userId = Integer.toString(userDao.getUserByGoogleID().getId());
-					session.setAttribute("userId", userId);
+					// String userId =
+					// Integer.toString(userDao.getUserByGoogleID().getId());
+					// session.setAttribute("userId", userId);
 					session.setAttribute("googleId", googleId);
 					session.setAttribute("register", true);
 					session.setAttribute("registerToken", true);
-
+					response.getWriter().write("Register allowed");
 					response.setStatus(HttpServletResponse.SC_OK);
 				} else {
 					throw new CustomServerException("The GoogleID isn't correct!", HttpServletResponse.SC_BAD_REQUEST);
@@ -120,8 +123,8 @@ public class LoginServlet extends HttpServlet {
 				throw new CustomServerException("The GoogleToken from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
-		} catch (CustomServerException e) {
-			response.setStatus(e.getStatusCode());
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_EXPECTATION_FAILED);
 			response.getWriter().write(e.toString());
 		}
 
@@ -149,8 +152,10 @@ public class LoginServlet extends HttpServlet {
 		 * multiple sources, build // a GoogleIdTokenVerifier for each issuer
 		 * and try them both. .setIssuer("https://accounts.google.com").build();
 		 */
+		// GoogleIdTokenVerifier verifier = new
+		// GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+		// .setIssuer("https://accounts.google.com").setAudience(Arrays.asList(CLIENT_ID)).build();
 		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier(transport, jsonFactory);
-		verifier.getAudience().add(CLIENT_ID);
 		// (Receive idTokenString by HTTPS POST)
 
 		GoogleIdToken idToken;
