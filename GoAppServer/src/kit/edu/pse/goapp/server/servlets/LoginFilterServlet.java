@@ -62,11 +62,11 @@ public class LoginFilterServlet implements Filter {
 				loggedIn = false;
 				if (session.getAttribute("loggedIn") != null && (boolean) session.getAttribute("loggedIn")) {
 					loggedIn = true;
-				} else if (session.getAttribute("registerToken") != null
-						&& (boolean) session.getAttribute("registerToken")) {
-					session.setAttribute("registerToken", false);
-					loggedIn = true;
 				}
+			}
+			if (session.getAttribute("registerToken") != null && (boolean) session.getAttribute("registerToken")) {
+				session.setAttribute("registerToken", false);
+				loggedIn = true;
 			}
 			boolean loginRequest = request.getRequestURI().equals(loginURI);
 
