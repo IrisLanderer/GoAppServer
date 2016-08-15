@@ -67,15 +67,11 @@ public class LoginFilterServlet implements Filter {
 					session.setAttribute("registerToken", false);
 					loggedIn = true;
 				}
+			}
+			boolean loginRequest = request.getRequestURI().equals(loginURI);
 
-				boolean loginRequest = request.getRequestURI().equals(loginURI);
-
-				if (loggedIn || loginRequest) {
-					chain.doFilter(request, response);
-				} else {
-					throw new CustomServerException("The GroupID from the JSON string isn't correct!",
-							HttpServletResponse.SC_BAD_REQUEST);
-				}
+			if (loggedIn || loginRequest) {
+				chain.doFilter(request, response);
 			} else {
 				throw new CustomServerException("The User is not logged in!", HttpServletResponse.SC_BAD_REQUEST);
 			}
