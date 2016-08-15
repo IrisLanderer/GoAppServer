@@ -13,7 +13,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.GroupDAO;
@@ -68,14 +67,16 @@ public class GroupsServlet extends HttpServlet {
 	 *             CustomServerException
 	 */
 	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
-		HttpSession session = request.getSession();
+		CookieManager cm = new CookieManager();
 
-		// int userId = 1;
-		int userId = (int) session.getAttribute("userId");
-		if (userId <= 0) {
-			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		String userIDString = cm.searchCookie(request, "userId");
+		if (userIDString.length() > 0) {
+			int userId = Integer.parseInt(userIDString);
+			if (userId > 0) {
+				return userId;
+			}
 		}
-		return userId;
+		throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 	}
 
 }

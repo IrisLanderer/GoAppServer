@@ -11,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
@@ -57,7 +56,7 @@ public class LoginServlet extends HttpServlet {
 				GoogleIdToken googleToken = validateToken(token);
 				String googleId = getGoogleId(googleToken);
 				if (googleId.length() > 0) {
-					HttpSession session = request.getSession(true);
+					CookieManager cm = new CookieManager();
 					UserDAO userDao = new UserDaoImpl();
 					userDao.setGoogleId(googleId);
 					User user = userDao.getUserByGoogleID();
@@ -67,8 +66,10 @@ public class LoginServlet extends HttpServlet {
 					}
 					{
 						String userId = Integer.toString(userDao.getUserByGoogleID().getId());
-						session.setAttribute("userId", userId);
-						session.setAttribute("loggedIn", true);
+
+						cm.addCookie(response, "userId", userId, 3600);
+						cm.addCookie(response, "loggedIn", "yes", 3600);
+
 						response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 					}
 				} else {
@@ -98,22 +99,16 @@ public class LoginServlet extends HttpServlet {
 		String token = request.getReader().readLine();
 		try {
 			if (token != null) {
-				// String requestToken =
-				// request.getParameter("token").toString();
-				System.out.println("token:" + token);
 
 				GoogleIdToken googleToken = validateToken(token);
 				String googleId = getGoogleId(googleToken);
 				if (googleId.length() > 0) {
-					HttpSession session = request.getSession(true);
+					CookieManager cm = new CookieManager();
 					UserDAO userDao = new UserDaoImpl();
 					userDao.setGoogleId(googleId);
-					// String userId =
-					// Integer.toString(userDao.getUserByGoogleID().getId());
-					// session.setAttribute("userId", userId);
-					session.setAttribute("googleId", googleId);
-					session.setAttribute("register", true);
-					session.setAttribute("registerToken", true);
+					cm.addCookie(response, "googleId", googleId, 3600);
+					cm.addCookie(response, "register", "yes", 3600);
+
 					response.getWriter().write("Register allowed");
 					response.setStatus(HttpServletResponse.SC_OK);
 				} else {

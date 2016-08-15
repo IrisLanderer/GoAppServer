@@ -62,26 +62,4 @@ public class UsersServlet extends HttpServlet {
 		}
 	}
 
-	/**
-	 * Authenticates an user
-	 * 
-	 * @param request
-	 *            HttpServletRequest
-	 * @return userId
-	 * @throws CustomServerException
-	 *             CustomServerException
-	 */
-	// private int authenticateUser(HttpServletRequest request) throws
-	// CustomServerException {
-	// HttpSession session = request.getSession(true);
-	//
-	// // int userId = 1;// (int) session.getAttribute("userId");
-	// int userId = (int) session.getAttribute("userId");
-	// if (userId <= 0) {
-	// throw new CustomServerException("This user is unauthorized!",
-	// HttpServletResponse.SC_UNAUTHORIZED);
-	// }
-	// return userId;
-	// }
-
 }

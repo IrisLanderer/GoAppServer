@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import kit.edu.pse.goapp.server.converter.daos.UserDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
@@ -75,12 +74,13 @@ public class UserServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			HttpSession session = request.getSession(true);
+			CookieManager cm = new CookieManager();
+
+			String googleId = cm.searchCookie(request, "googleId");
+
 			// für den client wieder einfügen
-			if (session.getAttribute("register") != "") {
-				session.setAttribute("register", "");
-				// String googleId = request.getParameter("googleId");
-				String googleId = (String) session.getAttribute("googleId");
+			if (googleId.length() > 0) {
+
 				String jsonString = request.getReader().readLine();
 				UserDAO dao = new UserDaoConverter().parse(jsonString);
 				// every user has notifications enabled by default
@@ -173,13 +173,16 @@ public class UserServlet extends HttpServlet {
 	 *             CustomServerException
 	 */
 	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
-		HttpSession session = request.getSession();
-		// int userId = 1;
-		int userId = (int) session.getAttribute("userId");
-		if (userId <= 0) {
-			throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
+		CookieManager cm = new CookieManager();
+
+		String userIDString = cm.searchCookie(request, "userId");
+		if (userIDString.length() > 0) {
+			int userId = Integer.parseInt(userIDString);
+			if (userId > 0) {
+				return userId;
+			}
 		}
-		return userId;
+		throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 	}
 
 }
