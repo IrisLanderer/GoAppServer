@@ -176,7 +176,7 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 	 *             CustomServerException
 	 */
 	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
-		HttpSession session = request.getSession(true);
+		HttpSession session = request.getSession();
 
 		// int userId = 1;// (int) session.getAttribute("userId");
 		int userId = (int) session.getAttribute("userId");
