@@ -15,7 +15,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
@@ -49,31 +48,35 @@ public class LoginFilterServlet implements Filter {
 		try {
 			HttpServletRequest request = (HttpServletRequest) req;
 			HttpServletResponse response = (HttpServletResponse) res;
-
-			// chain.doFilter(request, response);
-			// return;
-
-			HttpSession session = request.getSession();
+			CookieManager cm = new CookieManager();
+			String userIdString = cm.searchCookie(request, "userId");
+			String loggedInString = cm.searchCookie(request, "loggedIn");
+			String registerString = cm.searchCookie(request, "register");
 			String loginURI = request.getContextPath() + "/Login";
 
-			boolean loggedIn = session.getAttribute("userId") != null;
+			boolean loggedIn = false;
 
-			if (loggedIn && session != null) {
-				loggedIn = false;
-				if (session.getAttribute("loggedIn") != null && (boolean) session.getAttribute("loggedIn")) {
-					loggedIn = true;
-				} else if (session.getAttribute("registerToken") != null
-						&& (boolean) session.getAttribute("registerToken")) {
-					session.setAttribute("registerToken", false);
+			if (userIdString.length() > 0) {
+				if (loggedInString.length() > 0) {
 					loggedIn = true;
 				}
 			}
+			if (registerString.length() > 0) {
+				cm.deleteCookie(request, response, "register");
+				loggedIn = true;
+			}
+
 			boolean loginRequest = request.getRequestURI().equals(loginURI);
 
 			if (loggedIn || loginRequest) {
+				cm.addCookie(response, "userId", userIdString, 3600);
+				cm.addCookie(response, "loggedIn", loggedInString, 3600);
+
 				chain.doFilter(request, response);
 			} else {
-				throw new CustomServerException("The User is not logged in!", HttpServletResponse.SC_BAD_REQUEST);
+				throw new CustomServerException(
+						"The User is not logged in! + userId :" + userIdString + " loginCookie: " + loggedInString,
+						HttpServletResponse.SC_BAD_REQUEST);
 			}
 
 		} catch (CustomServerException e) {

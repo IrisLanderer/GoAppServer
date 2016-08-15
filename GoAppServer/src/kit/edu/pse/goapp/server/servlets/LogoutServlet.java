@@ -37,9 +37,10 @@ public class LogoutServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		request.setAttribute("userID", "");
+		CookieManager cm = new CookieManager();
+		cm.deleteCookie(request, response, "userID");
 		request.getSession().invalidate();
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		response.getWriter().append("Logged out at: ").append(request.getContextPath());
 	}
 
 }
