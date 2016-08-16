@@ -109,7 +109,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 			// checks if this user is already a member of this group
 			List<User> groupMembers = groupMembersWithDao.createMembersWithDao(groupMemberDao.getGroupId());
 			for (User member : groupMembers) {
-				if (member.getId() == userId) {
+				if (member.getId() == groupMemberDao.getUserId()) {
 					throw new CustomServerException("The user is already a member of this group!",
 							HttpServletResponse.SC_BAD_REQUEST);
 				}

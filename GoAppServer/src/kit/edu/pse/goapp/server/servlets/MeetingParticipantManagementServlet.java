@@ -6,6 +6,7 @@
 package kit.edu.pse.goapp.server.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,6 +30,7 @@ import kit.edu.pse.goapp.server.datamodels.Participant;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 import kit.edu.pse.goapp.server.validation.MeetingValidation;
+import kit.edu.pse.goapp.server.validation.UserValidation;
 
 /**
  * Servlet implementation class MeetingParticipantManagement
@@ -36,11 +38,13 @@ import kit.edu.pse.goapp.server.validation.MeetingValidation;
 @WebServlet("/MeetingParticipantManagement")
 public class MeetingParticipantManagementServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
 	private UserWithDao userWithDao = new UserWithDao();
 	private ParticipantWithDao participantWithDao = new ParticipantWithDao();
 	private MeetingWithDao meetingWithDao = new MeetingWithDao();
 
 	private MeetingValidation validation = new MeetingValidation();
+	private UserValidation userValidation = new UserValidation();
 
 	private Authentication authentication = new Authentication();
 
@@ -111,6 +115,15 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			User user = userWithDao.createUserWithDao(userId);
 			meetingCheckingForAuthorization.isParticipant(user);
 			meetingCheckingForAuthorization.isCreator(user);
+			userValidation.userExists(dao.getUserId());
+			// checks if this user is already a participant of this meeting
+			List<Participant> participants = participantWithDao.createParticipantsWithDao(dao.getMeetingId());
+			for (Participant participant : participants) {
+				if (participant.getUser().getId() == dao.getUserId()) {
+					throw new CustomServerException("The user is already a participant of this meeting!",
+							HttpServletResponse.SC_BAD_REQUEST);
+				}
+			}
 			if (dao != null) {
 				dao.addParticipant();
 			}
