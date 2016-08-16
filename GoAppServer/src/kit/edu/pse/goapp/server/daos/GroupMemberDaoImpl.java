@@ -27,7 +27,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	private int groupId;
 	private int userId;
 	private boolean isAdmin;
-	private Validation validation;
+	private Validation validation = new Validation();
 
 	private List<Integer> memberIds = new ArrayList<>();
 	private List<Integer> adminIds = new ArrayList<>();
@@ -120,8 +120,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		// checks if this user is a member of this group at all. not yet tested
-		// and a requirement with priority b
+		// checks if this user is a member of this group at all
 		List<User> groupMembers = createMembersWithDao();
 		validation.checkIfMember(groupMembers, userId);
 		try {
@@ -164,10 +163,9 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		// checks if this user is a member of this group at all. not yet tested
-		// and a requirement with priority b
-		// List<User> groupMembers = createMembersWithDao();
-		// checkIfMember(groupMembers);
+		// checks if this user is a member of this group at all
+		List<User> groupMembers = createMembersWithDao();
+		validation.checkIfMember(groupMembers, userId);
 		try {
 			String query = MessageFormat.format(
 					"UPDATE group_members SET is_admin = ''{0}'' " + "WHERE groups_id = ''{1}'' AND users_id = ''{2}''",
