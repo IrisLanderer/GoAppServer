@@ -14,17 +14,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import kit.edu.pse.goapp.server.algorithm.MeetingGpsAlgorithm;
+import kit.edu.pse.goapp.server.authentication.Authentication;
 import kit.edu.pse.goapp.server.converter.daos.MeetingDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
+import kit.edu.pse.goapp.server.creating_obj_with_dao.UserWithDao;
 import kit.edu.pse.goapp.server.daos.MeetingDAO;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
-import kit.edu.pse.goapp.server.daos.UserDAO;
-import kit.edu.pse.goapp.server.daos.UserDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Event;
 import kit.edu.pse.goapp.server.datamodels.Meeting;
 import kit.edu.pse.goapp.server.datamodels.Tour;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
+import kit.edu.pse.goapp.server.validation.MeetingValidation;
 
 /**
  * Servlet implementation class Meeting
@@ -32,6 +33,12 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 @WebServlet("/Meeting")
 public class MeetingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+	private UserWithDao userWithDao = new UserWithDao();
+
+	private MeetingValidation validation = new MeetingValidation();
+
+	private Authentication authentication = new Authentication();
 
 	/**
 	 * Constructor
@@ -52,7 +59,7 @@ public class MeetingServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			int userId = authenticateUser(request);
+			int userId = authentication.authenticateUser(request);
 			String meetingId = request.getParameter("meetingId");
 			MeetingDAO dao = new MeetingDaoImpl();
 			dao.setUserId(userId);
@@ -62,7 +69,7 @@ public class MeetingServlet extends HttpServlet {
 				throw new CustomServerException("The MeetingID from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
-			User user = createUserWithDao(userId);
+			User user = userWithDao.createUserWithDao(userId);
 			Meeting meetingCheckParticipant = createMeetingWithDao(dao.getMeetingId(), dao.getUserId());
 			meetingCheckParticipant.isParticipant(user);
 			if (dao != null) {
@@ -95,7 +102,7 @@ public class MeetingServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			int userId = authenticateUser(request);
+			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
 			dao.setUserId(userId);
@@ -131,10 +138,10 @@ public class MeetingServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
-			int userId = authenticateUser(request);
+			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
-			checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
+			validation.checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
 			if (dao != null) {
 				dao.updateMeeting();
 			}
@@ -165,7 +172,7 @@ public class MeetingServlet extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			int userId = authenticateUser(request);
+			int userId = authentication.authenticateUser(request);
 			String meetingId = request.getParameter("meetingId");
 			MeetingDAO dao = new MeetingDaoImpl();
 			try {
@@ -174,7 +181,7 @@ public class MeetingServlet extends HttpServlet {
 				throw new CustomServerException("The MeetingID from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
-			checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
+			validation.checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
 			if (dao != null) {
 				dao.deleteMeeting();
 			}
@@ -186,46 +193,6 @@ public class MeetingServlet extends HttpServlet {
 			response.getWriter().write(io.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	/**
-	 * Authenticate user
-	 * 
-	 * @param request
-	 *            HttpServletRequest
-	 * @return userId
-	 * @throws CustomServerException
-	 *             CustomServerException
-	 */
-	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
-		CookieManager cm = new CookieManager();
-
-		String userIDString = cm.searchCookie(request, "userId");
-		if (userIDString.length() > 0) {
-			int userId = Integer.parseInt(userIDString);
-			if (userId > 0) {
-				return userId;
-			}
-		}
-		throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
-	}
-
-	/**
-	 * Create user with DAO
-	 * 
-	 * @param userId
-	 *            userId
-	 * @return user user
-	 * @throws IOException
-	 *             IOException
-	 * @throws CustomServerException
-	 *             CustomServerException
-	 */
-	private User createUserWithDao(int userId) throws IOException, CustomServerException {
-		UserDAO userDao = new UserDaoImpl();
-		userDao.setUserId(userId);
-		User user = userDao.getUserByID();
-		return user;
 	}
 
 	/**
@@ -247,26 +214,6 @@ public class MeetingServlet extends HttpServlet {
 		dao.setUserId(userId);
 		Meeting meeting = dao.getMeetingByID();
 		return meeting;
-	}
-
-	/**
-	 * Check if user is meeting participant and creator
-	 * 
-	 * @param userId
-	 *            userId
-	 * @param meetingId
-	 *            meetingId
-	 * @throws IOException
-	 *             IOException
-	 * @throws CustomServerException
-	 *             CustomServerException
-	 */
-	private void checkIfUserIsParticipantAndCreator(int userId, int meetingId)
-			throws IOException, CustomServerException {
-		User user = createUserWithDao(userId);
-		Meeting meetingCheckParticipant = createMeetingWithDao(meetingId, userId);
-		meetingCheckParticipant.isParticipant(user);
-		meetingCheckParticipant.isCreator(user);
 	}
 
 }

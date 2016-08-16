@@ -13,13 +13,13 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 /**
  * @author Iris class out sources all validation checks
  */
-public class Validation {
+public class GroupMemberDaoValidation {
 
 	/**
 	 * 
 	 * 
 	 */
-	public Validation() {
+	public GroupMemberDaoValidation() {
 	}
 
 	/**

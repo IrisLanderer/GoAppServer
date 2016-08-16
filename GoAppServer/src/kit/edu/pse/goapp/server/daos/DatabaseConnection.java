@@ -88,7 +88,10 @@ public class DatabaseConnection implements AutoCloseable {
 	 * @throws Exception
 	 *             if connection fails
 	 * @version 1.0
+	 * @param handler
+	 *            handles the resulted data
 	 */
+
 	public void select(String sqlStatement, SqlSelectHandler handler) throws Exception {
 		Statement statement = null;
 		try {

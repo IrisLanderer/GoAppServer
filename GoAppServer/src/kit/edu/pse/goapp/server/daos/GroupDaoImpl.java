@@ -123,6 +123,7 @@ public class GroupDaoImpl implements GroupDAO {
 		} catch (Throwable e) {
 			throw new IOException();
 		}
+
 		for (int tmpGroupId : groupIds) {
 			GroupDAO dao = new GroupDaoImpl();
 			dao.setGroupId(tmpGroupId);
@@ -378,18 +379,11 @@ public class GroupDaoImpl implements GroupDAO {
 		@Override
 		public void handleResultSet(ResultSet resultSet) throws SQLException, CustomServerException {
 
-			boolean resultEmpty = true;
-
 			while (resultSet.next()) {
-				resultEmpty = false;
 				groupIds.add(resultSet.getInt(1));
 
 			}
 
-			if (resultEmpty) {
-				throw new CustomServerException("The selected resultset from the database is empty",
-						HttpServletResponse.SC_BAD_REQUEST);
-			}
 		}
 
 	}

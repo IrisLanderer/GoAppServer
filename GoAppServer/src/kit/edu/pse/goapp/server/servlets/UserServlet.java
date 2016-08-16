@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kit.edu.pse.goapp.server.authentication.Authentication;
 import kit.edu.pse.goapp.server.converter.daos.UserDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
 import kit.edu.pse.goapp.server.daos.UserDAO;
@@ -26,6 +27,8 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 @WebServlet("/User")
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+	private Authentication authentication = new Authentication();
 
 	/**
 	 * Constructor
@@ -116,7 +119,7 @@ public class UserServlet extends HttpServlet {
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			int userId = authenticateUser(request);
+			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			UserDAO dao = new UserDaoConverter().parse(jsonString);
 			if (userId != dao.getUserId()) {
@@ -146,7 +149,7 @@ public class UserServlet extends HttpServlet {
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			int authenticatingUserId = authenticateUser(request);
+			int authenticatingUserId = authentication.authenticateUser(request);
 			String userId = request.getParameter("userId");
 			UserDAO dao = new UserDaoImpl();
 			try {
@@ -171,28 +174,6 @@ public class UserServlet extends HttpServlet {
 			response.getWriter().write(io.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	/**
-	 * Authenticate user
-	 * 
-	 * @param request
-	 *            HttpServletRequest
-	 * @return userId userId
-	 * @throws CustomServerException
-	 *             CustomServerException
-	 */
-	private int authenticateUser(HttpServletRequest request) throws CustomServerException {
-		CookieManager cm = new CookieManager();
-
-		String userIDString = cm.searchCookie(request, "userId");
-		if (userIDString.length() > 0) {
-			int userId = Integer.parseInt(userIDString);
-			if (userId > 0) {
-				return userId;
-			}
-		}
-		throw new CustomServerException("This user is unauthorized!", HttpServletResponse.SC_UNAUTHORIZED);
 	}
 
 }

@@ -27,5 +27,6 @@ public interface SqlSelectHandler {
 	 * @throws CustomServerException
 	 * @throws IOException
 	 */
+	@SuppressWarnings("javadoc")
 	public void handleResultSet(ResultSet resultSet) throws SQLException, CustomServerException, IOException;
 }
