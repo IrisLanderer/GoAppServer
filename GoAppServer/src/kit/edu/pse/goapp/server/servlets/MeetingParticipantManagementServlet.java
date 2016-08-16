@@ -75,8 +75,8 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			}
 			Participant participantForMeetingId = participantWithDao.createParticipantWithDao(dao.getParticipantId());
 			User user = userWithDao.createUserWithDao(userId);
-			Meeting meetingCheckParticipant = meetingWithDao
-					.createMeetingWithDao(participantForMeetingId.getMeetingId());
+			Meeting meetingCheckParticipant = meetingWithDao.createMeetingWithDao(
+					participantForMeetingId.getMeetingId(), participantForMeetingId.getUser().getId());
 			meetingCheckParticipant.isParticipant(user);
 			if (dao != null) {
 				Participant participant = dao.getParticipantByID();
@@ -106,7 +106,8 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			String jsonString = request.getReader().readLine();
 			ParticipantDAO dao = new ParticipantDaoConverter().parse(jsonString);
 			dao.setConfirmation(MeetingConfirmation.PENDING);
-			Meeting meetingCheckingForAuthorization = meetingWithDao.createMeetingWithDao(dao.getMeetingId());
+			Meeting meetingCheckingForAuthorization = meetingWithDao.createMeetingWithDao(dao.getMeetingId(),
+					dao.getUserId());
 			User user = userWithDao.createUserWithDao(userId);
 			meetingCheckingForAuthorization.isParticipant(user);
 			meetingCheckingForAuthorization.isCreator(user);

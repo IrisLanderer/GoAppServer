@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import kit.edu.pse.goapp.server.authentication.Authentication;
 import kit.edu.pse.goapp.server.converter.daos.GroupMemberDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
+import kit.edu.pse.goapp.server.creating_obj_with_dao.GroupMembersWithDao;
 import kit.edu.pse.goapp.server.creating_obj_with_dao.GroupWithDao;
 import kit.edu.pse.goapp.server.creating_obj_with_dao.UserWithDao;
 import kit.edu.pse.goapp.server.daos.GroupMemberDAO;
@@ -24,7 +25,9 @@ import kit.edu.pse.goapp.server.daos.GroupMemberDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Group;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
+import kit.edu.pse.goapp.server.validation.GroupMemberDaoValidation;
 import kit.edu.pse.goapp.server.validation.GroupValidation;
+import kit.edu.pse.goapp.server.validation.UserValidation;
 
 /**
  * Servlet implementation class GroupUserManagement
@@ -33,10 +36,13 @@ import kit.edu.pse.goapp.server.validation.GroupValidation;
 public class GroupUserManagementServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private UserValidation userValidation = new UserValidation();
 	private GroupValidation validation = new GroupValidation();
+	private GroupMemberDaoValidation groupDaoValidation = new GroupMemberDaoValidation();
 
 	private GroupWithDao groupWithDao = new GroupWithDao();
 	private UserWithDao userWithDao = new UserWithDao();
+	private GroupMembersWithDao groupMembersWithDao = new GroupMembersWithDao();
 
 	private Authentication authentication = new Authentication();
 
@@ -97,7 +103,17 @@ public class GroupUserManagementServlet extends HttpServlet {
 			// every group member is an admin automatically (priority A
 			// requirement)
 			groupMemberDao.setAdmin(true);
+			// checks if the user exists at all
+			userValidation.userExists(groupMemberDao.getUserId());
 			validation.checkIfUserIsMemberAndAdmin(userId, groupMemberDao.getGroupId());
+			// checks if this user is already a member of this group
+			List<User> groupMembers = groupMembersWithDao.createMembersWithDao(groupMemberDao.getGroupId());
+			for (User member : groupMembers) {
+				if (member.getId() == userId) {
+					throw new CustomServerException("The user is already a member of this group!",
+							HttpServletResponse.SC_BAD_REQUEST);
+				}
+			}
 			if (groupMemberDao != null) {
 				groupMemberDao.addMember();
 			}
@@ -125,6 +141,9 @@ public class GroupUserManagementServlet extends HttpServlet {
 			String jsonString = request.getReader().readLine();
 			GroupMemberDAO groupMemberdao = new GroupMemberDaoConverter().parse(jsonString);
 			validation.checkIfUserIsMemberAndAdmin(userId, groupMemberdao.getGroupId());
+			// checks if this user is a member of this group at all
+			List<User> groupMembers = groupMembersWithDao.createMembersWithDao(groupMemberdao.getGroupId());
+			groupDaoValidation.checkIfMember(groupMembers, groupMemberdao.getUserId());
 			if (groupMemberdao != null) {
 				groupMemberdao.updateMember();
 			}
@@ -165,6 +184,9 @@ public class GroupUserManagementServlet extends HttpServlet {
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 			validation.checkIfUserIsMemberAndAdmin(myUserId, dao.getGroupId());
+			// checks if this user is a member of this group at all
+			List<User> groupMembers = groupMembersWithDao.createMembersWithDao(Integer.parseInt(groupId));
+			groupDaoValidation.checkIfMember(groupMembers, Integer.parseInt(userId));
 			if (dao != null) {
 				dao.deleteMember();
 			}

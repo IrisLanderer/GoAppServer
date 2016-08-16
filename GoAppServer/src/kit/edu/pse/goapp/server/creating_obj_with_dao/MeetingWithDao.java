@@ -21,15 +21,18 @@ public class MeetingWithDao {
 	 * 
 	 * @param meetingId
 	 *            meetingId
+	 * @param userId
+	 *            the user's ID who has to be added to the meeting
 	 * @return meeting meeting
 	 * @throws IOException
 	 *             IOException
 	 * @throws CustomServerException
 	 *             CustomServerException
 	 */
-	public Meeting createMeetingWithDao(int meetingId) throws IOException, CustomServerException {
+	public Meeting createMeetingWithDao(int meetingId, int userId) throws IOException, CustomServerException {
 		MeetingDAO dao = new MeetingDaoImpl();
 		dao.setMeetingId(meetingId);
+		dao.setUserId(userId);
 		Meeting meeting = dao.getMeetingByID();
 		return meeting;
 	}

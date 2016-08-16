@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import kit.edu.pse.goapp.server.creating_obj_with_dao.GroupMembersWithDao;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
-import kit.edu.pse.goapp.server.validation.GroupMemberDaoValidation;
 
 /**
  * Implements interface GroupMemberDao
@@ -27,8 +26,6 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	private int groupId;
 	private int userId;
 	private boolean isAdmin;
-
-	private GroupMemberDaoValidation validation = new GroupMemberDaoValidation();
 
 	private GroupMembersWithDao groupMembersWithDao = new GroupMembersWithDao();
 
@@ -74,14 +71,6 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		// checks if this user is already a member of this group
-		List<User> groupMembers = groupMembersWithDao.createMembersWithDao(groupId);
-		for (User member : groupMembers) {
-			if (member.getId() == userId) {
-				throw new CustomServerException("The user is already a member of this group!",
-						HttpServletResponse.SC_BAD_REQUEST);
-			}
-		}
 		try {
 			String query = MessageFormat.format(
 					"INSERT INTO group_members (groups_id, users_id, is_admin) VALUES (''{0}'', ''{1}'', ''{2}'')",
@@ -123,9 +112,6 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		// checks if this user is a member of this group at all
-		List<User> groupMembers = groupMembersWithDao.createMembersWithDao(groupId);
-		validation.checkIfMember(groupMembers, userId);
 		try {
 			String query = MessageFormat.format(
 					"DELETE FROM group_members" + " WHERE groups_id = ''{0}'' AND users_id = ''{1}''", groupId, userId);
@@ -166,9 +152,6 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		// checks if this user is a member of this group at all
-		List<User> groupMembers = groupMembersWithDao.createMembersWithDao(groupId);
-		validation.checkIfMember(groupMembers, userId);
 		try {
 			String query = MessageFormat.format(
 					"UPDATE group_members SET is_admin = ''{0}'' " + "WHERE groups_id = ''{1}'' AND users_id = ''{2}''",

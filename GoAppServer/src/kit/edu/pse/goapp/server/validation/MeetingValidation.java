@@ -39,7 +39,8 @@ public class MeetingValidation {
 			throws IOException, CustomServerException {
 		Participant participantForMeetingId = participantWithDao.createParticipantWithDao(participantId);
 		User user = userWithDao.createUserWithDao(userId);
-		Meeting meetingCheckParticipant = meetingWithDao.createMeetingWithDao(participantForMeetingId.getMeetingId());
+		Meeting meetingCheckParticipant = meetingWithDao.createMeetingWithDao(participantForMeetingId.getMeetingId(),
+				participantForMeetingId.getUser().getId());
 		meetingCheckParticipant.isParticipant(user);
 		meetingCheckParticipant.isCreator(user);
 	}

@@ -294,7 +294,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 	 *            DatabaseConnection
 	 * @return meeting meeting by its id
 	 * @throws Exception
-	 *             Excwption
+	 *             Exception
 	 */
 	protected Meeting getMeetingByID(DatabaseConnection connection) throws Exception {
 		if (meetingId <= 0) {
