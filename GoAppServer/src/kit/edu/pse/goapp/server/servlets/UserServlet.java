@@ -61,6 +61,9 @@ public class UserServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -77,8 +80,6 @@ public class UserServlet extends HttpServlet {
 			CookieManager cm = new CookieManager();
 
 			String googleId = cm.searchCookie(request, "googleId");
-
-			// für den client wieder einfügen
 			if (googleId.length() > 0) {
 
 				String jsonString = request.getReader().readLine();
@@ -99,6 +100,9 @@ public class UserServlet extends HttpServlet {
 		CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 
 	}
@@ -127,6 +131,9 @@ public class UserServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -160,6 +167,9 @@ public class UserServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 

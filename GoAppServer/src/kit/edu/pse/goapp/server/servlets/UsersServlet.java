@@ -34,7 +34,6 @@ public class UsersServlet extends HttpServlet {
 	 */
 	public UsersServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -59,6 +58,9 @@ public class UsersServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 

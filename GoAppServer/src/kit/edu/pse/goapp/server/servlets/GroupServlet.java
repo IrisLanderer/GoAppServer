@@ -64,6 +64,9 @@ public class GroupServlet extends HttpServlet {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
 
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -85,6 +88,9 @@ public class GroupServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -112,6 +118,9 @@ public class GroupServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -134,6 +143,9 @@ public class GroupServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 

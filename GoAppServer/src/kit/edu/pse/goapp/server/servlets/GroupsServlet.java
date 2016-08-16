@@ -54,6 +54,9 @@ public class GroupsServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.getMessage());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import kit.edu.pse.goapp.server.datamodels.Group;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
+import kit.edu.pse.goapp.server.validation.Validation;
 
 /**
  * Implements interface GroupMemberDao
@@ -26,6 +27,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	private int groupId;
 	private int userId;
 	private boolean isAdmin;
+	private Validation validation;
 
 	private List<Integer> memberIds = new ArrayList<>();
 	private List<Integer> adminIds = new ArrayList<>();
@@ -69,16 +71,14 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		if (userId <= 0) {
 			throw new CustomServerException("A group must have an UserID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		// checks if this user is already a member of this group. not yet tested
-		// and a requirement with priority b
-		// List<User> groupMembers = createMembersWithDao();
-		// for (User member : groupMembers) {
-		// if (member.getId() == userId) {
-		// throw new CustomServerException("The user is already a member of this
-		// group!",
-		// HttpServletResponse.SC_BAD_REQUEST);
-		// }
-		// }
+		// checks if this user is already a member of this group
+		List<User> groupMembers = createMembersWithDao();
+		for (User member : groupMembers) {
+			if (member.getId() == userId) {
+				throw new CustomServerException("The user is already a member of this group!",
+						HttpServletResponse.SC_BAD_REQUEST);
+			}
+		}
 		try {
 			String query = MessageFormat.format(
 					"INSERT INTO group_members (groups_id, users_id, is_admin) VALUES (''{0}'', ''{1}'', ''{2}'')",
@@ -122,8 +122,8 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		}
 		// checks if this user is a member of this group at all. not yet tested
 		// and a requirement with priority b
-		// List<User> groupMembers = createMembersWithDao();
-		// checkIfMember(groupMembers);
+		List<User> groupMembers = createMembersWithDao();
+		validation.checkIfMember(groupMembers, userId);
 		try {
 			String query = MessageFormat.format(
 					"DELETE FROM group_members" + " WHERE groups_id = ''{0}'' AND users_id = ''{1}''", groupId, userId);
@@ -271,6 +271,9 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 			User user = dao.getUserByID();
 			admins.add(user);
 		}
+		if (admins.isEmpty()) {
+			throw new CustomServerException("A group must have an admin!", HttpServletResponse.SC_BAD_REQUEST);
+		}
 		connection.close();
 		return admins;
 	}
@@ -338,27 +341,6 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 		Group group = dao.getGroupByID();
 		List<User> groupMembers = group.getGroupMembers();
 		return groupMembers;
-	}
-
-	/**
-	 * Checks if an user is group member
-	 * 
-	 * @param groupMembers
-	 *            list of group members
-	 * @throws CustomServerException
-	 *             CustomServerException
-	 */
-	private void checkIfMember(List<User> groupMembers) throws CustomServerException {
-		boolean isMember = false;
-		for (User member : groupMembers) {
-			if (member.getId() == userId) {
-				isMember = true;
-			}
-		}
-		if (!isMember) {
-			throw new CustomServerException("The user is not a member of this group!",
-					HttpServletResponse.SC_BAD_REQUEST);
-		}
 	}
 
 	/**

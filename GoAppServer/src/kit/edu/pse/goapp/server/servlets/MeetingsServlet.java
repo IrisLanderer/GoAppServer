@@ -37,7 +37,6 @@ public class MeetingsServlet extends HttpServlet {
 	 */
 	public MeetingsServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -74,6 +73,9 @@ public class MeetingsServlet extends HttpServlet {
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.getMessage());
+		} catch (IOException io) {
+			response.getWriter().write(io.getMessage());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 	}
 
