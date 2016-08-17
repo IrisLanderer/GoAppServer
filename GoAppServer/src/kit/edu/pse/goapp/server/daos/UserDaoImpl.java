@@ -382,8 +382,7 @@ public class UserDaoImpl implements UserDAO {
 
 			}
 			if (resultEmpty) {
-				throw new CustomServerException("The selected resultset from the database is empty",
-						HttpServletResponse.SC_BAD_REQUEST);
+				throw new CustomServerException("There isn't a user with this ID!", HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
 	}
@@ -417,8 +416,7 @@ public class UserDaoImpl implements UserDAO {
 				usersIds.add(resultSet.getInt(1));
 			}
 			if (resultEmpty) {
-				throw new CustomServerException("The selected resultset from the database is empty",
-						HttpServletResponse.SC_BAD_REQUEST);
+				throw new CustomServerException("There aren't any users!", HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
 	}

@@ -17,6 +17,7 @@ import kit.edu.pse.goapp.server.algorithm.MeetingGpsAlgorithm;
 import kit.edu.pse.goapp.server.authentication.Authentication;
 import kit.edu.pse.goapp.server.converter.daos.MeetingDaoConverter;
 import kit.edu.pse.goapp.server.converter.objects.ObjectConverter;
+import kit.edu.pse.goapp.server.creating_obj_with_dao.MeetingWithDao;
 import kit.edu.pse.goapp.server.creating_obj_with_dao.UserWithDao;
 import kit.edu.pse.goapp.server.daos.MeetingDAO;
 import kit.edu.pse.goapp.server.daos.MeetingDaoImpl;
@@ -35,6 +36,7 @@ public class MeetingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private UserWithDao userWithDao = new UserWithDao();
+	private MeetingWithDao meetingWithDao = new MeetingWithDao();
 
 	private MeetingValidation validation = new MeetingValidation();
 
@@ -70,7 +72,7 @@ public class MeetingServlet extends HttpServlet {
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 			User user = userWithDao.createUserWithDao(userId);
-			Meeting meetingCheckParticipant = createMeetingWithDao(dao.getMeetingId(), dao.getUserId());
+			Meeting meetingCheckParticipant = meetingWithDao.createMeetingWithDao(dao.getMeetingId(), dao.getUserId());
 			meetingCheckParticipant.isParticipant(user);
 			if (dao != null) {
 				Meeting meeting = dao.getMeetingByID();
@@ -193,27 +195,6 @@ public class MeetingServlet extends HttpServlet {
 			response.getWriter().write(io.getMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
-	}
-
-	/**
-	 * Create meeting with DAO
-	 * 
-	 * @param meetingId
-	 *            meetingID
-	 * @param userId
-	 *            userId
-	 * @return meeting meeting
-	 * @throws IOException
-	 *             IOException
-	 * @throws CustomServerException
-	 *             CustomServerException
-	 */
-	private Meeting createMeetingWithDao(int meetingId, int userId) throws IOException, CustomServerException {
-		MeetingDAO dao = new MeetingDaoImpl();
-		dao.setMeetingId(meetingId);
-		dao.setUserId(userId);
-		Meeting meeting = dao.getMeetingByID();
-		return meeting;
 	}
 
 }

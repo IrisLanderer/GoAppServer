@@ -134,7 +134,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 	}
 
 	/**
-	 * Returns list of all participants
+	 * Returns list of all participants of a meeting
 	 * 
 	 * @param connection
 	 *            DatabaseConnection
@@ -198,7 +198,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 			connection.select(query, new ParticipantSqlSelectionHandler());
 		} catch (Throwable e) {
 			if (e.getCause().getClass() == CustomServerException.class) {
-				throw new CustomServerException("The selected resultset from the database is empty",
+				throw new CustomServerException("There is no participant with this ID!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 			throw new IOException(e);
@@ -325,30 +325,6 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 		this.confirmation = confirmation;
 	}
 
-	// private List<User> createParticipantsWithDao() throws IOException,
-	// CustomServerException {
-	// GroupDAO dao = new GroupDaoImpl();
-	// dao.setGroupId(groupId);
-	// Group group = dao.getGroupByID();
-	// List<User> groupMembers = group.getGroupMembers();
-	// return groupMembers;
-	// }
-	//
-	// private void checkIfParticipant(List<User> groupMembers) throws
-	// CustomServerException {
-	// boolean isMember = false;
-	// for (User member : groupMembers) {
-	// if (member.getId() == userId) {
-	// isMember = true;
-	// }
-	// }
-	// if (!isMember) {
-	// throw new CustomServerException("The user is not a member of this
-	// group!",
-	// HttpServletResponse.SC_BAD_REQUEST);
-	// }
-	// }
-
 	/**
 	 * handles the data from the database's result set for the method
 	 * getParticipantById
@@ -364,7 +340,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 				confirmation = MeetingConfirmation.valueOf(resultSet.getString(4).toUpperCase());
 			}
 			if (resultEmpty) {
-				throw new CustomServerException("The selected resultset from the database is empty",
+				throw new CustomServerException("There is no participant with this ID!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
@@ -383,7 +359,7 @@ public class ParticipantDaoImpl implements ParticipantDAO {
 				participantIds.add(resultSet.getInt(1));
 			}
 			if (resultEmpty) {
-				throw new CustomServerException("The selected resultset from the database is empty",
+				throw new CustomServerException("There aren't any participants in this meeting!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}

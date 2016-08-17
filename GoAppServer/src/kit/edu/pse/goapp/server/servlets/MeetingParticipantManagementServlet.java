@@ -110,23 +110,11 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			String jsonString = request.getReader().readLine();
 			ParticipantDAO dao = new ParticipantDaoConverter().parse(jsonString);
 			dao.setConfirmation(MeetingConfirmation.PENDING);
-			Meeting meetingCheckingForAuthorization = meetingWithDao.createMeetingWithDao(dao.getMeetingId(),
-					dao.getUserId());
-			User user = userWithDao.createUserWithDao(userId);
-			meetingCheckingForAuthorization.isParticipant(user);
-			meetingCheckingForAuthorization.isCreator(user);
+			validation.checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
 			userValidation.userExists(dao.getUserId());
-			// checks if this user is already a participant of this meeting
 			List<Participant> participants = participantWithDao.createParticipantsWithDao(dao.getMeetingId());
-			for (Participant participant : participants) {
-				if (participant.getUser().getId() == dao.getUserId()) {
-					throw new CustomServerException("The user is already a participant of this meeting!",
-							HttpServletResponse.SC_BAD_REQUEST);
-				}
-			}
-			if (dao != null) {
-				dao.addParticipant();
-			}
+			validation.checkIfAlreadyParticipant(participants, dao.getUserId());
+			dao.addParticipant();
 			MeetingDAO meetingDao = new MeetingDaoImpl();
 			meetingDao.setMeetingId(dao.getMeetingId());
 			Meeting meeting = meetingDao.getMeetingByID();
@@ -152,7 +140,8 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			ParticipantDAO dao = new ParticipantDaoConverter().parse(jsonString);
-			validation.checkIfUserIsParticipantAndCreator(userId, dao.getParticipantId());
+			Participant participant = dao.getParticipantByID();
+			validation.checkIfUserIsParticipantAndCreator(userId, participant.getMeetingId());
 			if (dao != null) {
 				dao.updateParticipant();
 			}
@@ -187,7 +176,9 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 				throw new CustomServerException("The ParticipantID from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
-			validation.checkIfUserIsParticipantAndCreator(userId, dao.getParticipantId());
+			// also checks, if participant exists
+			Participant participant = dao.getParticipantByID();
+			validation.checkIfUserIsParticipantAndCreator(userId, participant.getMeetingId());
 			if (dao != null) {
 				dao.deleteParticipant();
 			}

@@ -106,17 +106,9 @@ public class GroupUserManagementServlet extends HttpServlet {
 			// checks if the user exists at all
 			userValidation.userExists(groupMemberDao.getUserId());
 			validation.checkIfUserIsMemberAndAdmin(userId, groupMemberDao.getGroupId());
-			// checks if this user is already a member of this group
 			List<User> groupMembers = groupMembersWithDao.createMembersWithDao(groupMemberDao.getGroupId());
-			for (User member : groupMembers) {
-				if (member.getId() == groupMemberDao.getUserId()) {
-					throw new CustomServerException("The user is already a member of this group!",
-							HttpServletResponse.SC_BAD_REQUEST);
-				}
-			}
-			if (groupMemberDao != null) {
-				groupMemberDao.addMember();
-			}
+			groupDaoValidation.checkIfAlreadyMember(groupMembers, groupMemberDao.getUserId());
+			groupMemberDao.addMember();
 			Group group = groupWithDao.createGroupWithDao(groupMemberDao.getGroupId());
 			response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 		} catch (CustomServerException e) {

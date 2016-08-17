@@ -258,7 +258,7 @@ public class GroupDaoImpl implements GroupDAO {
 			connection.select(query, new GroupSqlSelectionHandler());
 		} catch (Throwable e) {
 			if (e.getCause().getClass() == CustomServerException.class) {
-				throw new CustomServerException("The selected resultset from the database is empty",
+				throw new CustomServerException("There isn't a group with this ID!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 			throw new IOException(e);
@@ -364,7 +364,7 @@ public class GroupDaoImpl implements GroupDAO {
 				}
 			}
 			if (resultEmpty) {
-				throw new CustomServerException("The selected resultset from the database is empty",
+				throw new CustomServerException("There isn't a group with this ID!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 

@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import kit.edu.pse.goapp.server.creating_obj_with_dao.GroupMembersWithDao;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
 
@@ -26,8 +25,6 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	private int groupId;
 	private int userId;
 	private boolean isAdmin;
-
-	private GroupMembersWithDao groupMembersWithDao = new GroupMembersWithDao();
 
 	private List<Integer> memberIds = new ArrayList<>();
 	private List<Integer> adminIds = new ArrayList<>();
@@ -327,7 +324,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 			}
 
 			if (resultEmpty) {
-				throw new CustomServerException("The selected resultset from the database is empty",
+				throw new CustomServerException("There aren't any members of this group!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
@@ -353,7 +350,7 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 			}
 
 			if (resultEmpty) {
-				throw new CustomServerException("The selected resultset from the database is empty",
+				throw new CustomServerException("There aren't any admins of this group!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
 		}
