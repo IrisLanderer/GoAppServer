@@ -3,12 +3,16 @@
  */
 package kit.edu.pse.goapp.server.tests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import kit.edu.pse.goapp.server.daos.DatabaseConnection;
 import kit.edu.pse.goapp.server.daos.GroupMemberDaoImpl;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
+import kit.edu.pse.goapp.server.validation.GroupValidation;
 
 /**
  * @author Iris
@@ -100,19 +104,19 @@ public class GroupMemberDaoTest extends GroupMemberDaoImpl {
 		dao.getAllMembers(Mockito.mock(DatabaseConnection.class));
 	}
 
-	// @Test()
-	// public void getAllMembersSuccessfully() throws Exception {
-	// // Stubbing behavior
-	// DatabaseConnection mock = Mockito.mock(DatabaseConnection.class);
-	// User user1 = new User(1, "test");
-	// SqlSelectHandler handler = Mockito.mock(SqlSelectHandler.class);
-	// Mockito.when(mock.select(Mockito.anyString(),
-	// handler)).thenReturn(user1);
-	// GroupMemberDaoTest dao = new GroupMemberDaoTest();
-	// dao.setGroupId(1);
-	// dao.getAllMembers(mock);
-	//
-	// }
+	@Test()
+	public void getAllMembersSuccessfully() throws Exception {
+		// Stubbing behavior
+		DatabaseConnection mock = Mockito.mock(DatabaseConnection.class);
+		GroupValidation validation = new GroupValidation();
+		GroupMemberDaoTest dao = new GroupMemberDaoTest();
+		List<Integer> memberIds = new ArrayList<>();
+		memberIds.add(1);
+		dao.setMemberIds(memberIds);
+		dao.setGroupId(1);
+		dao.getAllMembers(mock);
+
+	}
 
 	@Test(expected = CustomServerException.class)
 	public void getAllAdminsWithoutGroupID() throws Exception {
@@ -126,6 +130,9 @@ public class GroupMemberDaoTest extends GroupMemberDaoImpl {
 		DatabaseConnection mock = Mockito.mock(DatabaseConnection.class);
 
 		GroupMemberDaoTest dao = new GroupMemberDaoTest();
+		List<Integer> adminIds = new ArrayList<>();
+		adminIds.add(1);
+		dao.setAdminIds(adminIds);
 		dao.setGroupId(1);
 		dao.getAllAdmins(mock);
 

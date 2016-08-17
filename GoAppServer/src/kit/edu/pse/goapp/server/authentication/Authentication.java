@@ -26,6 +26,10 @@ public class Authentication {
 	 */
 	public int authenticateUser(HttpServletRequest request) throws CustomServerException {
 		CookieManager cm = new CookieManager();
+		return authenticateUser(request, cm);
+	}
+
+	protected int authenticateUser(HttpServletRequest request, CookieManager cm) throws CustomServerException {
 
 		String userIDString = cm.searchCookie(request, "userId");
 		if (userIDString.length() > 0) {

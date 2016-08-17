@@ -21,6 +21,9 @@ public class GroupMembersWithDao {
 	/**
 	 * Returns a list of users created with the dao
 	 * 
+	 * @param groupId
+	 *            ID of group
+	 * 
 	 * @return groupMembers list of groupMembers
 	 * @throws IOException
 	 *             IOException

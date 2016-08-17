@@ -343,6 +343,16 @@ public class GroupDaoImpl implements GroupDAO {
 	}
 
 	/**
+	 * sets groupIds
+	 * 
+	 * @param groupIds
+	 *            IDs of groups
+	 */
+	public void setGroupIds(List<Integer> groupIds) {
+		this.groupIds = groupIds;
+	}
+
+	/**
 	 * handles the data from the database's result set for the method
 	 * getGroupById
 	 */

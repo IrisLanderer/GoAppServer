@@ -6,6 +6,8 @@ package kit.edu.pse.goapp.server.tests;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -136,32 +138,13 @@ public class GroupDaoTest extends GroupDaoImpl {
 	public void getAllGroupsSuccessfully() throws Exception {
 		// Stubbing behavior
 		DatabaseConnection mock = Mockito.mock(DatabaseConnection.class);
-
 		GroupDaoTest dao = new GroupDaoTest();
 		dao.setUserId(1);
+		List<Integer> groupIds = new ArrayList<>();
+		groupIds.add(1);
+		dao.setGroupIds(groupIds);
 		dao.getAllGroups(mock);
 
 	}
-
-	// @Test(expected = CustomServerException.class)
-	// public void testDatabaseDelete() throws Exception {
-	// DatabaseConnection conn = new DatabaseConnection();
-	// int groupId = 1;
-	// String query = MessageFormat.format("delete from groups where group_id =
-	// ''{0}''", groupId);
-	// conn.delete(query);
-	// conn.close();
-	// }
-	//
-	// @Test(expected = CustomServerException.class)
-	// public void testDatabaseUpdate() throws Exception {
-	// DatabaseConnection conn = new DatabaseConnection();
-	// int groupId = 1;
-	// String name = "test";
-	// String query = MessageFormat.format("update group set group_id = ''{0}'',
-	// name = ''{1}''", groupId, name);
-	// conn.update(query);
-	// conn.close();
-	// }
 
 }

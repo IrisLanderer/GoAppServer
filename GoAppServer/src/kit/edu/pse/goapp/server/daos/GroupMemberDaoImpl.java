@@ -308,6 +308,26 @@ public class GroupMemberDaoImpl implements GroupMemberDAO {
 	}
 
 	/**
+	 * sets member IDs
+	 * 
+	 * @param memberIds
+	 *            all members' IDs
+	 */
+	public void setMemberIds(List<Integer> memberIds) {
+		this.memberIds = memberIds;
+	}
+
+	/**
+	 * sets admin IDs
+	 * 
+	 * @param adminIds
+	 *            all admins' IDs
+	 */
+	public void setAdminIds(List<Integer> adminIds) {
+		this.adminIds = adminIds;
+	}
+
+	/**
 	 * handles the data from the database's result set for the method
 	 * getAllMembers
 	 */

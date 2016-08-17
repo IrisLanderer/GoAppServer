@@ -47,6 +47,13 @@ public class DaoConverterTest {
 		assertEquals(expectedDao.getName(), dao.getName());
 	}
 
+	@Test(expected = CustomServerException.class)
+	public void testIncorrectJsonToGroupDao() throws CustomServerException {
+		String jsonString = "{\"groupId\":\"xxx\",\"name\":\"test\"}";
+		GroupDaoConverter converter = new GroupDaoConverter();
+		converter.parse(jsonString);
+	}
+
 	@Test
 	public void testNullForGroupDaoConverter() throws CustomServerException {
 		String jsonString = null;
@@ -75,6 +82,13 @@ public class DaoConverterTest {
 		assertEquals(expectedDao.getName(), dao.getName());
 	}
 
+	@Test(expected = CustomServerException.class)
+	public void testIncorrectJsonToUserDao() throws CustomServerException {
+		String jsonString = "{\"userId\":\"xxxxx\",\"nam\":\"testName\"}";
+		UserDaoConverter converter = new UserDaoConverter();
+		converter.parse(jsonString);
+	}
+
 	@Test
 	public void testJsonToParticipantDao() throws CustomServerException {
 		String jsonString = "{\"meetingId\" : 2 , \"participantId\":1,"
@@ -90,6 +104,14 @@ public class DaoConverterTest {
 		assertEquals(expectedDao.getUserId(), dao.getUserId());
 		assertEquals(expectedDao.getMeetingId(), dao.getMeetingId());
 		assertEquals(expectedDao.getConfirmation(), dao.getConfirmation());
+	}
+
+	@Test(expected = CustomServerException.class)
+	public void testIncorrectJsonToParticipantDao() throws CustomServerException {
+		String jsonString = "{\"meetingId\" : xxx , \"participantId\":bugbug,"
+				+ "\"user\":{\"userId\":1,\"name\":\"Iris\",\"meetings\":[],\"groups\":[]},\"confirmation\":\"PENDING\"}";
+		ParticipantDaoConverter converter = new ParticipantDaoConverter();
+		converter.parse(jsonString);
 	}
 
 	@Test
@@ -112,6 +134,13 @@ public class DaoConverterTest {
 		assertEquals(expectedDao.getGroupId(), dao.getGroupId());
 		assertEquals(expectedDao.getUserId(), dao.getUserId());
 		assertEquals(expectedDao.isAdmin(), dao.isAdmin());
+	}
+
+	@Test(expected = CustomServerException.class)
+	public void testIncorrectJsonToGroupMemberDao() throws CustomServerException {
+		String jsonString = "{\"groupId\":\"yyyy\", \"userId\":\"xxxxx\",\"isAdmin\":\"true\"}";
+		GroupMemberDaoConverter converter = new GroupMemberDaoConverter();
+		converter.parse(jsonString);
 	}
 
 	@Test
@@ -150,6 +179,17 @@ public class DaoConverterTest {
 		assertEquals(expectedDao.getTimestamp(), dao.getTimestamp());
 		assertEquals(expectedDao.getDuration(), dao.getDuration());
 		assertEquals(expectedDao.getType(), dao.getType());
+	}
+
+	@Test(expected = CustomServerException.class)
+	public void testIncorrectJsonToMeetingDao() throws CustomServerException {
+		String jsonString = "{\"type\":\"Toxxxur\",\"center\":{\"participants\":[],\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0}},"
+				+ "\"meetingId\":1,\"name\":\"test\",\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0},\"timestamp\":\"15\",\"duration\":3,"
+				+ "\"creator\":{\"participantId\":14,\"meetingId\":xxxx,"
+				+ "\"user\":{\"userId\":1,\"name\":\"Iris\",\"notificationEnabled\":false,\"meetings\":[],\"groups\":[]},\"confirmation\":\"REJECTED\"},"
+				+ "\"participants\":[]}";
+		MeetingDaoConverter converter = new MeetingDaoConverter();
+		converter.parse(jsonString);
 	}
 
 	@Test

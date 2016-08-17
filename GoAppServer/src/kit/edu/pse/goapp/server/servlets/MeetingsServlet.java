@@ -43,7 +43,7 @@ public class MeetingsServlet extends HttpServlet {
 	}
 
 	/**
-	 * GetAll Meetings
+	 * Get all user's meetings
 	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
