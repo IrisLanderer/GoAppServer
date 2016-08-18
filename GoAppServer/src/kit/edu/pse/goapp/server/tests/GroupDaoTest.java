@@ -29,6 +29,13 @@ public class GroupDaoTest extends GroupDaoImpl {
 		dao.addGroup(Mockito.mock(DatabaseConnection.class));
 	}
 
+	@Test(expected = CustomServerException.class)
+	public void addGroupWithEmptyName() throws Exception {
+		GroupDaoTest dao = new GroupDaoTest();
+		dao.setName("");
+		dao.addGroup(Mockito.mock(DatabaseConnection.class));
+	}
+
 	@Test()
 	public void addGroupSuccessfully() throws Exception {
 		// Stubbing behavior
@@ -38,6 +45,7 @@ public class GroupDaoTest extends GroupDaoImpl {
 		GroupDaoTest dao = new GroupDaoTest();
 		dao.setName("Group 1");
 		dao.addGroup(mock);
+		Mockito.verify(mock, Mockito.times(1)).close();
 
 	}
 
@@ -50,6 +58,7 @@ public class GroupDaoTest extends GroupDaoImpl {
 		GroupDaoTest dao = new GroupDaoTest();
 		dao.setName("Group 1");
 		dao.addGroup(mock);
+		Mockito.verify(mock, Mockito.times(1)).close();
 
 	}
 

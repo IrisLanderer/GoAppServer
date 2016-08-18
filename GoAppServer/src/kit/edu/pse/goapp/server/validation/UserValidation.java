@@ -19,9 +19,24 @@ import kit.edu.pse.goapp.server.exceptions.CustomServerException;
  */
 public class UserValidation {
 
+	/**
+	 * checks if user exists at all
+	 * 
+	 * @param userId
+	 *            the user
+	 * @return true if user exists
+	 * @throws IOException
+	 *             if something goes wrong in the database
+	 * @throws CustomServerException
+	 *             if user doesn't exist
+	 */
 	public boolean userExists(int userId) throws IOException, CustomServerException {
 		UserDAO dao = new UserDaoImpl();
 		List<User> users = dao.getAllUsers();
+		return userExists(users, userId);
+	}
+
+	protected boolean userExists(List<User> users, int userId) throws IOException, CustomServerException {
 		for (User tmpUser : users) {
 			if (tmpUser.getId() == userId) {
 				return true;

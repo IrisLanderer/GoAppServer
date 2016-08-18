@@ -45,9 +45,17 @@ public class GroupServlet extends HttpServlet {
 
 	/**
 	 * Reads group information
+	 * 
+	 * @throws IOException
+	 * @throws ServletException
 	 */
+
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response, authentication);
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -62,10 +70,8 @@ public class GroupServlet extends HttpServlet {
 			User user = userWithDao.createUserWithDao(userId);
 			Group groupCheckingAuthorization = groupWithDao.createGroupWithDao(dao.getGroupId());
 			groupCheckingAuthorization.isMember(user);
-			if (dao != null) {
-				Group group = dao.getGroupByID();
-				response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
-			}
+			Group group = dao.getGroupByID();
+			response.getWriter().write(new ObjectConverter<Group>().serialize(group, Group.class));
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
@@ -78,9 +84,17 @@ public class GroupServlet extends HttpServlet {
 
 	/**
 	 * Creates a new group
+	 * 
+	 * @throws IOException
+	 * @throws ServletException
 	 */
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response, authentication);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
@@ -102,9 +116,17 @@ public class GroupServlet extends HttpServlet {
 
 	/**
 	 * Deletes a group
+	 * 
+	 * @throws IOException
+	 * @throws ServletException
 	 */
 	@Override
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+	public void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		doDelete(request, response, authentication);
+	}
+
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -134,7 +156,11 @@ public class GroupServlet extends HttpServlet {
 	 * Updates group information
 	 */
 	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPut(request, response, authentication);
+	}
+
+	protected void doPut(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);

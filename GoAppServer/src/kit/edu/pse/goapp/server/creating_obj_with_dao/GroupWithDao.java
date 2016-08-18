@@ -29,6 +29,10 @@ public class GroupWithDao {
 	 */
 	public Group createGroupWithDao(int groupId) throws IOException, CustomServerException {
 		GroupDAO dao = new GroupDaoImpl();
+		return createGroupWithDao(groupId, dao);
+	}
+
+	protected Group createGroupWithDao(int groupId, GroupDAO dao) throws IOException, CustomServerException {
 		dao.setGroupId(groupId);
 		Group group = dao.getGroupByID();
 		return group;

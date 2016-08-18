@@ -111,7 +111,7 @@ public class MeetingDaoImpl implements MeetingDAO {
 			ParticipantDAO dao = new ParticipantDaoImpl();
 			dao.setUserId(userId);
 			dao.setMeetingId(meetingId);
-			dao.setConfirmation(MeetingConfirmation.PENDING);
+			dao.setConfirmation(MeetingConfirmation.CONFIRMED);
 			dao.addParticipant();
 			creatorId = dao.getParticipantId();
 			String updateQuery = MessageFormat.format(

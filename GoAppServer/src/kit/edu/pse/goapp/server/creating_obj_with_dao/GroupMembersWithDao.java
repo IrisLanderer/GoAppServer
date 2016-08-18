@@ -34,6 +34,10 @@ public class GroupMembersWithDao {
 		GroupDAO dao = new GroupDaoImpl();
 		dao.setGroupId(groupId);
 		Group group = dao.getGroupByID();
+		return createMembersWithDao(group);
+	}
+
+	protected List<User> createMembersWithDao(Group group) {
 		List<User> groupMembers = group.getGroupMembers();
 		return groupMembers;
 	}

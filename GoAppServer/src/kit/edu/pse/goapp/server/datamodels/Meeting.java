@@ -73,6 +73,11 @@ public abstract class Meeting {
 		ParticipantDAO participantDao = new ParticipantDaoImpl();
 		participantDao.setMeetingId(meetingId);
 		List<Participant> participants = participantDao.getAllParticipants();
+		isParticipant(user, meetingId, participants);
+	}
+
+	protected void isParticipant(User user, int meetingId, List<Participant> participants)
+			throws CustomServerException {
 		boolean isParticipant = false;
 		for (Participant participant : participants) {
 			if (participant.getUser().getId() == user.getId()) {
@@ -103,6 +108,11 @@ public abstract class Meeting {
 		ParticipantDAO participantDAO = new ParticipantDaoImpl();
 		participantDAO.setParticipantId(creatorId);
 		Participant creator = participantDAO.getParticipantByID();
+		isCreator(user, creator);
+
+	}
+
+	protected void isCreator(User user, Participant creator) throws CustomServerException {
 		if (!(creator.getUser().getId() == user.getId())) {
 			throw new CustomServerException("The user has to be creator of this meeting to access it!",
 					HttpServletResponse.SC_UNAUTHORIZED);

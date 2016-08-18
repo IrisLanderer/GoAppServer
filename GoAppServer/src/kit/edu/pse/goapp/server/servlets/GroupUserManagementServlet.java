@@ -25,7 +25,7 @@ import kit.edu.pse.goapp.server.daos.GroupMemberDaoImpl;
 import kit.edu.pse.goapp.server.datamodels.Group;
 import kit.edu.pse.goapp.server.datamodels.User;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
-import kit.edu.pse.goapp.server.validation.GroupMemberDaoValidation;
+import kit.edu.pse.goapp.server.validation.GroupMemberValidation;
 import kit.edu.pse.goapp.server.validation.GroupValidation;
 import kit.edu.pse.goapp.server.validation.UserValidation;
 
@@ -38,7 +38,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 
 	private UserValidation userValidation = new UserValidation();
 	private GroupValidation validation = new GroupValidation();
-	private GroupMemberDaoValidation groupDaoValidation = new GroupMemberDaoValidation();
+	private GroupMemberValidation groupDaoValidation = new GroupMemberValidation();
 
 	private GroupWithDao groupWithDao = new GroupWithDao();
 	private UserWithDao userWithDao = new UserWithDao();
