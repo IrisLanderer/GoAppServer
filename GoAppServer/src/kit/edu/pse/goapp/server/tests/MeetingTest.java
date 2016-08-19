@@ -54,16 +54,6 @@ public class MeetingTest extends Meeting {
 	}
 
 	@Test
-	public void testIsParticipantSuccessfully() throws CustomServerException, IOException {
-		User user = new User(1, "test");
-		Participant creator = new Participant(1, 1, user, MeetingConfirmation.CONFIRMED);
-		GPS gps = new GPS(1, 2, 3);
-		Meeting meeting = new Event(1, "meeting", gps, 3, 2, creator);
-		meeting.isParticipant(user);
-
-	}
-
-	@Test
 	public void isCreatorTest() throws CustomServerException, IOException {
 		User user = new User(1, "user");
 		Participant creator = new Participant(1, 1, user, MeetingConfirmation.CONFIRMED);

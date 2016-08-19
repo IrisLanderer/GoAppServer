@@ -194,39 +194,34 @@ public class MeetingDaoImpl implements MeetingDAO {
 			throw new CustomServerException("A meeting must have an ID!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (name == null || name.equals("")) {
-			throw new CustomServerException("A new meeting must have a name!", HttpServletResponse.SC_BAD_REQUEST);
+			throw new CustomServerException("A meeting must have a name!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (placeX <= 0) {
-			throw new CustomServerException("A new meeting must have a x-coordinate!",
-					HttpServletResponse.SC_BAD_REQUEST);
+			throw new CustomServerException("A meeting must have a x-coordinate!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (placeY <= 0) {
-			throw new CustomServerException("A new meeting must have a y-coordinate!",
-					HttpServletResponse.SC_BAD_REQUEST);
+			throw new CustomServerException("A meeting must have a y-coordinate!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (placeZ <= 0) {
-			throw new CustomServerException("A new meeting must have a z-coordinate!",
-					HttpServletResponse.SC_BAD_REQUEST);
+			throw new CustomServerException("A meeting must have a z-coordinate!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (timestamp <= 0) {
-			throw new CustomServerException("A new meeting must have a timestamp!", HttpServletResponse.SC_BAD_REQUEST);
+			throw new CustomServerException("A meeting must have a timestamp!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 		if (duration <= 0) {
-			throw new CustomServerException("A new meeting must have a duration!", HttpServletResponse.SC_BAD_REQUEST);
+			throw new CustomServerException("A meeting must have a duration!", HttpServletResponse.SC_BAD_REQUEST);
 		}
 
 		if ((type == null) || !(type.equals("Tour") || type.equals("Event"))) {
-			throw new CustomServerException("A new meeting must have a Type!", HttpServletResponse.SC_BAD_REQUEST);
+			throw new CustomServerException("A meeting must have a Type!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		if (creatorId <= 0) {
-			throw new CustomServerException("A new meeting must have a creator!", HttpServletResponse.SC_BAD_REQUEST);
-		}
+
 		try {
 			String query = MessageFormat.format(
 					"UPDATE meetings " + "SET name = ''{0}'', place_x = ''{1}'', place_y = ''{2}'', place_z = ''{3}'',"
-							+ " timestamp = ''{4}'', duration = ''{5}'', type = ''{6}'', creator_id = ''{7}''"
-							+ " WHERE meetings_id = ''{8}''",
-					name, placeX, placeY, placeZ, timestamp, duration, type, creatorId, meetingId);
+							+ " timestamp = ''{4}'', duration = ''{5}'', type = ''{6}''"
+							+ " WHERE meetings_id = ''{7}''",
+					name, placeX, placeY, placeZ, timestamp, duration, type, meetingId);
 			connection.update(query);
 			connection.close();
 		} catch (Throwable e) {

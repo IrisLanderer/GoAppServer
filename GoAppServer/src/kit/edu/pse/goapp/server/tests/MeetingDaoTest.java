@@ -311,20 +311,6 @@ public class MeetingDaoTest extends MeetingDaoImpl {
 		dao.updateMeeting(Mockito.mock(DatabaseConnection.class));
 	}
 
-	@Test(expected = CustomServerException.class)
-	public void updateMeetingWithoutCreatorId() throws Exception {
-		MeetingDaoTest dao = new MeetingDaoTest();
-		dao.setMeetingId(2);
-		dao.setName("test");
-		dao.setPlaceX(2);
-		dao.setPlaceY(3);
-		dao.setPlaceZ(3);
-		dao.setTimestamp(3);
-		dao.setDuration(3);
-		dao.setType("Event");
-		dao.updateMeeting(Mockito.mock(DatabaseConnection.class));
-	}
-
 	@Test()
 	public void updateMeetingSuccessfully() throws Exception {
 		// Stubbing behavior

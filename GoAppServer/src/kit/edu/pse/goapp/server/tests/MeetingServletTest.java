@@ -124,4 +124,26 @@ public class MeetingServletTest extends MeetingServlet {
 		servlet.doPut(request, response, authentication);
 	}
 
+	@Test
+	public void testDoPutTour() throws CustomServerException, IOException, ServletException {
+		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+		Mockito.when(request.getReader()).thenReturn(Mockito.mock(BufferedReader.class));
+		Mockito.when(request.getReader().readLine())
+				.thenReturn("{\"type\":\"Tour\",\"center\":{\""
+						+ "participants\":[],\"place\":{\"x\":1.0,\"y\":2.0,\"z\":3.0}},\"meetingId\""
+						+ ":503,\"name\":\"testTourDoPost\",\"place\":{\"x\":1.0,\"y\":2.0,\"z"
+						+ "\":3.0},\"timestamp\":13,\"duration\":2,\"creator"
+						+ "\":{\"participantId\":504,\"meetingId\":503,\"user\":{\"userId\":600,\"name\":\"Grischa\",\"notificationEnabled\":false,\"meetings\":[],\"groups\":[]},\"confirmation\":"
+						+ "\"CONFIRMED\"},\"participants\":[]}");
+
+		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+		Mockito.when(response.getWriter()).thenReturn(Mockito.mock(PrintWriter.class));
+
+		Authentication authentication = Mockito.mock(Authentication.class);
+		Mockito.when(authentication.authenticateUser(request)).thenReturn(600);
+
+		MeetingServletTest servlet = new MeetingServletTest();
+		servlet.doPut(request, response, authentication);
+	}
+
 }

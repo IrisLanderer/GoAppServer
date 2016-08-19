@@ -46,6 +46,7 @@ public class MeetingValidation {
 			throws IOException, CustomServerException {
 		MeetingDAO dao = new MeetingDaoImpl();
 		dao.setMeetingId(meetingId);
+		dao.setUserId(userId);
 		Meeting meeting = dao.getMeetingByID();
 		List<Participant> participants = participantWithDao.createParticipantsWithDao(meetingId);
 		for (Participant participant : participants) {

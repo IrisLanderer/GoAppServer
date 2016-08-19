@@ -150,9 +150,9 @@ public class MeetingServlet extends HttpServlet {
 			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
-			dao.setCreatorId(userId);
-			// validation.checkIfUserIsParticipantAndCreator(userId,
-			// dao.getMeetingId());
+			// dao.setCreatorId(userId);
+			dao.setUserId(userId);
+			validation.checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
 			dao.updateMeeting();
 			Meeting meeting = dao.getMeetingByID();
 			if (meeting instanceof Tour) {

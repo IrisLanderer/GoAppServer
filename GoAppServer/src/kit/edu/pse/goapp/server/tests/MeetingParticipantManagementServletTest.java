@@ -42,6 +42,8 @@ public class MeetingParticipantManagementServletTest extends MeetingParticipantM
 
 	}
 
+	// test just works at the first time because one can't add an user to the
+	// same meeting twice a time
 	@Test
 	public void testDoPost() throws CustomServerException, IOException, ServletException {
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
