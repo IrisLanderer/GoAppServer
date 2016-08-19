@@ -49,7 +49,6 @@ public class UsersServlet extends HttpServlet {
 		try {
 			// int userId = authenticateUser(request);
 			UserDAO dao = new UserDaoImpl();
-			// dao.setUserId(userId);
 			if (dao != null) {
 				List<User> users = dao.getAllUsers();
 				response.getWriter().write(

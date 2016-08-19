@@ -72,19 +72,21 @@ public class GroupTest extends Group {
 
 	}
 
-	@Test
-	public void testIsMemberSuccessfully() throws CustomServerException, IOException {
-		User user = new User(1, "test");
-		Group group = new Group(1, "group");
-		group.isMember(user);
-
-	}
-
-	@Test
-	public void testIsAdminSuccessfully() throws CustomServerException, IOException {
-		User user = new User(1, "test");
-		Group group = new Group(1, "group");
-		group.isAdmin(user);
-
-	}
+	// @Test
+	// public void testIsMemberSuccessfully() throws CustomServerException,
+	// IOException {
+	// User user = new User(1, "test");
+	// Group group = new Group(1, "group");
+	// group.isMember(user);
+	//
+	// }
+	//
+	// @Test
+	// public void testIsAdminSuccessfully() throws CustomServerException,
+	// IOException {
+	// User user = new User(1, "test");
+	// Group group = new Group(1, "group");
+	// group.isAdmin(user);
+	//
+	// }
 }

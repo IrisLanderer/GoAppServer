@@ -40,6 +40,9 @@ public class NotificationServlet extends HttpServlet {
 	/**
 	 * GetNotification
 	 * 
+	 * @throws IOException
+	 * @throws ServletException
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */

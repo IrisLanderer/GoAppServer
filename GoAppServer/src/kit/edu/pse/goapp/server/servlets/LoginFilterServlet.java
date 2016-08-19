@@ -36,7 +36,6 @@ public class LoginFilterServlet implements Filter {
 	 */
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -90,6 +89,6 @@ public class LoginFilterServlet implements Filter {
 	 */
 	@Override
 	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
+
 	}
 }

@@ -51,10 +51,8 @@ public class GpsServlet extends HttpServlet {
 			String jsonString = request.getReader().readLine();
 			GpsDaoImpl dao = (GpsDaoImpl) new GpsDaoConverter().parse(jsonString);
 			dao.setUserId(userId);
-			if (dao != null) {
-				dao.setUserId(userId);
-				dao.userSetGPS();
-			}
+			dao.setUserId(userId);
+			dao.userSetGPS();
 			GPS gps = dao.userGetGPS();
 			response.getWriter().write(new ObjectConverter<GPS>().serialize(gps, GPS.class));
 		} catch (CustomServerException e) {

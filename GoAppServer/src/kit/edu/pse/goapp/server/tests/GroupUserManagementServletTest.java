@@ -16,17 +16,14 @@ import org.mockito.Mockito;
 
 import kit.edu.pse.goapp.server.authentication.Authentication;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
-import kit.edu.pse.goapp.server.servlets.GroupServlet;
+import kit.edu.pse.goapp.server.servlets.GroupUserManagementServlet;
 
 /**
  * @author Iris
  *
  */
-public class GroupServletTest extends GroupServlet {
+public class GroupUserManagementServletTest extends GroupUserManagementServlet {
 
-	/**
-	*
-	*/
 	private static final long serialVersionUID = 1L;
 
 	@Test
@@ -40,16 +37,19 @@ public class GroupServletTest extends GroupServlet {
 		Authentication authentication = Mockito.mock(Authentication.class);
 		Mockito.when(authentication.authenticateUser(request)).thenReturn(500);
 
-		GroupServletTest servlet = new GroupServletTest();
+		GroupUserManagementServletTest servlet = new GroupUserManagementServletTest();
 		servlet.doGet(request, response, authentication);
 
 	}
 
+	// this test only works at the first time because one can't add an user to
+	// the same group twice a time
 	@Test
 	public void testDoPost() throws CustomServerException, IOException, ServletException {
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getReader()).thenReturn(Mockito.mock(BufferedReader.class));
-		Mockito.when(request.getReader().readLine()).thenReturn("{ \"name\":\"Test\" }");
+		Mockito.when(request.getReader().readLine())
+				.thenReturn("{ \"groupId\":\"500\", \"userId\":\"502\", \"isAdmin\":\"true\" }");
 
 		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 		Mockito.when(response.getWriter()).thenReturn(Mockito.mock(PrintWriter.class));
@@ -57,7 +57,7 @@ public class GroupServletTest extends GroupServlet {
 		Authentication authentication = Mockito.mock(Authentication.class);
 		Mockito.when(authentication.authenticateUser(request)).thenReturn(500);
 
-		GroupServletTest servlet = new GroupServletTest();
+		GroupUserManagementServletTest servlet = new GroupUserManagementServletTest();
 		servlet.doPost(request, response, authentication);
 	}
 
@@ -65,7 +65,8 @@ public class GroupServletTest extends GroupServlet {
 	public void testDoPut() throws CustomServerException, IOException, ServletException {
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getReader()).thenReturn(Mockito.mock(BufferedReader.class));
-		Mockito.when(request.getReader().readLine()).thenReturn("{ \"groupId\" : \"500\", \"name\":\"Test\" }");
+		Mockito.when(request.getReader().readLine())
+				.thenReturn("{ \"groupId\" : \"500\", \"userId\":\"502\", \"isAdmin\":\"false\" }");
 
 		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 		Mockito.when(response.getWriter()).thenReturn(Mockito.mock(PrintWriter.class));
@@ -73,26 +74,8 @@ public class GroupServletTest extends GroupServlet {
 		Authentication authentication = Mockito.mock(Authentication.class);
 		Mockito.when(authentication.authenticateUser(request)).thenReturn(500);
 
-		GroupServletTest servlet = new GroupServletTest();
+		GroupUserManagementServletTest servlet = new GroupUserManagementServletTest();
 		servlet.doPut(request, response, authentication);
 	}
-
-	// @Test(expected = Exception.class)
-	// public void testDoPutFails() throws CustomServerException,
-	// IOException, ServletException {
-	// HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-	// Mockito.when(request.getReader()).thenReturn(Mockito.mock(BufferedReader.class));
-	// Mockito.when(request.getReader().readLine()).thenReturn("{ \"groupId\" :
-	// \"50xxx0\", \"name\":\"Texxxst\" }");
-	//
-	// HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-	// Mockito.when(response.getWriter()).thenReturn(Mockito.mock(PrintWriter.class));
-	//
-	// Authentication authentication = Mockito.mock(Authentication.class);
-	// Mockito.when(authentication.authenticateUser(request)).thenReturn(500);
-	//
-	// GroupServletTest servlet = new GroupServletTest();
-	// servlet.doPut(request, response, authentication);
-	// }
 
 }

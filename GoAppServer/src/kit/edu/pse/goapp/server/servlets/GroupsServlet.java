@@ -37,22 +37,27 @@ public class GroupsServlet extends HttpServlet {
 	}
 
 	/**
-	 * Get All Groups
+	 * Get All user's groups
+	 * 
+	 * @throws IOException
+	 * @throws ServletException
 	 * 
 	 */
 	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response, authentication);
+	}
+
 	@SuppressWarnings("unchecked")
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
 			GroupDAO dao = new GroupDaoImpl();
 			dao.setUserId(userId);
-			if (dao != null) {
-				List<Group> groups = dao.getAllGroups();
-				response.getWriter().write(
-						new ObjectConverter<List<Group>>().serialize(groups, (Class<List<Group>>) groups.getClass()));
-			}
+			List<Group> groups = dao.getAllGroups();
+			response.getWriter().write(
+					new ObjectConverter<List<Group>>().serialize(groups, (Class<List<Group>>) groups.getClass()));
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.getMessage());

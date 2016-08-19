@@ -64,7 +64,11 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response, authentication);
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -82,11 +86,8 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			Meeting meetingCheckParticipant = meetingWithDao.createMeetingWithDao(
 					participantForMeetingId.getMeetingId(), participantForMeetingId.getUser().getId());
 			meetingCheckParticipant.isParticipant(user);
-			if (dao != null) {
-				Participant participant = dao.getParticipantByID();
-				response.getWriter()
-						.write(new ObjectConverter<Participant>().serialize(participant, Participant.class));
-			}
+			Participant participant = dao.getParticipantByID();
+			response.getWriter().write(new ObjectConverter<Participant>().serialize(participant, Participant.class));
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
@@ -103,7 +104,11 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response, authentication);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -134,7 +139,11 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPut(request, response, authentication);
+	}
+
+	protected void doPut(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -142,9 +151,7 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			ParticipantDAO dao = new ParticipantDaoConverter().parse(jsonString);
 			Participant participant = dao.getParticipantByID();
 			validation.checkIfUserIsParticipantAndCreator(userId, participant.getMeetingId());
-			if (dao != null) {
-				dao.updateParticipant();
-			}
+			dao.updateParticipant();
 			MeetingDAO meetingDao = new MeetingDaoImpl();
 			meetingDao.setMeetingId(dao.getMeetingId());
 			Meeting meeting = meetingDao.getMeetingByID();

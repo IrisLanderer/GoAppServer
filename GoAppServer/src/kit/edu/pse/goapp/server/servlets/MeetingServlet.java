@@ -58,7 +58,11 @@ public class MeetingServlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response, authentication);
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -74,17 +78,14 @@ public class MeetingServlet extends HttpServlet {
 			User user = userWithDao.createUserWithDao(userId);
 			Meeting meetingCheckParticipant = meetingWithDao.createMeetingWithDao(dao.getMeetingId(), dao.getUserId());
 			meetingCheckParticipant.isParticipant(user);
-			if (dao != null) {
-				Meeting meeting = dao.getMeetingByID();
-				if (meeting instanceof Tour) {
-					MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
-				} else {
-					MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
-				}
-
-				String json = new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
-				response.getWriter().write(json);
+			Meeting meeting = dao.getMeetingByID();
+			if (meeting instanceof Tour) {
+				MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+			} else {
+				MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
 			}
+			String json = new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
+			response.getWriter().write(json);
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
@@ -101,16 +102,18 @@ public class MeetingServlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response, authentication);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
 			dao.setUserId(userId);
-			if (dao != null) {
-				dao.addMeeting();
-			}
+			dao.addMeeting();
 			Meeting meeting = dao.getMeetingByID();
 
 			if (meeting instanceof Tour) {
@@ -136,17 +139,21 @@ public class MeetingServlet extends HttpServlet {
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPut(request, response, authentication);
+	}
+
+	protected void doPut(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 
 		try {
 			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			MeetingDAO dao = new MeetingDaoConverter().parse(jsonString);
-			validation.checkIfUserIsParticipantAndCreator(userId, dao.getMeetingId());
-			if (dao != null) {
-				dao.updateMeeting();
-			}
+			dao.setCreatorId(userId);
+			// validation.checkIfUserIsParticipantAndCreator(userId,
+			// dao.getMeetingId());
+			dao.updateMeeting();
 			Meeting meeting = dao.getMeetingByID();
 			if (meeting instanceof Tour) {
 				MeetingGpsAlgorithm.setGpsTour((Tour) meeting);

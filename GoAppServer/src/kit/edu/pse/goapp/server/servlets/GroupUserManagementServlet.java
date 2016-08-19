@@ -57,8 +57,12 @@ public class GroupUserManagementServlet extends HttpServlet {
 	 * Get group members
 	 */
 	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response, authentication);
+	}
+
 	@SuppressWarnings("unchecked")
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -73,11 +77,9 @@ public class GroupUserManagementServlet extends HttpServlet {
 			User user = userWithDao.createUserWithDao(userId);
 			Group groupCheckingMember = groupWithDao.createGroupWithDao(dao.getGroupId());
 			groupCheckingMember.isMember(user);
-			if (dao != null) {
-				List<User> groupMembers = dao.getAllMembers();
-				response.getWriter().write(new ObjectConverter<List<User>>().serialize(groupMembers,
-						(Class<List<User>>) groupMembers.getClass()));
-			}
+			List<User> groupMembers = dao.getAllMembers();
+			response.getWriter().write(new ObjectConverter<List<User>>().serialize(groupMembers,
+					(Class<List<User>>) groupMembers.getClass()));
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.getMessage());
@@ -94,7 +96,11 @@ public class GroupUserManagementServlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response, authentication);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -126,7 +132,11 @@ public class GroupUserManagementServlet extends HttpServlet {
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPut(request, response, authentication);
+	}
+
+	protected void doPut(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -179,9 +189,7 @@ public class GroupUserManagementServlet extends HttpServlet {
 			// checks if this user is a member of this group at all
 			List<User> groupMembers = groupMembersWithDao.createMembersWithDao(Integer.parseInt(groupId));
 			groupDaoValidation.checkIfMember(groupMembers, Integer.parseInt(userId));
-			if (dao != null) {
-				dao.deleteMember();
-			}
+			dao.deleteMember();
 			response.setStatus(HttpServletResponse.SC_OK);
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());

@@ -16,23 +16,20 @@ import org.mockito.Mockito;
 
 import kit.edu.pse.goapp.server.authentication.Authentication;
 import kit.edu.pse.goapp.server.exceptions.CustomServerException;
-import kit.edu.pse.goapp.server.servlets.GroupServlet;
+import kit.edu.pse.goapp.server.servlets.MeetingParticipantManagementServlet;
 
 /**
  * @author Iris
  *
  */
-public class GroupServletTest extends GroupServlet {
+public class MeetingParticipantManagementServletTest extends MeetingParticipantManagementServlet {
 
-	/**
-	*
-	*/
 	private static final long serialVersionUID = 1L;
 
 	@Test
 	public void testDoGet() throws ServletException, IOException, CustomServerException {
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-		Mockito.when(request.getParameter("groupId")).thenReturn("500");
+		Mockito.when(request.getParameter("participantId")).thenReturn("500");
 
 		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 		Mockito.when(response.getWriter()).thenReturn(Mockito.mock(PrintWriter.class));
@@ -40,7 +37,7 @@ public class GroupServletTest extends GroupServlet {
 		Authentication authentication = Mockito.mock(Authentication.class);
 		Mockito.when(authentication.authenticateUser(request)).thenReturn(500);
 
-		GroupServletTest servlet = new GroupServletTest();
+		MeetingParticipantManagementServletTest servlet = new MeetingParticipantManagementServletTest();
 		servlet.doGet(request, response, authentication);
 
 	}
@@ -49,7 +46,8 @@ public class GroupServletTest extends GroupServlet {
 	public void testDoPost() throws CustomServerException, IOException, ServletException {
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getReader()).thenReturn(Mockito.mock(BufferedReader.class));
-		Mockito.when(request.getReader().readLine()).thenReturn("{ \"name\":\"Test\" }");
+		Mockito.when(request.getReader().readLine()).thenReturn(
+				"{\"meetingId\":500 ,\"participantId\":0,\"user\":{\"userId\":501,\"name\":\"Grischa\",\"meetings\":[],\"groups\":[]},\"confirmation\":\"PENDING\"}");
 
 		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 		Mockito.when(response.getWriter()).thenReturn(Mockito.mock(PrintWriter.class));
@@ -57,7 +55,7 @@ public class GroupServletTest extends GroupServlet {
 		Authentication authentication = Mockito.mock(Authentication.class);
 		Mockito.when(authentication.authenticateUser(request)).thenReturn(500);
 
-		GroupServletTest servlet = new GroupServletTest();
+		MeetingParticipantManagementServletTest servlet = new MeetingParticipantManagementServletTest();
 		servlet.doPost(request, response, authentication);
 	}
 
@@ -65,7 +63,8 @@ public class GroupServletTest extends GroupServlet {
 	public void testDoPut() throws CustomServerException, IOException, ServletException {
 		HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 		Mockito.when(request.getReader()).thenReturn(Mockito.mock(BufferedReader.class));
-		Mockito.when(request.getReader().readLine()).thenReturn("{ \"groupId\" : \"500\", \"name\":\"Test\" }");
+		Mockito.when(request.getReader().readLine()).thenReturn(
+				"{\"meetingId\":500 ,\"participantId\":500,\"user\":{\"userId\":500,\"name\":\"Iris\",\"meetings\":[],\"groups\":[]},\"confirmation\":\"CONFIRMED\"}");
 
 		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 		Mockito.when(response.getWriter()).thenReturn(Mockito.mock(PrintWriter.class));
@@ -73,26 +72,8 @@ public class GroupServletTest extends GroupServlet {
 		Authentication authentication = Mockito.mock(Authentication.class);
 		Mockito.when(authentication.authenticateUser(request)).thenReturn(500);
 
-		GroupServletTest servlet = new GroupServletTest();
+		MeetingParticipantManagementServletTest servlet = new MeetingParticipantManagementServletTest();
 		servlet.doPut(request, response, authentication);
 	}
-
-	// @Test(expected = Exception.class)
-	// public void testDoPutFails() throws CustomServerException,
-	// IOException, ServletException {
-	// HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
-	// Mockito.when(request.getReader()).thenReturn(Mockito.mock(BufferedReader.class));
-	// Mockito.when(request.getReader().readLine()).thenReturn("{ \"groupId\" :
-	// \"50xxx0\", \"name\":\"Texxxst\" }");
-	//
-	// HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-	// Mockito.when(response.getWriter()).thenReturn(Mockito.mock(PrintWriter.class));
-	//
-	// Authentication authentication = Mockito.mock(Authentication.class);
-	// Mockito.when(authentication.authenticateUser(request)).thenReturn(500);
-	//
-	// GroupServletTest servlet = new GroupServletTest();
-	// servlet.doPut(request, response, authentication);
-	// }
 
 }

@@ -42,11 +42,18 @@ public class UserServlet extends HttpServlet {
 	/**
 	 * Get User details
 	 * 
+	 * @throws IOException
+	 * @throws ServletException
+	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response, authentication);
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			String userId = request.getParameter("userId");
@@ -57,10 +64,8 @@ public class UserServlet extends HttpServlet {
 				throw new CustomServerException("The UserID from the JSON string isn't correct!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
-			if (dao != null) {
-				User user = dao.getUserByID();
-				response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
-			}
+			User user = dao.getUserByID();
+			response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 		} catch (CustomServerException e) {
 			response.setStatus(e.getStatusCode());
 			response.getWriter().write(e.toString());
@@ -77,7 +82,11 @@ public class UserServlet extends HttpServlet {
 	 *      response)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response, authentication);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			CookieManager cm = new CookieManager();
@@ -90,9 +99,7 @@ public class UserServlet extends HttpServlet {
 				// every user has notifications enabled by default
 				dao.setNotificationEnabled(true);
 				dao.setGoogleId(googleId);
-				if (dao != null) {
-					dao.addUser();
-				}
+				dao.addUser();
 				User user = dao.getUserByID();
 				response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 			} else {
@@ -116,7 +123,11 @@ public class UserServlet extends HttpServlet {
 	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
 	 */
 	@Override
-	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+	public void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response, authentication);
+	}
+
+	protected void doPut(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws ServletException, IOException {
 		try {
 			int userId = authentication.authenticateUser(request);
@@ -126,9 +137,7 @@ public class UserServlet extends HttpServlet {
 				throw new CustomServerException("The UserID from the JSON string isn't the same as the actual user!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
-			if (dao != null) {
-				dao.updateUser();
-			}
+			dao.updateUser();
 			User user = dao.getUserByID();
 			response.getWriter().write(new ObjectConverter<User>().serialize(user, User.class));
 		} catch (CustomServerException e) {
@@ -162,9 +171,7 @@ public class UserServlet extends HttpServlet {
 				throw new CustomServerException("The UserID from the JSON string isn't the same as the actual user!",
 						HttpServletResponse.SC_BAD_REQUEST);
 			}
-			if (dao != null) {
-				dao.deleteUser();
-			}
+			dao.deleteUser();
 			response.setStatus(HttpServletResponse.SC_OK);
 
 		} catch (CustomServerException e) {
