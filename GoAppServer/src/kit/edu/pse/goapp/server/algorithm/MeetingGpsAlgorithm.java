@@ -136,8 +136,26 @@ public class MeetingGpsAlgorithm {
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
 		long halfHour = 30 * 60 * 1000;
 		long duration = meeting.getDuration() * 60 * 1000;
-		if ((stamp.getTime() >= meeting.getTimestamp() - halfHour)
-				&& (stamp.getTime() <= meeting.getTimestamp() + duration)) {
+		if ((stamp.getTime() >= (meeting.getTimestamp() * 1000) - halfHour)
+				&& (stamp.getTime() <= (meeting.getTimestamp() * 1000) + duration)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Shows if the Event is already running
+	 * 
+	 * @param meeting
+	 *            Meeting
+	 * @return boolean true if event is running, else false
+	 */
+	public static boolean isOver(Meeting meeting) {
+		Timestamp stamp = new Timestamp(System.currentTimeMillis());
+
+		long duration = meeting.getDuration() * 60 * 1000;
+		if ((stamp.getTime() > (meeting.getTimestamp() * 1000) + duration)) {
 			return true;
 		}
 

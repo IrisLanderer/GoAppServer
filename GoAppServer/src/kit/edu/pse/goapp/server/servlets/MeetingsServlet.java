@@ -65,14 +65,21 @@ public class MeetingsServlet extends HttpServlet {
 			String json = "[";
 
 			for (Meeting meeting : meetings) {
-				if (meeting instanceof Tour) {
-					MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+				if (MeetingGpsAlgorithm.isOver(meeting)) {
+					MeetingDAO md = new MeetingDaoImpl();
+					md.setCreatorId(meeting.getCreator().getParticipantId());
+					md.setMeetingId(meeting.getMeetingId());
+					md.deleteMeeting();
 				} else {
-					MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
-				}
+					if (meeting instanceof Tour) {
+						MeetingGpsAlgorithm.setGpsTour((Tour) meeting);
+					} else {
+						MeetingGpsAlgorithm.setGpsEvent((Event) meeting);
+					}
 
-				json += new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
-				json += ",";
+					json += new ObjectConverter<Meeting>().serialize(meeting, Meeting.class);
+					json += ",";
+				}
 			}
 			json += "]";
 			response.getWriter().write(json);
