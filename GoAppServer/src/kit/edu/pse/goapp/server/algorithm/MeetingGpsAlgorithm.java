@@ -136,8 +136,8 @@ public class MeetingGpsAlgorithm {
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
 		long halfHour = 30 * 60 * 1000;
 		long duration = meeting.getDuration() * 60 * 1000;
-		if ((stamp.getTime() >= (meeting.getTimestamp() * 1000) - halfHour)
-				&& (stamp.getTime() <= (meeting.getTimestamp() * 1000) + duration)) {
+		if ((stamp.getTime() >= (meeting.getTimestamp()) - halfHour)
+				&& (stamp.getTime() <= (meeting.getTimestamp()) + duration)) {
 			return true;
 		}
 
@@ -155,7 +155,7 @@ public class MeetingGpsAlgorithm {
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());
 
 		long duration = meeting.getDuration() * 60 * 1000;
-		if ((stamp.getTime() > (meeting.getTimestamp() * 1000) + duration)) {
+		if ((stamp.getTime() > (meeting.getTimestamp()) + duration)) {
 			return true;
 		}
 
