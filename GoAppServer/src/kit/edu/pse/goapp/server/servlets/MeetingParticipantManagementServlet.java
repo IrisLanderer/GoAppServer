@@ -149,8 +149,10 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			int userId = authentication.authenticateUser(request);
 			String jsonString = request.getReader().readLine();
 			ParticipantDAO dao = new ParticipantDaoConverter().parse(jsonString);
+			MeetingConfirmation x = dao.getConfirmation();
 			Participant participant = dao.getParticipantByID();
-			validation.checkIfUserIsParticipantAndCreator(userId, participant.getMeetingId());
+			validation.checkIfUserIsParticipant(userId, participant.getMeetingId());
+			dao.setConfirmation(x);
 			dao.updateParticipant();
 			MeetingDAO meetingDao = new MeetingDaoImpl();
 			meetingDao.setMeetingId(dao.getMeetingId());
