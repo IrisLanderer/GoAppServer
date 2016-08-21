@@ -44,6 +44,18 @@ public class Tour extends Meeting {
 	}
 
 	/**
+	 * Returns meeting center
+	 * 
+	 * @param center
+	 *            of meeting
+	 * 
+	 * @return center meeting center
+	 */
+	public void setCenter(MeetingCenter center) {
+		this.center = center;
+	}
+
+	/**
 	 * Equals an object to this tour
 	 * 
 	 * @param obj
