@@ -75,7 +75,7 @@ public class LoginFilterServlet implements Filter {
 			} else {
 				throw new CustomServerException(
 						"The User is not logged in! + userId :" + userIdString + " loginCookie: " + loggedInString,
-						HttpServletResponse.SC_BAD_REQUEST);
+						HttpServletResponse.SC_UNAUTHORIZED);
 			}
 
 		} catch (CustomServerException e) {
