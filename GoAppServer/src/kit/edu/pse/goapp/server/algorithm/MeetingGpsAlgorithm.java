@@ -74,6 +74,7 @@ public class MeetingGpsAlgorithm {
 			}
 		}
 		if (positions.size() > 0) {
+
 			GPS median = GPS.median(positions);
 			MeetingCenter center = new MeetingCenter(median);
 			center.setParticipants(biggestBlob);

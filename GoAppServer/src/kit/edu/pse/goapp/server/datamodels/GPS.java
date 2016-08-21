@@ -62,15 +62,16 @@ public class GPS {
 		double x = 0.0;
 		double y = 0.0;
 		double z = 0.0;
-		for (GPS position : positions) {
-			x += position.getX();
-			y += position.getY();
-			z += position.getZ();
+		if (positions != null && positions.size() > 0) {
+			for (GPS position : positions) {
+				x += position.getX();
+				y += position.getY();
+				z += position.getZ();
+			}
+			x /= positions.size();
+			y /= positions.size();
+			z /= positions.size();
 		}
-		x /= positions.size();
-		y /= positions.size();
-		z /= positions.size();
-
 		return new GPS(x, y, z);
 
 	}
