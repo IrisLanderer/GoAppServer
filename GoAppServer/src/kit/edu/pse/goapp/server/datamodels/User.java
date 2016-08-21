@@ -64,6 +64,10 @@ public class User {
 		this.gps = gps;
 	}
 
+	public GPS getGps() {
+		return gps;
+	}
+
 	/**
 	 * Create a new group
 	 * 
