@@ -150,11 +150,11 @@ public class MeetingGpsAlgorithm {
 	}
 
 	/**
-	 * Shows if the Event is already running
+	 * Shows if the Event is over
 	 * 
 	 * @param meeting
 	 *            Meeting
-	 * @return boolean true if event is running, else false
+	 * @return boolean true if event is over, else false
 	 */
 	public static boolean isOver(Meeting meeting) {
 		Timestamp stamp = new Timestamp(System.currentTimeMillis());

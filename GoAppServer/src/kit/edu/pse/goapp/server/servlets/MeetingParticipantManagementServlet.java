@@ -151,7 +151,7 @@ public class MeetingParticipantManagementServlet extends HttpServlet {
 			ParticipantDAO dao = new ParticipantDaoConverter().parse(jsonString);
 			MeetingConfirmation x = dao.getConfirmation();
 			Participant participant = dao.getParticipantByID();
-			validation.checkIfUserIsParticipant(userId, participant.getMeetingId());
+			validation.checkIfUserIsParticipant(userId, participant.getParticipantId());
 			dao.setConfirmation(x);
 			dao.updateParticipant();
 			MeetingDAO meetingDao = new MeetingDaoImpl();
