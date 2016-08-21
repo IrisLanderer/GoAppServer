@@ -68,17 +68,19 @@ public class MeetingGpsAlgorithm {
 			dao.setUserId(p.getUser().getId());
 
 			GPS gpsP = dao.userGetGPS();
+
 			if (gpsP != null) {
 				positions.add(gpsP);
 				p.getUser().setGPS(gpsP);
 			}
 		}
+		if (positions.size() > 0) {
 
-		GPS median = GPS.median(positions);
-		MeetingCenter center = new MeetingCenter(median);
-		center.setParticipants(biggestBlob);
-		tour.setCenter(center);
-
+			GPS median = GPS.median(positions);
+			MeetingCenter center = new MeetingCenter(median);
+			center.setParticipants(biggestBlob);
+			tour.setCenter(center);
+		}
 		return tour;
 	}
 
