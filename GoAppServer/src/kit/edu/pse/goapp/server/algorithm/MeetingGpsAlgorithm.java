@@ -73,13 +73,12 @@ public class MeetingGpsAlgorithm {
 				p.getUser().setGPS(gpsP);
 			}
 		}
-		if (positions.size() > 0) {
 
-			GPS median = GPS.median(positions);
-			MeetingCenter center = new MeetingCenter(median);
-			center.setParticipants(biggestBlob);
-			tour.setCenter(center);
-		}
+		GPS median = GPS.median(positions);
+		MeetingCenter center = new MeetingCenter(median);
+		center.setParticipants(biggestBlob);
+		tour.setCenter(center);
+
 		return tour;
 	}
 
