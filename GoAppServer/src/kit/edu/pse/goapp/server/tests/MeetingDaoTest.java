@@ -40,46 +40,6 @@ public class MeetingDaoTest extends MeetingDaoImpl {
 	}
 
 	@Test(expected = CustomServerException.class)
-	public void addMeetingWithoutPlaceX() throws Exception {
-		MeetingDaoTest dao = new MeetingDaoTest();
-		dao.setName("test");
-		dao.setPlaceY(2);
-		dao.setPlaceZ(3);
-		dao.setTimestamp(3);
-		dao.setDuration(3);
-		dao.setType("Event");
-		dao.setUserId(1);
-		dao.addMeeting(Mockito.mock(DatabaseConnection.class));
-	}
-
-	@Test(expected = CustomServerException.class)
-	public void addMeetingWithoutPlaceY() throws Exception {
-		MeetingDaoTest dao = new MeetingDaoTest();
-		dao.setName("test");
-		dao.setPlaceX(2);
-		dao.setPlaceZ(3);
-		dao.setTimestamp(3);
-		dao.setDuration(3);
-		dao.setType("Event");
-		dao.setUserId(1);
-		dao.addMeeting(Mockito.mock(DatabaseConnection.class));
-	}
-
-	@Test(expected = CustomServerException.class)
-	public void addMeetingWithoutPlaceZ() throws Exception {
-		MeetingDaoTest dao = new MeetingDaoTest();
-		dao.setName("test");
-		dao.setPlaceX(2);
-		dao.setPlaceY(3);
-		dao.setPlaceY(-1);
-		dao.setTimestamp(3);
-		dao.setDuration(3);
-		dao.setType("Event");
-		dao.setUserId(1);
-		dao.addMeeting(Mockito.mock(DatabaseConnection.class));
-	}
-
-	@Test(expected = CustomServerException.class)
 	public void addMeetingWithoutTimestamp() throws Exception {
 		MeetingDaoTest dao = new MeetingDaoTest();
 		dao.setName("test");
