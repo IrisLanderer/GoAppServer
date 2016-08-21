@@ -72,18 +72,15 @@ public class MeetingDaoImpl implements MeetingDAO {
 		if (name == null || name.equals("")) {
 			throw new CustomServerException("A new meeting must have a name!", HttpServletResponse.SC_BAD_REQUEST);
 		}
-		if (placeX <= 0) {
-			throw new CustomServerException("A new meeting must have a x-coordinate!",
-					HttpServletResponse.SC_BAD_REQUEST);
-		}
-		if (placeY <= 0) {
-			throw new CustomServerException("A new meeting must have a y-coordinate!",
-					HttpServletResponse.SC_BAD_REQUEST);
-		}
-		if (placeZ < 0) {
-			throw new CustomServerException("A new meeting must have a z-coordinate!",
-					HttpServletResponse.SC_BAD_REQUEST);
-		}
+		/*
+		 * if (placeX <= 0) { throw new
+		 * CustomServerException("A new meeting must have a x-coordinate!",
+		 * HttpServletResponse.SC_BAD_REQUEST); } if (placeY <= 0) { throw new
+		 * CustomServerException("A new meeting must have a y-coordinate!",
+		 * HttpServletResponse.SC_BAD_REQUEST); } if (placeZ < 0) { throw new
+		 * CustomServerException("A new meeting must have a z-coordinate!",
+		 * HttpServletResponse.SC_BAD_REQUEST); }
+		 */
 		if (timestamp <= 0) {
 			throw new CustomServerException("A new meeting must have a timestamp!", HttpServletResponse.SC_BAD_REQUEST);
 		}
