@@ -142,8 +142,8 @@ public class MeetingGpsAlgorithm {
 		long currentTime = System.currentTimeMillis();
 		long halfHour = 30 * 60 * 1000;
 		long duration = meeting.getDuration() * 60 * 1000;
-		if ((currentTime >= (meeting.getTimestamp()) - halfHour)
-				&& (currentTime <= (meeting.getTimestamp()) + duration)) {
+		if ((currentTime >= (meeting.getTimestamp() - halfHour))
+				&& (currentTime <= (meeting.getTimestamp() + duration))) {
 			return true;
 		}
 
@@ -161,7 +161,7 @@ public class MeetingGpsAlgorithm {
 		long currentTime = System.currentTimeMillis();
 
 		long duration = meeting.getDuration() * 60 * 1000;
-		if ((currentTime > (meeting.getTimestamp()) + duration)) {
+		if (currentTime > (meeting.getTimestamp() + duration)) {
 			return true;
 		}
 
