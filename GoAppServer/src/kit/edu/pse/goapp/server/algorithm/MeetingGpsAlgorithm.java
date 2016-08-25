@@ -5,7 +5,6 @@
 
 package kit.edu.pse.goapp.server.algorithm;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,11 +139,11 @@ public class MeetingGpsAlgorithm {
 	 * @return boolean true if event is running, else false
 	 */
 	private static boolean isRunning(Meeting meeting) {
-		Timestamp stamp = new Timestamp(System.currentTimeMillis());
+		long currentTime = System.currentTimeMillis();
 		long halfHour = 30 * 60 * 1000;
 		long duration = meeting.getDuration() * 60 * 1000;
-		if ((stamp.getTime() >= (meeting.getTimestamp()) - halfHour)
-				&& (stamp.getTime() <= (meeting.getTimestamp()) + duration)) {
+		if ((currentTime >= (meeting.getTimestamp()) - halfHour)
+				&& (currentTime <= (meeting.getTimestamp()) + duration)) {
 			return true;
 		}
 
@@ -159,10 +158,10 @@ public class MeetingGpsAlgorithm {
 	 * @return boolean true if event is over, else false
 	 */
 	public static boolean isOver(Meeting meeting) {
-		Timestamp stamp = new Timestamp(System.currentTimeMillis());
+		long currentTime = System.currentTimeMillis();
 
 		long duration = meeting.getDuration() * 60 * 1000;
-		if ((stamp.getTime() > (meeting.getTimestamp()) + duration)) {
+		if ((currentTime > (meeting.getTimestamp()) + duration)) {
 			return true;
 		}
 
